@@ -45,5 +45,17 @@ export class Conexion{
         }
 
     }
+    public async cerrarConexion(): Promise<void>{
+
+        try {
+            await this.sequelize.close();
+            console.log("La conexion con la bd fue cerrada");
+            
+        } catch (error) {
+            console.log("Hubo un error al cerrar la conexion con la bd");
+            
+        }
+
+    }
 
 }
