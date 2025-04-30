@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 import { config } from "../config/config";
 
 
@@ -9,10 +9,14 @@ export class Conexion{
     private sequelize: Sequelize;
 
     private constructor(){
-        this.sequelize = new Sequelize(config.development.database,config.development.username, config.development.password,{
+        this.sequelize = new Sequelize(
+            config.development.database,
+            config.development.username, 
+            config.development.password,{
             host: config.development.host,
             dialect: config.development.dialect,
-            port: config.development.port
+            port: config.development.port,
+            models: config.development.models
         });
     }
 

@@ -1,3 +1,4 @@
+import path, { dirname } from "path";
 
 interface DbConfig{
     username: string;
@@ -6,6 +7,7 @@ interface DbConfig{
     host: string;
     dialect: "mysql";
     port: number;
+    models?: string[];
 }
 interface Config{
     [key: string]: DbConfig;
@@ -18,6 +20,7 @@ export const config: Config = {
         database: "hospital",
         host: "localhost",
         dialect: "mysql",
-        port: 3306
+        port: 3306,
+        models: [path.join(__dirname, '..', 'models', '*.model.ts')]
     }
 }
