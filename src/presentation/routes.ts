@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { AdmisionRoutes } from "./admisionRoutes/AdmisionRoutes";
-import { EnfermeriaRoutes } from "./EnfermeriaRoutes/EnfermeriaRoutes";
+import { AdmisionRoutes } from "./admision/AdmisionRoutes";
+import { EnfermeriaRoutes } from "./Enfermeria/EnfermeriaRoutes";
 import { Conexion } from "../data/conexion";
 
 
