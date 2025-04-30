@@ -7,7 +7,7 @@ export class AdmisionController{
     public constructor(conexionbd: Conexion){
         this.conexionBd = conexionbd;
     }
-    public admitir = (req:Request,res:Response)=> {
+    public admitir(req:Request,res:Response) {
        
         res.render("prueba");
 

@@ -8,7 +8,7 @@ export class Server{
     private app = express(); 
     private morgan = require("morgan");
 
-    async start(){
+    public async start(){
 
         const routeStatic = __dirname.replace("presentation","public");
         console.log(routeStatic);
