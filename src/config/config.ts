@@ -1,4 +1,4 @@
-import path, { dirname } from "path";
+import path from "path";
 
 interface DbConfig{
     username: string;
