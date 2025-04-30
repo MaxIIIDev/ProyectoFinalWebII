@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { EnfermerosController } from "./EnfermerosController";
+import { Conexion } from "../../data/conexion";
 
 
 
 export class EnfermeriaRoutes{
 
 
-    static get enfermeriaRoutes():Router{
+    static  enfermeriaRoutes(conexionBd:Conexion):Router{
 
         const router = Router();
         const controller = new EnfermerosController();

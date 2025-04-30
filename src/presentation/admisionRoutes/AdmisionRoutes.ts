@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { AdmisionController } from "./AdmisionController";
+import { Conexion } from "../../data/conexion";
 
 
 
 export class AdmisionRoutes{
 
-    static get admisionRoutes(): Router{
+    static admisionRoutes(conexionBd: Conexion): Router{
 
         const router = Router();
         const controller = new AdmisionController();
