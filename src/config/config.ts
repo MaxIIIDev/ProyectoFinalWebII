@@ -14,7 +14,7 @@ interface Config{
 export const config: Config = {
     development: {
         username: "root",
-        password: "",
+        password: "1234",
         database: "hospital",
         host: "localhost",
         dialect: "mysql",
