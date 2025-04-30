@@ -13,7 +13,7 @@ export class AppRoutes{
         const conexionBd = Conexion.getConexion;
         router.use("/admision", AdmisionRoutes.admisionRoutes(conexionBd))
         router.use("/enfermeria", EnfermeriaRoutes.enfermeriaRoutes(conexionBd))
-
+        // router.use("/medicos",MedicoRoutes.medicoRoutes(conexionBd));
         
         return router
     }
