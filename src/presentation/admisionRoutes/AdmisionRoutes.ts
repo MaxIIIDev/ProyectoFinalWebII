@@ -9,7 +9,7 @@ export class AdmisionRoutes{
     static admisionRoutes(conexionBd: Conexion): Router{
 
         const router = Router();
-        const controller = new AdmisionController();
+        const controller = new AdmisionController(conexionBd);
         router.get("/", controller.admitir );
 
 
