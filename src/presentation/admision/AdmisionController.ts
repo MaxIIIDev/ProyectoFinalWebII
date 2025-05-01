@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Conexion } from "../../data/conexion";
-import { pacientes } from "../../models/pacientes";
+
 
 
 
@@ -12,9 +12,8 @@ export class AdmisionController{
     }
     public admitir = (req:Request,res:Response) =>  {
        
+        this.conexionBd.authenticated()
         
-
-      
         res.render("prueba");
 
     }

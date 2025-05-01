@@ -12,15 +12,16 @@ interface DbConfig{
 interface Config{
     [key: string]: DbConfig;
 }
-
+//SOLUCIONAR EL TEMA DE USERNAME Y PASSWORD TIRA ERROR
 export const config: Config = {
     development: {
         username: "root",
         password: "1234",
-        database: "hospital",
-        host: "localhost",
+        database: process.env.DB_NAME!,
+        host: process.env.DB_HOST!,
         dialect: "mysql",
-        port: 3306,
+        port: parseInt(process.env.DB_PORT!),
         models: [path.join(__dirname, '..', 'models', '*.model.ts')]
     }
 }
+
