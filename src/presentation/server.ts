@@ -14,10 +14,11 @@ export class Server{
 
         const routeStatic = __dirname.replace("presentation","public");
         const dotenv = require("dotenv");
-        console.log(routeStatic);
+
+        this.app.set("view engine" , "pug");
         
         this.app.set("views", "./src/public/views");
-        this.app.set("view engine" , "pug");
+        
         this.app.use(express.static(routeStatic));
         this.app.use(this.morgan("dev"))
         this.app.use(AppRoutes.routes);

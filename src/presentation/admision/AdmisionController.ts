@@ -5,6 +5,7 @@ import { Conexion } from "../../data/conexion";
 
 
 
+
 export class AdmisionController{
     private conexionBd: Conexion;
     public constructor(conexionbd: Conexion){
@@ -14,7 +15,7 @@ export class AdmisionController{
        
         this.conexionBd.authenticated()
         
-        res.render("prueba");
+        res.render("./home/login", {nombre: "adada"});
 
     }
         
