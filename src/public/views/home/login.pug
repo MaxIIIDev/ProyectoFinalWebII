@@ -3,35 +3,62 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/css/bootstrap.min.css")
-        link(rel="stylesheet", href="/icons/bootstrap-icons.css")
-        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css")
-        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" )
-        title Iniciar sesion
+        title Iniciar sesión
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")        
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
+
+        style.
+            .form-control-xxl {
+                font-size: 1.8rem;
+                padding: 1.5rem;
+                height: auto;
+            }
+            .btn-xxl {
+                font-size: 2rem;
+                padding: 1rem 2rem;
+                border-radius: 50px;
+            }
+
     body.bg-primary
-         
-
-        .container.d-flex.flex-column.justify-content-center.align-items-center.vh-100
-            form(action="",method="")
-                .form-group
-                    label.fs-1(for='email') Gmail
-                    input.form-control(type='email', name='email' placeholder='Ingrese su gmail')
-                .form-group
-                    label.fs-1(for='password') Contraseña
-                    input.form-control(type='password', name='password' placeholder='Ingrese su contraseña')
-                button.btn.btn-primary.round(type='submit') Submit
-
-        script(src="/js/bootstrap.bundle.min.js") 
-        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js") 
-    footer
-        .container.align-center.text-center
-            p
-            | &copy; 2025 | 
-            i.fa.fa-value(aria-hidden='true') &HIServices;
+        .container.d-flex.flex-column.align-items-center.justify-content-center.min-vh-100
+            .bg-white.p-5.rounded-5.shadow-lg(style="max-width: 800px; width: 100%")
+                h1.text-center.mb-5.display-3 
+                    i.bi.bi-person-fill
+                    |  Inicio de sesión
                 
-         
+                form(action="", method="")
+                    .mb-5
+                        label.form-label.fs-2.fw-bold(for='email') 
+                            i.bi.bi-envelope-fill
+                            |  Correo electrónico
+                        input.form-control.form-control-xxl#email(
+                            type='email', 
+                            name='email',
+                            placeholder='ejemplo@gmail.com'
+                        )
+                    
+                    .mb-5
+                        label.form-label.fs-2.fw-bold(for='password') 
+                            i.bi.bi-lock-fill
+                            |  Contraseña
+                        input.form-control.form-control-xxl#password(
+                            type='password', 
+                            name='password',
+                            placeholder='••••••••'
+                        )
+                    
+                    .d-grid.gap-3.mt-5
+                        button.btn.btn-primary.btn-xxl.rounded-pill(type='submit')
+                            i.bi.bi-box-arrow-in-right
+                            |  Ingresar
+                        
+
+        footer.text-white.text-center.py-4
+            .container
+                p.fs-4.mb-0
+                    | © 2025 
+                    span.fw-bold HIServices
+                    i.bi.bi-heart-fill.text-danger.mx-1
+
         
-       
-    
-
-
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

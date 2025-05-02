@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsnd --respawn --clear src/app.ts",
+    "dev": "tsnd --respawn --clear --watch \"**/*.pug\" src/app.ts",
+    "dev:debug": "tsnd --respawn --clear --watch \"**/*.pug\" --inspect src/app.ts",
     "build": "rimraf ./dist && tsc",
-    "start": "npm run build && node dist/app.js"
+    "start": "npm run build && node dist/app.js",
+    "start:dev": "nodemon --watch \"**/*.ts\" --watch \"**/*.pug\" --exec \"ts-node src/app.ts\""
   },
   "repository": {
     "type": "git",
