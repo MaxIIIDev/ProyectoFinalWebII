@@ -16,6 +16,7 @@ export class AdmisionController{
         this.conexionBd.authenticated()
         
         res.render("./home/login", {nombre: "adada"});
+        //res.render("index");
 
     }
         

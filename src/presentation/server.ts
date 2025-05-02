@@ -20,6 +20,7 @@ export class Server{
         this.app.set("views", "./src/public/views");
         
         this.app.use(express.static(routeStatic));
+        this.app.use("/icons", express.static(`${__dirname}/../../node_modules/bootstrap-icons/font`))
         this.app.use(this.morgan("dev"))
         this.app.use(AppRoutes.routes);
         
