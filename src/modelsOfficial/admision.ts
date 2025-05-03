@@ -8,12 +8,12 @@ export class Admision extends Model{
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    declare idAdmision : number;
+    declare id_Admision : number;
 
     @AllowNull(false)
     @Length({min: 3, max:255})
     @Column(DataType.STRING)
-    declare tipoDeAdmision: string;
+    declare tipo_De_Admision: string;
 
     @NotNull
     @Length({min:3,max:255})
@@ -23,15 +23,15 @@ export class Admision extends Model{
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)
-    declare motivoDeInternacion:string;
+    declare motivo_De_Internacion:string;
 
     @CreatedAt
     @AllowNull(false)
     @Column(DataType.DATE)
-    declare fechaDeAdmision: Date;
+    declare fecha_De_Admision: Date;
 
     @UpdatedAt
     @Column(DataType.DATE)
-    declare fechaDeActualizacion: Date;
+    declare fecha_De_Actualizacion: Date;
 } 
 

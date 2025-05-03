@@ -1,13 +1,13 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Unique } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 
 
-
+@Table
 export class Enfermero extends Model{
 
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    declare idEnfermero : number;
+    declare id_Enfermero : number;
 
     @NotNull
     @Length({min:3,max:255})
@@ -42,7 +42,7 @@ export class Enfermero extends Model{
     declare telefono : number;
 
     @Column(DataType.INTEGER)
-    declare telefonoDeEmergencia: number;
+    declare telefono_De_Emergencia: number;
 
     @NotNull
     @Column(DataType.STRING)
