@@ -17,11 +17,12 @@ export const config: Config = {
     development: {
         username: "root",
         password: "1234",
-        database: process.env.DB_NAME!,
+        database: "prueba",
         host: process.env.DB_HOST!,
         dialect: "mysql",
         port: parseInt(process.env.DB_PORT!),
-        models: [path.join(__dirname, '..', 'models', '*.model.ts')]
+        
     }
 }
 
+//models: [path.join(__dirname, '..', 'models', '*.model.ts')]

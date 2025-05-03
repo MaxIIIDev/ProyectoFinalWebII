@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import { config } from "../config/config";
+import { Usuarios } from "../models2/usuarios";
+import { medicos } from "../models2/medicos";
+import { Team } from "../models2/materias";
 
 
 
@@ -16,7 +19,7 @@ export class Conexion{
             host: config.development.host,
             dialect: config.development.dialect,
             port: config.development.port,
-            models: config.development.models
+            models: []
         });
     }
 
@@ -53,6 +56,7 @@ export class Conexion{
 
         try {
             await this.sequelize.close();
+            
             console.log("La conexion con la bd fue cerrada");
             
         } catch (error) {
@@ -61,5 +65,23 @@ export class Conexion{
         }
 
     }
+    public async sync() {
+        try{
+            await Conexion.getConexion.getSequelize().sync({
+                force:false,
+                 alter: true
+            });
+            console.log("sincronizado");
+            
+        }catch(error){
+            console.log("error de sincronizacion: " +error);
+            
+        }
+    }
+    public async arrancarLaBd(){
 
+        await this.authenticated();
+        await this.sync()
+
+    }
 }

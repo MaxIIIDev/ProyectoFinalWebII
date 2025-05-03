@@ -1,16 +1,33 @@
 import { Request, Response } from "express";
 
+import { Conexion } from "../../data/conexion";
+import { usuarios } from "../../models/usuarios";
+import { pacientes } from "../../models/pacientes";
+import { Sequelize } from "sequelize-typescript";
+
+
+
+
+
+
 
 export class AuthController{
 
     constructor(){}
 
-    public Login = (req:Request,res:Response) => {
-
-        const { email, password } = req.body;
-        console.log("email: " ,  email);
-        console.log("contraseña: ", password );
-        console.log(req.body);
+    public Login = async (req:Request,res:Response) => {
+        try {
+            
+            
+            
+            const { email, password } = req.body;
+        
+            
+        } catch (error) {
+            console.log("hubo un error: " + error);
+            
+        }
+        
         
 
         

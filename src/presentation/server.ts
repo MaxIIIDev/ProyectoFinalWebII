@@ -3,6 +3,8 @@ import express, { urlencoded } from "express";
 import { AppRoutes } from "./routes";
 
 import "dotenv/config"
+import { Conexion } from "../data/conexion";
+import { initModels } from "../models/init-models";
 
 export class Server{
 
@@ -13,10 +15,14 @@ export class Server{
     public async start(){
 
         const routeStatic = __dirname.replace("presentation","public");
-        const dotenv = require("dotenv");
-
+        
+        const conexion = Conexion.getConexion;
+        conexion.arrancarLaBd();
+        
+      
         this.app.use(express.urlencoded({extended:true}));
         this.app.use(express.static(routeStatic));
+
         this.app.use("/icons", express.static(`${__dirname}/../../node_modules/bootstrap-icons/font`))
         this.app.use(this.morgan("dev"))
         this.app.set("views", "./src/public/views");
