@@ -1,7 +1,8 @@
-import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Medicos } from "./medicos";
 import { Pacientes } from "./pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
+import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
 
 
 @Table
@@ -51,5 +52,8 @@ export class Paciente_Diagnosticos extends Model{
 
     @BelongsTo(()=> paciente_tratamientos)
     declare tratamiento: paciente_tratamientos
+
+    @HasMany(()=> Paciente_pruebas_diagnosticas)
+    declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas
 
 }

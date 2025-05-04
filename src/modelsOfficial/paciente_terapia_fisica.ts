@@ -1,4 +1,6 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { Pacientes } from "./pacientes";
+import { paciente_tratamientos } from "./paciente_tratamientos";
 
 
 
@@ -23,6 +25,18 @@ export class paciente_terapia_fisica extends Model{
     @Column(DataType.INTEGER)
     declare duracion: number;
 
-    
+    @ForeignKey(()=> Pacientes)
+    @Column(DataType.INTEGER)
+    declare id_paciente:number;
 
+    @BelongsTo(()=> Pacientes)
+    declare paciente: Pacientes
+
+
+    @ForeignKey(()=> paciente_tratamientos)
+    @Column(DataType.INTEGER)
+    declare id_tratamiento: number
+    
+    @BelongsTo(()=> paciente_tratamientos)
+    declare tratamiento: paciente_tratamientos
 }

@@ -1,7 +1,8 @@
-import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Usuarios } from "./usuarios";
 import { paciente_cirugias } from "./paciente_cirugias";
 import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
+import { Paciente_recetas } from "./paciente_recetas";
 
 @Table
 export class Medicos extends Model{
@@ -70,5 +71,7 @@ export class Medicos extends Model{
     @HasOne(()=> Paciente_Diagnosticos)
     declare diagnostico: Paciente_Diagnosticos
 
+    @HasMany(()=> Paciente_recetas)
+    declare recetas: Paciente_recetas[]
 
 }
