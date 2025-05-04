@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { Usuarios } from "./usuarios";
 
 
 @Table
@@ -51,5 +52,12 @@ export class Personal_de_admision extends Model{
     @NotNull
     @Column(DataType.STRING)
     declare tipo_sanguineo: string
+
+    @ForeignKey(()=> Usuarios)
+    @Column(DataType.INTEGER)
+    declare id_usuario: number;
+
+    @BelongsTo(()=> Usuarios)
+    declare usuario: Usuarios
 
 }
