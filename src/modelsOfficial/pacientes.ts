@@ -1,7 +1,7 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Unique } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 
 
-
+@Table
 export class Pacientes extends Model{
 
     @PrimaryKey
@@ -31,6 +31,10 @@ export class Pacientes extends Model{
     @NotNull
     @Column(DataType.INTEGER)
     declare edad: number;
+
+
+    @Column(DataType.DOUBLE)
+    declare peso: number
 
     @NotNull
     @Length({min:6,max:20})

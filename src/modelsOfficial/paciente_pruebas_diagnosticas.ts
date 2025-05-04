@@ -1,35 +1,25 @@
-import { AutoIncrement, Column, CreatedAt, DataType, Model, NotNull, PrimaryKey } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 
-
-export class Paciente_Evaluacion_Fisica extends Model{
+@Table
+export class Paciente_pruebas_diagnosticas extends Model{
 
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    declare id_Evaluacion_fisica: number;
-
-    @CreatedAt
-    @Column(DataType.DATE)
-    declare fecha: Date;
+    declare id_Prueba_Diagnostica: number;
 
     @NotNull
-    @Column(DataType.INTEGER)
-    declare presion_arterial:number;
+    @Length({min: 10, max: 255})
+    @Column(DataType.STRING)
+    declare nombre : string
 
     @NotNull
-    @Column(DataType.INTEGER)
-    declare frecuencia_cardiaca:number;
-
+    @Length({min: 10, max: 255})
     @Column(DataType.STRING)
-    declare color_de_piel:string;
-
-    @Column(DataType.STRING)
-    declare respuesta_a_estimulos:string;
-
-    
-
+    declare resultado : string
 
 
 
 
 }
+

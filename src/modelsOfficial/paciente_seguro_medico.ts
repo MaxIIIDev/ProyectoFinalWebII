@@ -1,0 +1,25 @@
+import { AutoIncrement, Column, DataType, Default, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+
+
+@Table
+export class Paciente_seguro_medico extends Model{
+
+    @PrimaryKey
+    @AutoIncrement
+    @Column(DataType.INTEGER)
+    declare id_seguro_medico: number;
+
+    @NotNull
+    @Column(DataType.INTEGER)
+    declare numero: number;
+
+    @Default(true)
+    @Column(DataType.BOOLEAN)
+    declare estado: boolean;
+
+    @Length({min:10,max:100})
+    @Column(DataType.STRING)
+    declare categoria: string;
+
+
+}

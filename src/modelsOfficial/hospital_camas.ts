@@ -6,7 +6,7 @@ export class Hospital_camas extends Model{
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    declare idCama: number;
+    declare id_Cama: number;
 
     @NotNull
     @Default(true)
