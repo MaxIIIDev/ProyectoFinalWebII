@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { Usuarios } from "./usuarios";
 
 
 @Table
@@ -32,6 +33,10 @@ export class Enfermero extends Model{
     @Column(DataType.INTEGER)
     declare edad: number;
 
+    
+    @Column(DataType.DOUBLE)
+    declare peso: number
+
     @NotNull
     @Length({min:6,max:20})
     @Column(DataType.STRING)
@@ -50,5 +55,14 @@ export class Enfermero extends Model{
 
     @Column(DataType.STRING)
     declare especialidad: string;
+
+
+    @ForeignKey( () => Usuarios)
+    @Column(DataType.INTEGER)
+    declare id_usuario: Usuarios
+
+    @BelongsTo( () => Usuarios)
+    declare usuario: Usuarios
+
 
 }

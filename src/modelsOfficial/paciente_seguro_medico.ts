@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Default, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, Default, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { Pacientes } from "./pacientes";
 
 
 @Table
@@ -21,5 +22,7 @@ export class Paciente_seguro_medico extends Model{
     @Column(DataType.STRING)
     declare categoria: string;
 
+    @HasOne(()=> Pacientes)
+    declare paciente: Pacientes
 
 }

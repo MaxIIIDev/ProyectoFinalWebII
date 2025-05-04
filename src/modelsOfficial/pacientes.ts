@@ -1,4 +1,10 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { Admision } from "../modelsOfficial/admision";
+import { Paciente_seguro_medico } from "./paciente_seguro_medico";
+import { Paciente_Alergias } from "./paciente_alergias";
+import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
+import { paciente_cirugias } from "./paciente_cirugias";
+import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 
 
 @Table
@@ -58,4 +64,26 @@ export class Pacientes extends Model{
     @Column(DataType.STRING)
     declare tipo_sanguineo:string;
 
+    @HasMany( () => Admision)
+    declare admisiones: Admision[]
+
+
+    @ForeignKey(() => Paciente_seguro_medico)
+    @Column(DataType.INTEGER)
+    declare id_seguro_medico: number
+
+    @BelongsTo(()=> Paciente_seguro_medico)
+    declare seguro_medico: Paciente_seguro_medico
+
+    @HasOne(()=> Paciente_Alergias)
+    declare alergia: Paciente_Alergias
+
+    @HasMany(()=> Paciente_antecedentes_familiares)
+    declare antecedentes: Paciente_antecedentes_familiares[]
+
+    @HasMany(() => paciente_cirugias)
+    declare cirugias: paciente_cirugias[]
+
+    @HasOne(()=> Paciente_Diagnosticos)
+    declare diagnostico: Paciente_Diagnosticos
 }

@@ -1,4 +1,4 @@
-import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, NotNull, PrimaryKey, Table, Unique, UpdatedAt } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasOne, Model, NotNull, PrimaryKey, Table, Unique, UpdatedAt } from "sequelize-typescript";
 import { Team } from "./materias";
 
 @Table
@@ -40,5 +40,6 @@ export class Usuarios extends Model{
     @BelongsTo( () => Team)
     declare team: Team;
     
+   
    
 }

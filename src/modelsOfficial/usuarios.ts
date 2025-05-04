@@ -1,4 +1,6 @@
-import { AutoIncrement, Column, DataType, Default, IsEmail, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { Enfermero } from "./enfermeros";
+import { Medicos } from "./medicos";
 
 
 @Table
@@ -27,5 +29,11 @@ export class Usuarios extends Model{
     @Default(0)
     @Column(DataType.INTEGER)
     declare intentos_fallidos: number;
+
+    @HasOne(() => Enfermero)
+    declare enfermero: Enfermero
+
+    @HasOne(() => Medicos)
+    declare medico: Medicos
 
 }

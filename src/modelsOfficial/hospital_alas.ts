@@ -1,4 +1,5 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, Column, DataType, HasMany, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { Hospital_habitaciones } from "./hospital_habitaciones";
 
 @Table
 export class Hospital_alas extends Model{
@@ -6,7 +7,7 @@ export class Hospital_alas extends Model{
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER)
-    declare idAla: number;
+    declare id_Ala: number;
 
     @NotNull
     @Length({min:3,max:255})
@@ -15,15 +16,18 @@ export class Hospital_alas extends Model{
 
     @NotNull
     @Column(DataType.INTEGER)
-    declare cantidadHabitaciones:number;
+    declare cantidad_Habitaciones:number;
 
     @NotNull
     @Column(DataType.INTEGER)
-    declare cantidadCamas:number;
+    declare cantidad_Camas:number;
 
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)
     declare unidad:string;
+
+    @HasMany(()=> Hospital_habitaciones)
+    declare habitaciones: Hospital_habitaciones[]
 
 }

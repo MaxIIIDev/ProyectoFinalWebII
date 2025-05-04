@@ -1,6 +1,7 @@
-import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 
-
+import { Pacientes } from "./pacientes";
+import { Hospital_camas } from "./hospital_camas";
 
 @Table
 export class Admision extends Model{
@@ -33,5 +34,21 @@ export class Admision extends Model{
     @UpdatedAt
     @Column(DataType.DATE)
     declare fecha_De_Actualizacion: Date;
+
+    @ForeignKey( () => Pacientes)
+    @Column(DataType.INTEGER)
+    declare id_Paciente : number
+
+    @BelongsTo( () => Pacientes)
+    declare pacientes: Pacientes
+
+   @ForeignKey( () => Hospital_camas)
+   @Column(DataType.INTEGER)
+   declare id_Cama: number
+
+   @BelongsTo( () => Hospital_camas)
+   declare camas: Hospital_camas;
+
+
 } 
 
