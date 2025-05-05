@@ -13,7 +13,7 @@ export class AdmisionController{
     }
     public admitir = (req:Request,res:Response) =>  {
        
-        this.conexionBd.authenticated()
+        
         
         res.render("./home/login", {nombre: "adada"});
         //res.render("index");

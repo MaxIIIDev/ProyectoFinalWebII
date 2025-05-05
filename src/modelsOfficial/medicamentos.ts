@@ -1,4 +1,4 @@
-import { AllowNull, AutoIncrement, Column, DataType, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Paciente_recetas } from "./paciente_recetas";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 
@@ -32,6 +32,7 @@ export class Medicamentos extends Model{
     @Column(DataType.DOUBLE)
     declare cantidad_Contenida: number;
 
+    @Unique
     @Column(DataType.INTEGER)
     declare codigo:number;
 

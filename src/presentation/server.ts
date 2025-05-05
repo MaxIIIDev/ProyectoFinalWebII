@@ -4,7 +4,7 @@ import { AppRoutes } from "./routes";
 
 import "dotenv/config"
 import { Conexion } from "../data/conexion";
-import { initModels } from "../models/init-models";
+
 
 export class Server{
 

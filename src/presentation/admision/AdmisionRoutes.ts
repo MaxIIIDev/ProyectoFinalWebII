@@ -11,7 +11,7 @@ export class AdmisionRoutes{
 
         const router = Router();
         const controller = new AdmisionController(conexionBd);
-        let sequelize = conexionBd.getSequelize;
+        
         
         router.get("/", controller.admitir );
 

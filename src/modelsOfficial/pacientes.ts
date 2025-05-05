@@ -72,9 +72,7 @@ export class Pacientes extends Model{
     @Column(DataType.STRING)
     declare direccion:string;
 
-    @Column(DataType.STRING)
-    declare especialidad: string;
-
+    
     @Column(DataType.STRING)
     declare tipo_sanguineo:string;
 

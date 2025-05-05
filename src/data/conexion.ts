@@ -70,7 +70,7 @@ export class Conexion{
         try{
             await Conexion.getConexion.getSequelize().sync({
                 force:false,
-                 alter: true
+                alter: true
             });
             console.log("sincronizado");
             
@@ -82,7 +82,7 @@ export class Conexion{
     public async arrancarLaBd(){
 
         await this.authenticated();
-        await this.sync()
+        //await this.sync()
 
     }
 }
