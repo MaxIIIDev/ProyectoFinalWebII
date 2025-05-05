@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
 import { Medicos } from "./medicos";
 
@@ -12,15 +12,18 @@ export class paciente_cirugias extends Model{
     @Column(DataType.INTEGER)
     declare id_cirugia:number;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.DATE)
     declare fecha:Date;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:10,max:255})
     @Column(DataType.STRING)
     declare nombre: string;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:10,max:255})
     @Column(DataType.STRING)

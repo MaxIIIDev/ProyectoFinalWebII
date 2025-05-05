@@ -16,11 +16,13 @@ export class Admision extends Model{
     @Column(DataType.STRING)
     declare tipo_De_Admision: string;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)
     declare estado:string;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)

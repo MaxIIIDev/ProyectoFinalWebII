@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Admision } from "./admision";
 import { Hospital_habitaciones } from "./hospital_habitaciones";
 
@@ -10,6 +10,7 @@ export class Hospital_camas extends Model{
     @Column(DataType.INTEGER)
     declare id_Cama: number;
 
+    @AllowNull(false)
     @NotNull
     @Default(true)
     @Column(DataType.BOOLEAN)

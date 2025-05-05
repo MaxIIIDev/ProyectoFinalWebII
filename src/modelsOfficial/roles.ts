@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 
 
 
@@ -10,6 +10,7 @@ export class Roles extends Model{
     @Column(DataType.INTEGER)
     declare id_Rol: number;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:5,max:50})
     @Column(DataType.STRING)

@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Enfermero } from "./enfermeros";
 import { Medicos } from "./medicos";
 
@@ -12,11 +12,13 @@ export class Usuarios extends Model{
     @Column(DataType.INTEGER)
     declare id_Usuario: number;
 
+    @AllowNull(false)
     @IsEmail
     @NotNull
     @Column(DataType.STRING)
     declare email: string;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.STRING)
     declare password_hash: string
@@ -35,5 +37,7 @@ export class Usuarios extends Model{
 
     @HasOne(() => Medicos)
     declare medico: Medicos
+
+    
 
 }

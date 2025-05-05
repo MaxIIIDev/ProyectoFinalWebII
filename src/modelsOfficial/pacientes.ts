@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Admision } from "../modelsOfficial/admision";
 import { Paciente_seguro_medico } from "./paciente_seguro_medico";
 import { Paciente_Alergias } from "./paciente_alergias";
@@ -10,6 +10,8 @@ import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
 import { Paciente_recetas } from "./paciente_recetas";
 import { paciente_terapia_fisica } from "./paciente_terapia_fisica";
 import { paciente_tratamientos } from "./paciente_tratamientos";
+import { turnos } from "../models/turnos";
+import { Turnos } from "./turnos";
 
 
 @Table
@@ -20,25 +22,30 @@ export class Pacientes extends Model{
     @Column(DataType.INTEGER)
     declare id_Paciente:number;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)
     declare nombre:string;
 
+    @AllowNull(false)
     @NotNull
     @Length({min:3,max:255})
     @Column(DataType.STRING)
     declare apellido:string;
 
+    @AllowNull(false)
     @NotNull
     @Unique
     @Column(DataType.INTEGER)
     declare dni:number;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.DATE)
     declare fecha_nac: Date;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.INTEGER)
     declare edad: number;
@@ -47,18 +54,20 @@ export class Pacientes extends Model{
     @Column(DataType.DOUBLE)
     declare peso: number
 
+    @AllowNull(false)
     @NotNull
     @Length({min:6,max:20})
     @Column(DataType.STRING)
     declare genero :string ;
 
 
-    @Column(DataType.NUMBER)
+    @Column(DataType.INTEGER)
     declare telefono : number;
 
     @Column(DataType.INTEGER)
     declare telefono_De_Emergencia: number;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.STRING)
     declare direccion:string;
@@ -106,4 +115,9 @@ export class Pacientes extends Model{
 
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]
+
+    @HasMany(()=> Turnos)
+    declare turnos: Turnos
+
+
 }

@@ -9,7 +9,7 @@ export class Paciente_recetas extends Model{
 
     @PrimaryKey
     @AutoIncrement
-    @Column(DataType.DATE)
+    @Column(DataType.INTEGER)
     declare id_Receta: number;
 
     @CreatedAt

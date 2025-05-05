@@ -3,6 +3,7 @@ import { config } from "../config/config";
 import { Usuarios } from "../models2/usuarios";
 import { medicos } from "../models2/medicos";
 import { Team } from "../models2/materias";
+import { importaciones } from "../modelsOfficial/init";
 
 
 
@@ -19,7 +20,7 @@ export class Conexion{
             host: config.development.host,
             dialect: config.development.dialect,
             port: config.development.port,
-            models: []
+            models: importaciones
         });
     }
 

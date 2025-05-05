@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
 import { Enfermero } from "./enfermeros";
 
@@ -10,14 +10,17 @@ export class Paciente_Evaluacion_Fisica extends Model{
     @Column(DataType.INTEGER)
     declare id_Evaluacion_fisica: number;
 
+
     @CreatedAt
     @Column(DataType.DATE)
     declare fecha: Date;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.INTEGER)
     declare presion_arterial:number;
 
+    @AllowNull(false)
     @NotNull
     @Column(DataType.INTEGER)
     declare frecuencia_cardiaca:number;
