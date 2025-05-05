@@ -1,4 +1,4 @@
-import { AllowNull, AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Enfermero } from "./enfermeros";
 import { Medicos } from "./medicos";
 
@@ -14,6 +14,7 @@ export class Usuarios extends Model{
 
     @AllowNull(false)
     @IsEmail
+    @Unique
     @NotNull
     @Column(DataType.STRING)
     declare email: string;
