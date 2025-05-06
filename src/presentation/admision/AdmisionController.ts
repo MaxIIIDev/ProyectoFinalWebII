@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { Conexion } from "../../data/conexion";
 import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto";
-import { Pacientes } from "../../data/models/pacientes";
 import { PacienteServices } from "../services/PacientesService";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
-import { config } from "dotenv";
+
 
 export class AdmisionController{
     private conexionBd: Conexion;
@@ -15,7 +14,6 @@ export class AdmisionController{
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
         try {
-            
             const [ error, createPacienteDto ] = CreatePacienteDto.create(req.body);
             if(error){
                 throw new Error(HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", error));
@@ -63,8 +61,8 @@ export class AdmisionController{
             
             return;            
         }
-        
-
+    }
+    public registrarSeguroMedico = async(req:Request,res:Response) => {
 
     }
         

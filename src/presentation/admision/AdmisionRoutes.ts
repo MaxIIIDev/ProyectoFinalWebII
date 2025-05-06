@@ -14,9 +14,11 @@ export class AdmisionRoutes{
         const controller = new AdmisionController(conexionBd);
         
         
-        router.get("/", controller.crearPaciente);
-
-
+        router.post("/register/patient", controller.registrarPaciente);
+        router.put("/update/patient", controller.actualizarPaciente)
+        router.post("/register/secure")//Armar la relacion entre ambos al registrar
+        router.put("/update/secure")//Armar la relacion entre ambos al registrar
+        
         return router
     }
 
