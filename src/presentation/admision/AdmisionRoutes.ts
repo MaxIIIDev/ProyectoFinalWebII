@@ -14,7 +14,7 @@ export class AdmisionRoutes{
         const controller = new AdmisionController(conexionBd);
         
         
-        router.get("/", controller.admitir );
+        router.get("/", controller.crearPaciente);
 
 
         return router
