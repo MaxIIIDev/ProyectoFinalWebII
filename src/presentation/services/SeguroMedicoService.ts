@@ -1,4 +1,5 @@
 import { Paciente_seguro_medico } from "../../data/models/paciente_seguro_medico";
+import { Pacientes } from "../../data/models/pacientes";
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
@@ -41,7 +42,7 @@ export class SeguroMedicoService{
             console.log("Seguro médico creado: " + crearSeguroMedico.toJSON())
             return [undefined,true]
         }catch(Error){
-            HelperForCreateErrors.errorInMethodXLineXErrorX("createSeguroMedico", "Line 20", Error as string);
+            HelperForCreateErrors.errorInMethodXLineXErrorX("createSeguroMedico", "Line 31", Error as string);
                        
             return ["Error al crear el seguro médico",false]
 
@@ -71,11 +72,27 @@ export class SeguroMedicoService{
             return [undefined,true]
 
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("updateSeguroMedico", "Line 30", error as string));
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("updateSeguroMedico", "Line 56", error as string));
             
         }
-
-
     }
+    static validarQueElSeguroMedicoNoEsteAsignado = async(numeroSeguroMedico:number):Promise<[string?, boolean?]> =>{
 
+        try{
+
+            const seguroMedicoBuscado= await this.buscarSeguroMedicoExistente(numeroSeguroMedico,1);
+            if(!seguroMedicoBuscado[0]){
+                return ["No se encontro el seguro medico", undefined]
+            }
+            const validarSiEstaAsignado = await Pacientes.findOne({where:{id_seguro_medico: seguroMedicoBuscado[1]!.id}})
+            if(validarSiEstaAsignado){
+                console.log("El seguro médico ya está asignado a otro usuario")
+                return ["El seguro medico ya está asignado a otro usuario", false]
+            }
+
+        }catch(Error){
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("validarQueElSeguroMedicoNoEsteAsignado", "Line 79", Error as string)); 
+        }
+        return [undefined, true]
+    }
 }

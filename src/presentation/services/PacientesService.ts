@@ -1,12 +1,14 @@
+import { log } from "console";
 import { Pacientes } from "../../data/models/pacientes";
 import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
+import { SeguroMedicoService } from "./SeguroMedicoService";
 
 
 export class PacienteServices{
 
-    static  buscarUsuarioExistente= async(dni:number,modo:number):Promise<[boolean?,Pacientes?]> =>{
+    static  buscarPacienteExistente= async(dni:number,modo:number):Promise<[boolean?,Pacientes?]> =>{
         try{
             const pacienteBuscado =  await Pacientes.findOne({where:{dni: dni}})
             if(pacienteBuscado && modo === 0){//retorna booleano
@@ -28,7 +30,7 @@ export class PacienteServices{
     static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,boolean?]> => {
 
         try{
-            const pacienteEncontrado = await this.buscarUsuarioExistente(_createPacienteDto.dni,0);
+            const pacienteEncontrado = await this.buscarPacienteExistente(_createPacienteDto.dni,0);
             if(pacienteEncontrado[0]) return ["El paciente ya existe",false]
             const object= CreatePacienteDto.toObject(_createPacienteDto);
             console.log(object);
@@ -50,7 +52,7 @@ export class PacienteServices{
     static actualizarPaciente = async(_updatePacienteDto: UpdatePacienteDto):Promise<[string?,boolean?]> => {
 
         try {
-            const pacienteEncontrado = await this.buscarUsuarioExistente(_updatePacienteDto.dni!,1);
+            const pacienteEncontrado = await this.buscarPacienteExistente(_updatePacienteDto.dni!,1);
             if(!pacienteEncontrado[0]){
                 throw Error("no se encontro al paciente");
             }
@@ -67,5 +69,30 @@ export class PacienteServices{
             
         }
         return [undefined, true]
+    }
+    static asignarSeguroMedico = async(numeroSeguroMedico:number,dniPaciente:number):Promise<[string?,boolean?]> => {
+
+        try {
+            const pacienteEncontrado = await this.buscarPacienteExistente(dniPaciente,1);
+            if(!pacienteEncontrado[0]){
+                throw Error("no se encontro al paciente");
+            }
+            const seguroMedicoEncontrado = await SeguroMedicoService.buscarSeguroMedicoExistente(numeroSeguroMedico,1);
+            if(!seguroMedicoEncontrado[0]){
+                throw Error("no se encontro al seguro médico");
+            }
+            const validado = await SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignado(numeroSeguroMedico);
+            if(validado[0]){
+                throw Error(validado[0]);
+            }
+            pacienteEncontrado[1]!.id_seguro_medico = seguroMedicoEncontrado[1]!.id;
+            pacienteEncontrado[1]!.save()
+            console.log("Paciente actualizado: " + pacienteEncontrado[1]!.toJSON())
+            return [undefined,true]
+        } catch (error) {
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("asignarSeguroMedico", "Line 64", error as string));
+            return [error as string, false]    
+        }
+         
     }
 }
