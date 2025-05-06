@@ -21,7 +21,7 @@ export class AuthController{
             
             
             const { email, password } = req.body;
-            res.render("./home/login", {nombre: "adada"});
+        
             
         } catch (error) {
             console.log("hubo un error: " + error);
