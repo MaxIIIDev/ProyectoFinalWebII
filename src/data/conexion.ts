@@ -1,9 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { config } from "../config/config";
-import { Usuarios } from "../models2/usuarios";
-import { medicos } from "../models2/medicos";
-import { Team } from "../models2/materias";
-import { importaciones } from "../modelsOfficial/init";
+import { importaciones } from "./models/init";
+
 
 
 
@@ -82,7 +80,7 @@ export class Conexion{
     public async arrancarLaBd(){
 
         await this.authenticated();
-        //await this.sync()
+        await this.sync()
 
     }
 }

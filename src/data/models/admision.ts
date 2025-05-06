@@ -1,7 +1,8 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
-
-import { Pacientes } from "./pacientes";
 import { Hospital_camas } from "./hospital_camas";
+import { Pacientes } from "./pacientes";
+
+
 
 @Table
 export class Admision extends Model{
@@ -49,7 +50,7 @@ export class Admision extends Model{
    declare id_Cama: number
 
    @BelongsTo( () => Hospital_camas)
-   declare camas: Hospital_camas;
+    declare camas: Hospital_camas;
 
 
 } 

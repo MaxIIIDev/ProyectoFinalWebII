@@ -1,6 +1,5 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Paciente_Alergias } from "./paciente_alergias";
-import { paciente_alergias } from "../models/paciente_alergias";
 import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 import { Pacientes } from "./pacientes";
 import { Medicamentos } from "./medicamentos";
@@ -38,7 +37,7 @@ export class paciente_tratamientos extends Model{
     declare fecha_de_fin: Date
 
     @HasMany(()=> Paciente_Alergias)
-    declare alergias: paciente_alergias[]
+    declare alergias: Paciente_Alergias[]
 
     @HasOne(()=> Paciente_Diagnosticos)
     declare diagnostico: Paciente_Diagnosticos

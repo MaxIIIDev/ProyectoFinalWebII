@@ -1,5 +1,5 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Admision } from "../modelsOfficial/admision";
+
 import { Paciente_seguro_medico } from "./paciente_seguro_medico";
 import { Paciente_Alergias } from "./paciente_alergias";
 import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
@@ -10,8 +10,9 @@ import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
 import { Paciente_recetas } from "./paciente_recetas";
 import { paciente_terapia_fisica } from "./paciente_terapia_fisica";
 import { paciente_tratamientos } from "./paciente_tratamientos";
-import { turnos } from "../models/turnos";
+
 import { Turnos } from "./turnos";
+import { Admision } from "./admision";
 
 
 @Table

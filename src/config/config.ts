@@ -17,7 +17,7 @@ export const config: Config = {
     development: {
         username: "root",
         password: "1234",
-        database: "prueba",
+        database: "hospital_official",
         host: process.env.DB_HOST!,
         dialect: "mysql",
         port: parseInt(process.env.DB_PORT!),
