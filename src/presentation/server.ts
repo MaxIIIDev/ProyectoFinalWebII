@@ -21,6 +21,7 @@ export class Server{
         
       
         this.app.use(express.urlencoded({extended:true}));
+        this.app.use(express.json())
         this.app.use(express.static(routeStatic));
 
         this.app.use("/icons", express.static(`${__dirname}/../../node_modules/bootstrap-icons/font`))

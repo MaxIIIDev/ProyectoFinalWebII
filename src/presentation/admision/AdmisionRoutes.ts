@@ -16,9 +16,9 @@ export class AdmisionRoutes{
         
         router.post("/register/patient", controller.registrarPaciente);
         router.put("/update/patient", controller.actualizarPaciente)
-        router.post("/register/secure")//Armar la relacion entre ambos al registrar
-        router.put("/update/secure")//Armar la relacion entre ambos al registrar
-        
+        // router.post("/register/secure")//Armar la relacion entre ambos al registrar
+        // router.put("/update/secure")//Armar la relacion entre ambos al registrar
+
         return router
     }
 

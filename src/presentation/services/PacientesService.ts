@@ -16,12 +16,10 @@ export class PacienteServices{
                 return [true ,pacienteBuscado]
             }
             
-            if(!pacienteBuscado){
-                throw Error()
-            }
+            
         }catch(Error){
             console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("buscarUsuarioExistente", "Line 10", Error as string));           
-            return [false, undefined];
+            
         }
         return [false, undefined]
     }
@@ -30,17 +28,22 @@ export class PacienteServices{
     static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,boolean?]> => {
 
         try{
-            const pacienteEncontrado = await this.buscarUsuarioExistente(_createPacienteDto.dni,1);
+            const pacienteEncontrado = await this.buscarUsuarioExistente(_createPacienteDto.dni,0);
             if(pacienteEncontrado[0]) return ["El paciente ya existe",false]
             const object= CreatePacienteDto.toObject(_createPacienteDto);
-            const crearPaciente = await Pacientes.create({
+            console.log(object);
+            
+            const crearPaciente = await Pacientes.create(
                 object
-            })
+            )
             console.log("Paciente creado: " + crearPaciente.toJSON())
             return [undefined,true]
         }catch(Error){
             HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", Error as string);
+           // console.log(Error);
+            
             return ["Error al crear el paciente",false]
+
             
         }
     }
@@ -49,7 +52,7 @@ export class PacienteServices{
         try {
             const pacienteEncontrado = await this.buscarUsuarioExistente(_updatePacienteDto.dni!,1);
             if(!pacienteEncontrado[0]){
-                throw Error();
+                throw Error("no se encontro al paciente");
             }
             const object = UpdatePacienteDto.toObject(_updatePacienteDto);
             const [filasActualizadas] = await Pacientes.update(object,{where:{
@@ -60,7 +63,7 @@ export class PacienteServices{
             }
         } catch (error) {
             
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizar Paciente","46",error as string));
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizar Paciente","46", error as string));
             
         }
         return [undefined, true]

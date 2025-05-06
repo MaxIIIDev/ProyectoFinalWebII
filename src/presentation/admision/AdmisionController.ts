@@ -13,10 +13,14 @@ export class AdmisionController{
     }
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
+            console.log(req.body);
+            
         try {
             const [ error, createPacienteDto ] = CreatePacienteDto.create(req.body);
             if(error){
-                throw new Error(HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", error));
+                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", error));
+                
+                throw new Error();
             }           
 
             const [ errorCrearPaciente, pacienteCreado ] = await PacienteServices.crearPaciente(createPacienteDto!);
@@ -34,6 +38,7 @@ export class AdmisionController{
         } catch (error) {
             console.log(HelperForCreateErrors.errorInMethodXLineX("crearPaciente", "Line 30"));
             //res.status(500).render("error",{message: "Error al registrar el paciente"})
+            res.status(500).json({message: `${error}`})
         }
 
     }

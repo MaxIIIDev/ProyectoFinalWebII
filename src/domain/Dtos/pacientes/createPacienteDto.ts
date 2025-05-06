@@ -40,7 +40,8 @@ export class CreatePacienteDto{
     }
 
     static create(object:{ [ key:string]: any } ):[string?, CreatePacienteDto? ] {
-
+        
+        
         const { nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, tipo_sanguineo } = object;
 
         if(!nombre) return ["Se requiere el nombre"]
