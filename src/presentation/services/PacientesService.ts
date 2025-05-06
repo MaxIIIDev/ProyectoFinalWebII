@@ -92,7 +92,6 @@ export class PacienteServices{
         } catch (error) {
             console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("asignarSeguroMedico", "Line 64", error as string));
             return [error as string, false]    
-        }
-         
+        }         
     }
 }

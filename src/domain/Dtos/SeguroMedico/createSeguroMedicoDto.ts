@@ -1,8 +1,10 @@
 export class CreateSeguroMedicoDto {
     constructor(
         public numero: number,
+        public dni_Paciente: number,
         public estado?: boolean,
         public categoria?: string
+        
     ) {}
 
     // Método para convertir la instancia a un objeto plano
@@ -16,10 +18,10 @@ export class CreateSeguroMedicoDto {
 
     // Método para crear una instancia validando los campos
     static create(object: { [key: string]: any }): [string?, CreateSeguroMedicoDto?] {
-        const { numero, estado, categoria } = object;
+        const { numero, dni_Paciente , estado, categoria } = object;
 
         if (!numero) return ["Se requiere el número del seguro médico"];
-
-        return [undefined, new CreateSeguroMedicoDto(numero, estado, categoria)];
+        if(!dni_Paciente) return ["Se requiere el dni del paciente"];
+        return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, categoria)];
     }
 }

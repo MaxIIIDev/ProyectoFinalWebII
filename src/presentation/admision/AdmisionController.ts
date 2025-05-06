@@ -4,6 +4,8 @@ import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto
 import { PacienteServices } from "../services/PacientesService";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
+import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
+import { SeguroMedicoService } from "../services/SeguroMedicoService";
 
 
 export class AdmisionController{
@@ -67,7 +69,34 @@ export class AdmisionController{
             return;            
         }
     }
-    public registrarSeguroMedico = async(req:Request,res:Response) => {
+    public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => {
+
+        try{
+            const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
+            if(error){
+                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarSeguroMedico", "Line 71", error));
+                throw new Error();
+            }
+            const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
+            if(errorCrearSeguroMedico && !confirmacion){
+                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarSeguroMedico", "Line 75", errorCrearSeguroMedico));
+                //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+                return;
+            }
+            if(confirmacion){
+                const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente);
+                if(errorAsignarSeguroMedico && !confirmacionAsignar){
+                    console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarYAsignarSeguroMedico", "Line 90", errorAsignarSeguroMedico));
+                    //res.status(500).render("error",{message: "Error al asignar el seguro médico"})//Enviar con render
+                    return;
+                }
+            }
+        }catch(error){
+            console.log(HelperForCreateErrors.errorInMethodXLineX("registrarYAsignarSeguroMedico", "Line 95"));
+            //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+            
+            return;
+        }
 
     }
         
