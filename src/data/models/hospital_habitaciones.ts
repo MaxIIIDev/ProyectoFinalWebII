@@ -1,4 +1,4 @@
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType,  ForeignKey, HasOne, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType,  Default,  ForeignKey, HasOne, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Hospital_camas } from "./hospital_camas";
 import { Hospital_alas } from "./hospital_alas";
 
@@ -16,6 +16,11 @@ export class Hospital_habitaciones extends Model{
     @Column(DataType.INTEGER)
     declare nro_Habitacion:number;
 
+    @AllowNull(false)
+    @NotNull
+    @Default(0)
+    @Column(DataType.INTEGER)
+    declare cantidad_Camas:number;
   
     @HasOne(() => Hospital_camas)
         declare cama: Hospital_camas

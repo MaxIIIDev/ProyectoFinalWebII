@@ -124,8 +124,17 @@ export class AdmisionController{
 
     }
     
+    public getHabitaciones = async(req:Request,res:Response) => {
+        try{
+            const genero = req.params.genero;
+            
+
+        }catch(error){
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("getHabitaciones", "Line 123",error as string));
+            //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
+        }
 
 
-    
+    }
 
 }

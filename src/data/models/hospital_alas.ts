@@ -20,10 +20,6 @@ export class Hospital_alas extends Model{
     @Column(DataType.INTEGER)
     declare cantidad_Habitaciones:number;
 
-    @AllowNull(false)
-    @NotNull
-    @Column(DataType.INTEGER)
-    declare cantidad_Camas:number;
 
     @AllowNull(false)
     @NotNull
