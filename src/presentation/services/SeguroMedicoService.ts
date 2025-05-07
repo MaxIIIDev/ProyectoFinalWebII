@@ -82,17 +82,19 @@ export class SeguroMedicoService{
 
             const seguroMedicoBuscado= await this.buscarSeguroMedicoExistente(numeroSeguroMedico,1);
             if(!seguroMedicoBuscado[0]){
-                return ["No se encontro el seguro medico", undefined]
+                throw Error("No se encontro el seguro medico")
             }
             const validarSiEstaAsignado = await Pacientes.findOne({where:{id_seguro_medico: seguroMedicoBuscado[1]!.id}})
             if(validarSiEstaAsignado){
                 console.log("El seguro médico ya está asignado a otro usuario")
-                return ["El seguro medico ya está asignado a otro usuario", false]
+                throw Error("El seguro médico ya está asignado a otro usuario")
             }
 
         }catch(Error){
             console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("validarQueElSeguroMedicoNoEsteAsignado", "Line 79", Error as string)); 
+            return [Error as string, false];
         }
         return [undefined, true]
+
     }
 }
