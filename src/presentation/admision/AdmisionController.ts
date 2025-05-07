@@ -93,7 +93,7 @@ export class AdmisionController{
                 }
             }
         }catch(error){
-            console.log(HelperForCreateErrors.errorInMethodXLineX("registrarYAsignarSeguroMedico", "Line 95"));
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarYAsignarSeguroMedico", "Line 95",(error as string)));
             //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
             
             return;
@@ -118,7 +118,7 @@ export class AdmisionController{
             console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
             
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineX("actualizarSeguroMedico", "Line 115"));
+            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 115",error as string));
             
         }
 
