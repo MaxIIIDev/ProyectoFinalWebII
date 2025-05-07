@@ -6,6 +6,7 @@ import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
 import { SeguroMedicoService } from "../services/SeguroMedicoService";
+import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 
 
 export class AdmisionController{
@@ -97,9 +98,32 @@ export class AdmisionController{
             
             return;
         }
+    }
+    public actualizarSeguroMedico = async(req:Request,res:Response) => {
+
+        try {
+            const[ error, updateSeguroMedicoDto] = UpdateSeguroMedicoDto.create(req.body);
+
+            if(error){
+                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 105", error));
+                //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
+                return;
+            }
+            const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!);
+            if(errorInService && !confirmacion){
+                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 110", errorInService));
+                //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
+                return;
+            }
+            console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
+            
+        } catch (error) {
+            console.log(HelperForCreateErrors.errorInMethodXLineX("actualizarSeguroMedico", "Line 115"));
+            
+        }
 
     }
-        
+    
 
 
     

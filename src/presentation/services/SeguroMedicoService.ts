@@ -53,7 +53,7 @@ export class SeguroMedicoService{
 
     } 
 
-    static updateSeguroMedico = async(updateSeguroMedicoDto:UpdateSeguroMedicoDto) =>{
+    static updateSeguroMedico = async(updateSeguroMedicoDto:UpdateSeguroMedicoDto):Promise<[string?, boolean?]> =>{
 
         try {   
             const seguroMedicoEncontrado = await this.buscarSeguroMedicoExistente(updateSeguroMedicoDto.numero!,1);
@@ -73,7 +73,7 @@ export class SeguroMedicoService{
 
         } catch (error) {
             console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("updateSeguroMedico", "Line 56", error as string));
-            
+            return ["Error al actualizar el seguro médico", false]
         }
     }
     static validarQueElSeguroMedicoNoEsteAsignado = async(numeroSeguroMedico:number):Promise<[string?, boolean?]> =>{
