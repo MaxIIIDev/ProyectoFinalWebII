@@ -62,8 +62,6 @@ export class Enfermero extends Model{
     @Column(DataType.STRING)
     declare direccion:string;
 
-    @Column(DataType.STRING)
-    declare especialidad: string;
 
 
     @ForeignKey( () => Usuarios)

@@ -8,6 +8,7 @@ interface DbConfig{
     dialect: "mysql";
     port: number;
     models?: string[];
+    loggers: boolean
 }
 interface Config{
     [key: string]: DbConfig;
@@ -21,6 +22,7 @@ export const config: Config = {
         host: process.env.DB_HOST!,
         dialect: "mysql",
         port: parseInt(process.env.DB_PORT!),
+        loggers: false
         
     }
 }

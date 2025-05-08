@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import { config } from "../config/config";
 import { importaciones } from "./models/init";
+import { seedDatabase } from "./seed";
 
 
 
@@ -77,10 +78,25 @@ export class Conexion{
             
         }
     }
+    public async runSeed(){
+
+        try{
+
+            await seedDatabase();
+            console.log("Seeds ejecutados correctamente");
+            
+
+        }catch(error){
+            console.error("Error al ejecutar los seeds: " , error)
+        }
+
+    }
+
     public async arrancarLaBd(){
 
         await this.authenticated();
-        await this.sync()
+        //await this.sync()
+      // await this.runSeed()
 
     }
 }
