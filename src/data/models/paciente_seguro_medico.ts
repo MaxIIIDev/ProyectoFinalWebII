@@ -20,7 +20,7 @@ export class Paciente_seguro_medico extends Model{
     @Column(DataType.BOOLEAN)
     declare estado: boolean;
 
-    @Length({min:10,max:100})
+    @Length({min:5,max:100})
     @Column(DataType.STRING)
     declare categoria: string;
 

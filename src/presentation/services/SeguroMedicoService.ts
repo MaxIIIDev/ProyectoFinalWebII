@@ -71,7 +71,7 @@ export class SeguroMedicoService{
             }
             const object = UpdateSeguroMedicoDto.toObject(updateSeguroMedicoDto);
             const [filasActualizadas] = await Paciente_seguro_medico.update(object,{where:{
-                numero: seguroMedicoEncontrado[1]!.numero
+                numero: seguroMedicoEncontrado[1]!.dataValues.numero
             }})
           
             if(filasActualizadas === 0){

@@ -115,19 +115,20 @@ export class AdmisionController{
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 117", error);
                 //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
-                return;
+                throw Error(error);
             }
             const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!);
             if(errorInService && !confirmacion){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 123", errorInService);
                 //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
-                return;
+                throw Error(error);
             }
             console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
+            res.status(200).json({message: "Seguro medico actualizado"})
             
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 130",error as string);
-            
+            res.status(500).json({messageError: error instanceof Error ? error.message : "error desconocido"})
         }
 
     }
