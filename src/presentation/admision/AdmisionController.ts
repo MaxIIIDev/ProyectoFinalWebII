@@ -84,7 +84,7 @@ export class AdmisionController{
             }
             const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
             if(errorCrearSeguroMedico && !confirmacion){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 90", errorCrearSeguroMedico);
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
                 //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
                 res.status(500).json({messageError: errorCrearSeguroMedico})
                 return;
