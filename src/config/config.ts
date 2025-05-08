@@ -22,8 +22,7 @@ export const config: Config = {
         host: process.env.DB_HOST!,
         dialect: "mysql",
         port: parseInt(process.env.DB_PORT!),
-        loggers: false
-        
+        loggers: false 
     }
 }
 

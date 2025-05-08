@@ -58,6 +58,11 @@ export async function seedDatabase() {
                 numero: 1006,
                 estado: true,
                 categoria: 'Estándar'
+            },
+            {
+                numero: 10033,
+                estado: true,
+                categoria: 'Estándar'
             }
         ]);
 
@@ -146,6 +151,20 @@ export async function seedDatabase() {
                 direccion: 'Camino Real 654',
                 tipo_sanguineo: 'A+',
                 id_seguro_medico: 6
+            },
+            {
+                nombre: 'Prueba',
+                apellido: 'Fernández',
+                dni: 3333,
+                fecha_nac: new Date('1980-09-05'),
+                edad: 45,
+                peso: 60.8,
+                genero: 'Masculino',
+                telefono: 678901234,
+                telefono_De_Emergencia: 432109876,
+                direccion: 'Camino Real 654',
+                tipo_sanguineo: 'A+',
+                
             }
         ]);
 

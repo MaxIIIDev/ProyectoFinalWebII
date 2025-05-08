@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 
 import { Conexion } from "../../data/conexion";
-import { usuarios } from "../../models/usuarios";
-import { pacientes } from "../../models/pacientes";
+
 import { Sequelize } from "sequelize-typescript";
 
 

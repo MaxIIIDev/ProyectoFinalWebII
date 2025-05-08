@@ -12,17 +12,23 @@ export class PacienteServices{
         try{
             const pacienteBuscado =  await Pacientes.findOne({where:{dni: dni}})
             if(pacienteBuscado && modo === 0){//retorna booleano
+                console.log("Paciente encontrado Con exito");
+                
                 return [true, undefined];
             }
             if(pacienteBuscado && modo === 1){ //retorna el objeto
+                console.log("Paciente encontrado Con exito");
                 return [true ,pacienteBuscado]
+
             }
             
             
         }catch(Error){
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("buscarUsuarioExistente", "Line 10", Error as string));           
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarUsuarioExistente","PacienteService", "Line 23", Error as string));           
             
         }
+        console.log("Paciente no encontrado");
+        
         return [false, undefined]
     }
     
@@ -41,7 +47,7 @@ export class PacienteServices{
             console.log("Paciente creado: " + crearPaciente.toJSON())
             return [undefined,true]
         }catch(Error){
-            HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", Error as string);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","PacienteService", "Line 44", Error as string);
            // console.log(Error);
             
             return ["Error al crear el paciente",false]
@@ -65,7 +71,7 @@ export class PacienteServices{
             }
         } catch (error) {
             
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizar Paciente","46", error as string));
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizar Paciente","PacienteService","68", error as string));
             
         }
         return [undefined, true]
@@ -74,6 +80,7 @@ export class PacienteServices{
 
         try {
             const pacienteEncontrado = await this.buscarPacienteExistente(dniPaciente,1);
+            const instanciaPacienteEncontrada = pacienteEncontrado[1];
             if(!pacienteEncontrado[0]){
                 throw Error("no se encontro al paciente");
             }
@@ -85,12 +92,21 @@ export class PacienteServices{
             if(validado[0]){
                 throw Error(validado[0]);
             }
-            pacienteEncontrado[1]!.id_seguro_medico = seguroMedicoEncontrado[1]!.id;
-            pacienteEncontrado[1]!.save()
-            console.log("Paciente actualizado: " + pacienteEncontrado[1]!.toJSON())
+            console.log(            instanciaPacienteEncontrada
+            );
+
+            instanciaPacienteEncontrada!.id_seguro_medico = seguroMedicoEncontrado[1]!.dataValues.id_seguro_medico; 
+
+            let ver = await instanciaPacienteEncontrada!.save()
+            
+                        
+          //console.log("Paciente actualizado: " + pacienteEncontrado[1]!)
+            
+            
             return [undefined,true]
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("asignarSeguroMedico", "Line 64", error as string));
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("asignarSeguroMedico","PacienteService", "Line 93", error as string));
+            
             return [error as string, false]    
         }         
     }

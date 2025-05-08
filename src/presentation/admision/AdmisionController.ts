@@ -21,17 +21,17 @@ export class AdmisionController{
         try {
             const [ error, createPacienteDto ] = CreatePacienteDto.create(req.body);
             if(error){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 20", error));
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController" ,"Line 24", error);
                 
                 throw new Error();
             }           
 
             const [ errorCrearPaciente, pacienteCreado ] = await PacienteServices.crearPaciente(createPacienteDto!);
             if(errorCrearPaciente){
-                throw new Error(HelperForCreateErrors.errorInMethodXLineXErrorX("crearPaciente", "Line 25", errorCrearPaciente));
+                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 31", errorCrearPaciente));
             }
             if(!pacienteCreado){
-                HelperForCreateErrors.errorInMethodXLineXErrorX("registrarPaciente","15","La bd no pudo crear el paciente")
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarPaciente","AdmisionController","34","La bd no pudo crear el paciente")
                 //res.status(500).render("error",{message: "El paciente ya existe"})
                 return;
             }
@@ -39,7 +39,7 @@ export class AdmisionController{
 
 
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineX("crearPaciente", "Line 30"));
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 30",error as string);
             //res.status(500).render("error",{message: "Error al registrar el paciente"})
             res.status(500).json({message: `${error}`})
         }
@@ -50,11 +50,11 @@ export class AdmisionController{
         try {
             const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body);
             if(error){
-                throw new Error(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarPaciente", "Line 40", error));
+                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error));
             }
             const [errorInService, confirmacion] = await PacienteServices.actualizarPaciente(updatePacienteDto!); 
             if(errorInService){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("ActualizarPaciente","40",errorInService));    
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarPaciente","AdmisionController","57",errorInService);    
                 //Enviar con render  
                  //res.status(500).render("error",{message: "Error al actualizar el paciente"})//Enviar con render
             }
@@ -64,7 +64,7 @@ export class AdmisionController{
             }
 
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineX("actualizarPaciente", "Line 40"));
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 40", error as string);
             //res.status(500).render("error",{message: "Error al actualizar el paciente"})//Enviar con render
             
             return;            
@@ -73,30 +73,38 @@ export class AdmisionController{
     public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => {
 
         try{
+            console.clear();
+            if(!req.body){
+                throw new Error("Atributos incorrectos en body")
+            }
             const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
             if(error){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarSeguroMedico", "Line 71", error));
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
                 throw new Error();
             }
             const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
             if(errorCrearSeguroMedico && !confirmacion){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarSeguroMedico", "Line 75", errorCrearSeguroMedico));
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 90", errorCrearSeguroMedico);
                 //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+                res.status(500).json({messageError: errorCrearSeguroMedico})
                 return;
             }
             if(confirmacion){
                 const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente);
                 if(errorAsignarSeguroMedico && !confirmacionAsignar){
-                    console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarYAsignarSeguroMedico", "Line 90", errorAsignarSeguroMedico));
+                    HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
                     //res.status(500).render("error",{message: "Error al asignar el seguro médico"})//Enviar con render
+                    res.status(500).json({messageError: errorAsignarSeguroMedico})
                     return;
+                }else{
+                    res.status(200).json({message: "Todo ok, se le asigno el seguro medico al paciente"})
                 }
             }
         }catch(error){
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("registrarYAsignarSeguroMedico", "Line 95",(error as string)));
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
             //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+            res.status(500).json({message: (error instanceof Error) ? error.message : "Unknown error"})
             
-            return;
         }
     }
     public actualizarSeguroMedico = async(req:Request,res:Response) => {
@@ -105,20 +113,20 @@ export class AdmisionController{
             const[ error, updateSeguroMedicoDto] = UpdateSeguroMedicoDto.create(req.body);
 
             if(error){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 105", error));
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 117", error);
                 //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
                 return;
             }
             const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!);
             if(errorInService && !confirmacion){
-                console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 110", errorInService));
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 123", errorInService);
                 //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
                 return;
             }
             console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
             
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("actualizarSeguroMedico", "Line 115",error as string));
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 130",error as string);
             
         }
 
@@ -130,7 +138,7 @@ export class AdmisionController{
             
 
         }catch(error){
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("getHabitaciones", "Line 123",error as string));
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones","AdmisionController","Line 142",error as string));
             //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
         }
 

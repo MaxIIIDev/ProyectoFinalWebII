@@ -11,18 +11,26 @@ export class SeguroMedicoService{
 
         try{
             const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({where:{numero: numero}})
+            
+            
             if(seguroMedicoBuscado && modo === 0){//retorna booleano
+                console.log("Seguro medico encontrado con exito y no devuelto por modo 0");
+                
                 return [true, undefined];
             }
             if(seguroMedicoBuscado && modo === 1){ //retorna el objeto
+                console.log("Seguro medico encontrado con exito devuelto por modo 1");
+
                 return [true ,seguroMedicoBuscado]
             }
             
             
         }catch(Error){
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("buscarSeguroMedicoExistente", "Line 10", Error as string));           
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarSeguroMedicoExistente","SeguroMedicoService", "Line 25", Error as string);           
             
         }
+        console.log("No se encontro el seguro medico");
+        
         return [false, undefined]
 
 
@@ -34,15 +42,16 @@ export class SeguroMedicoService{
             const seguroMedicoEncontrado = await this.buscarSeguroMedicoExistente(createSeguroMedicoDto.numero,0);
             if(seguroMedicoEncontrado[0]) return ["El seguro médico ya existe",false]
             const object= CreateSeguroMedicoDto.toObject(createSeguroMedicoDto);
-            console.log(object);
+            
             
             const crearSeguroMedico = await Paciente_seguro_medico.create(
                 object
             )
-            console.log("Seguro médico creado: " + crearSeguroMedico.toJSON())
+            if(crearSeguroMedico) console.log("Seguro médico creado: " )
+            
             return [undefined,true]
         }catch(Error){
-            HelperForCreateErrors.errorInMethodXLineXErrorX("createSeguroMedico", "Line 31", Error as string);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("createSeguroMedico","SeguroMedicoService", "Line 48", Error as string);
                        
             return ["Error al crear el seguro médico",false]
 
@@ -72,7 +81,7 @@ export class SeguroMedicoService{
             return [undefined,true]
 
         } catch (error) {
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("updateSeguroMedico", "Line 56", error as string));
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("updateSeguroMedico","SeguroMedicoService", "Line 78", error as string);
             return ["Error al actualizar el seguro médico", false]
         }
     }
@@ -84,14 +93,16 @@ export class SeguroMedicoService{
             if(!seguroMedicoBuscado[0]){
                 throw Error("No se encontro el seguro medico")
             }
-            const validarSiEstaAsignado = await Pacientes.findOne({where:{id_seguro_medico: seguroMedicoBuscado[1]!.id}})
+                        
+            const validarSiEstaAsignado = await Pacientes.findOne({where:{id_seguro_medico: seguroMedicoBuscado[1].dataValues.id_seguro_medico}})
             if(validarSiEstaAsignado){
                 console.log("El seguro médico ya está asignado a otro usuario")
                 throw Error("El seguro médico ya está asignado a otro usuario")
             }
-
+            console.log("El seguro medico es valido y no esta asignado");
+            
         }catch(Error){
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("validarQueElSeguroMedicoNoEsteAsignado", "Line 79", Error as string)); 
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("validarQueElSeguroMedicoNoEsteAsignado","SeguroMedicoService", "Line 99", Error as string); 
             return [Error as string, false];
         }
         return [undefined, true]
