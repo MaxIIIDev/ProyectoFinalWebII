@@ -19,7 +19,7 @@ import { Paciente_Evaluacion_Fisica } from "./models/paciente_evaluacion_fisica"
 import { paciente_tratamientos } from "./models/paciente_tratamientos";
 import { Hospital_habitaciones } from "./models/hospital_habitaciones";
 import { Hospital_alas } from "./models/hospital_alas";
-import { Conexion } from "./conexion";
+
 
 import { Enfermero } from "./models/enfermeros";
 
