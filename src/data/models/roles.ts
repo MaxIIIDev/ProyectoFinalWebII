@@ -1,4 +1,5 @@
-import { AllowNull, AutoIncrement, Column, DataType, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, DataType, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { Usuarios } from "./usuarios";
 
 
 
@@ -15,4 +16,7 @@ export class Roles extends Model{
     @Length({min:5,max:50})
     @Column(DataType.STRING)
     declare nombre: string;
+
+    @HasOne(()=> Usuarios)
+    declare usuario: Usuarios
 }

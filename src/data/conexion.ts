@@ -96,7 +96,7 @@ export class Conexion{
 
         await this.authenticated();
         //await this.sync()
-      // await this.runSeed()
+        //await this.runSeed()
 
     }
 }

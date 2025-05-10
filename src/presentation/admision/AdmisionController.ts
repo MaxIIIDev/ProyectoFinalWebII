@@ -14,6 +14,15 @@ export class AdmisionController{
     public constructor(conexionbd: Conexion){
         this.conexionBd = conexionbd;
     }
+
+    public vistaPrincipal = async(req: Request, res:Response)=> {
+        res.render("AdmisionViews/principal.pug");
+    }
+
+    public vistaEmergencia = async(req:Request, res:Response)=> {
+        res.render("AdmisionViews/emergencia.pug")
+    }
+
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
             console.log(req.body);
@@ -136,6 +145,8 @@ export class AdmisionController{
     public getHabitaciones = async(req:Request,res:Response) => {
         try{
             const genero = req.params.genero;
+            
+
             
 
         }catch(error){

@@ -1,6 +1,7 @@
-import { AllowNull, AutoIncrement, Column, DataType, Default, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Enfermero } from "./enfermeros";
 import { Medicos } from "./medicos";
+import { Roles } from "./roles";
 
 
 @Table
@@ -39,6 +40,12 @@ export class Usuarios extends Model{
     @HasOne(() => Medicos)
     declare medico: Medicos
 
+    @ForeignKey(()=> Roles)
+    @Column(DataType.INTEGER)
+    declare id_Rol: number
+
+    @BelongsTo(()=> Roles)
+    declare rol: Roles
     
 
 }

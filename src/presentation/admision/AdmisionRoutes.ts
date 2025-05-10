@@ -13,7 +13,11 @@ export class AdmisionRoutes{
         const router = Router();
         const controller = new AdmisionController(conexionBd);
         
-        
+        //vistas
+        router.get("/", controller.vistaPrincipal)
+        router.get("/emergencia", controller.vistaEmergencia)
+
+
         router.post("/register/patient", controller.registrarPaciente);
         router.put("/update/patient", controller.actualizarPaciente)
         router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Armar la relacion entre ambos al registrar
