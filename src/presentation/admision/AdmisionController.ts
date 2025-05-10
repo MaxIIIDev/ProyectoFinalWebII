@@ -23,6 +23,10 @@ export class AdmisionController{
         res.render("AdmisionViews/emergencia.pug")
     }
 
+    public vistaEmergenciaHabitacion = (req:Request, res:Response)=> {
+        res.render("AdmisionViews/habitacion.pug")
+    }
+
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
             console.log(req.body);

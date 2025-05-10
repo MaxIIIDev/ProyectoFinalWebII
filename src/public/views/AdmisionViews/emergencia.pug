@@ -1,20 +1,111 @@
 doctype html
 html(lang="es")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Emergencia
-    body 
-        div 
-            div 
-                form(action="POST" href="") 
-                    div 
-                        label(for="ala") ALA 
-                        input(type="text" name="ala")
-                    div 
-                        label(for="Genero") Genero
-                        input(type="text" name="genero") 
-                    div 
-                        label(for="motivo") Motivo
-                        input(type="text" name motivo) 
-                    button(type="submit") Buscar Habitacion
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Sistema de Emergencia
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
+    style.
+      .emergency-panel {
+        background: linear-gradient(135deg, #e74c3c 0%, #f39c12 100%);
+        min-height: 100vh;
+      }
+      .emergency-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 600px;
+      }
+      .emergency-btn {
+        background-color: #e74c3c;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+      .emergency-btn:hover {
+        background-color: white !important;
+        color: #e74c3c !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+        }
+      .form-control:invalid {
+        border-color: #dc3545;
+      }
+      .invalid-feedback {
+        color: #dc3545;
+        display: none;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+      }
+      .was-validated .form-control:invalid ~ .invalid-feedback {
+        display: block;
+      }
+
+  body
+    .emergency-panel.d-flex.align-items-center.justify-content-center.p-4
+      .text-center
+        h1.text-white.mb-5 
+          i.bi.bi-exclamation-triangle-fill.me-2
+          | Registro de Emergencia
+        
+        .emergency-card
+          form#emergencyForm.needs-validation(novalidate)
+            .mb-3
+              label.form-label(for="ala") Ala
+              input.form-control(
+                type="text" 
+                id="ala" 
+                name="ala" 
+                placeholder="Ej: Ala Norte" 
+                required
+              )
+              .invalid-feedback Por favor ingrese el ala
+            
+            .mb-3
+              label.form-label(for="genero") Género
+              select.form-control(
+                id="genero" 
+                name="genero" 
+                required
+              )
+                option(value="") Seleccione...
+                option(value="masculino") Masculino
+                option(value="femenino") Femenino
+                option(value="otro") Otro
+              .invalid-feedback Por favor seleccione un género
+            
+            .mb-3
+              label.form-label(for="motivo") Motivo de Emergencia
+              textarea.form-control(
+                id="motivo" 
+                name="motivo" 
+                rows="3" 
+                placeholder="Describa brevemente la emergencia..." 
+                required
+              )
+              .invalid-feedback Por favor describa el motivo
+            
+            button.btn.emergency-btn.text-white.w-100(type="submit")
+              i.bi.bi-search-heart-fill.me-2
+              | Buscar Habitación Disponible
+
+    script.
+      // Validación del formulario
+      const form = document.getElementById('emergencyForm');
+      
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (form.checkValidity()) {
+          // Redirección si el formulario es válido
+          window.location.href = '/admision/emergencia/habitacion';
+        }
+        
+        form.classList.add('was-validated');
+      });
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
