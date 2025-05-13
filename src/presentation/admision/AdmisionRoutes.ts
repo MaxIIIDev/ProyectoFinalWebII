@@ -16,7 +16,7 @@ export class AdmisionRoutes{
         //vistas
         router.get("/", controller.vistaPrincipal)
         router.get("/emergencia", controller.vistaEmergencia)
-        router.post("/emergencia/habitacion", controller.vistaEmergenciaHabitacion)
+        router.post("/emergencia/habitacion", controller.vistaHabitacionDeEmergencia)
 
         router.post("/register/patient", controller.registrarPaciente);
         router.put("/update/patient", controller.actualizarPaciente)

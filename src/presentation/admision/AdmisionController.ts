@@ -8,6 +8,7 @@ import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSegu
 import { SeguroMedicoService } from "../services/SeguroMedicoService";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 import { AlaService } from "../services/Hospital/AlaService";
+import { HabitacionService } from "../services/Hospital/HabitacionService";
 
 
 export class AdmisionController{
@@ -24,7 +25,6 @@ export class AdmisionController{
         const alas = await AlaService.getAlaFromDb()
               
         res.render("AdmisionViews/emergencia.pug", {
-            title: "prueba",
             error: "errorPersonalizado",
             success: "funciono bien",
             info: "habia un caracol rojo",
@@ -34,9 +34,31 @@ export class AdmisionController{
         //res.render("AdmisionViews/emergencia.pug",{alas})
     }
 
-    public vistaEmergenciaHabitacion = (req:Request, res:Response)=> {
+    public vistaHabitacionDeEmergencia = async(req:Request, res:Response)=> {
+        //aca tambien tenemos que agregarlos a la tabla de enfermeros
+        try{
+            const {ala,unidad,genero,motivo} = req.body;
+            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero,ala);
+            if(habitaciones[0]){
+                throw Error(habitaciones[0])
+            }
+            console.log(habitaciones[1]);
+            
+            
+            res.render("AdmisionViews/habitacion.pug",{
+                success: "funciono bien",
+                habitaciones: habitaciones[1]
+            })
+            
 
-        res.render("AdmisionViews/habitacion.pug")
+
+        }catch(error){
+            res.status(500).render("AdmisionViews/habitacion.pug", {
+                error: error
+            })
+        }
+
+       // res.render("AdmisionViews/habitacion.pug")
     }
 
     public registrarPaciente = async(req:Request,res:Response) =>  {
@@ -158,11 +180,11 @@ export class AdmisionController{
 
     }
     
-    public getHabitaciones = async(req:Request,res:Response) => {
+    public getHabitacionesByGender = async(req:Request,res:Response) => {
         try{
             const {ala,unidad,genero,motivo} = req.body;
             
-
+            
             
 
         }catch(error){

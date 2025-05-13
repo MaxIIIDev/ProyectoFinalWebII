@@ -185,7 +185,11 @@ export async function seedDatabase() {
             { nro_Habitacion: 103, cantidad_Camas: 1, id_ala: 3 },
             { nro_Habitacion: 104, cantidad_Camas: 2, id_ala: 4 },
             { nro_Habitacion: 105, cantidad_Camas: 1, id_ala: 5 },
-            { nro_Habitacion: 106, cantidad_Camas: 2, id_ala: 6 }
+            { nro_Habitacion: 106, cantidad_Camas: 2, id_ala: 2 },
+            { nro_Habitacion: 107, cantidad_Camas: 2, id_ala: 2 },
+            { nro_Habitacion: 108, cantidad_Camas: 1, id_ala: 2 },
+            { nro_Habitacion: 109, cantidad_Camas: 1, id_ala: 2 },
+            
         ]);
 
         // Insertar datos en hospital_camas y obtener los IDs generados automáticamente
@@ -195,10 +199,14 @@ export async function seedDatabase() {
             { disponible: false, id_habitacion: 3 },
             { disponible: false, id_habitacion: 4 },
             { disponible: false, id_habitacion: 5 },
-            { disponible: false, id_habitacion: 6 },
-            { disponible: true },
-            { disponible: true },
-
+            { disponible: true, id_habitacion: 2 },
+            { disponible: true, id_habitacion: 4 },
+            { disponible: true, id_habitacion: 6 },
+            { disponible: true, id_habitacion: 6 },
+            { disponible: true, id_habitacion: 7 },
+            { disponible: true, id_habitacion: 7 },
+            { disponible: true, id_habitacion: 8 },
+            { disponible: true, id_habitacion: 9 },
         ], { returning: true });
 
         // Usar los IDs generados para insertar en Admisions
