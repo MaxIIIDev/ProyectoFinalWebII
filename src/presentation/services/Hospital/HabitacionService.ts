@@ -1,7 +1,7 @@
-import { Hospital_alas } from "../../data/models/hospital_alas";
-import { Hospital_camas } from "../../data/models/hospital_camas";
-import { Hospital_habitaciones } from "../../data/models/hospital_habitaciones";
-import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
+import { Hospital_alas } from "../../../data/models/hospital_alas";
+import { Hospital_camas } from "../../../data/models/hospital_camas";
+import { Hospital_habitaciones } from "../../../data/models/hospital_habitaciones";
+import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 import { CamaService } from "./CamaService";
 
 
@@ -54,7 +54,7 @@ export class HabitacionService {
             return [undefined, habitacionesConCamasValidas]
         }catch(error){
 
-            console.log(HelperForCreateErrors.errorInMethodXLineXErrorX("getHabitacionesDisponibles", "11",error as string));
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesDisponibles","Habitacion Service", "11",error as string));
             return [error as string,undefined ]
 
         }

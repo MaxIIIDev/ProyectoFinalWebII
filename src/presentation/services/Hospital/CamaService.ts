@@ -1,5 +1,6 @@
-import { Hospital_camas } from "../../data/models/hospital_camas"
-import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
+import { Hospital_camas } from "../../../data/models/hospital_camas"
+import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors"
+
 
 
 
@@ -18,7 +19,7 @@ export class CamaService{
             }
             return cama.admision.pacientes.genero 
         }catch(error){
-            HelperForCreateErrors.errorInMethodXLineXErrorX("buscarCamaOcupadaPorHabitacion", "20",error as string)
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarCamaOcupadaPorHabitacion","CamaService", "20",error as string)
         }
 
     }

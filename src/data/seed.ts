@@ -1013,39 +1013,7 @@ export async function seedDatabase() {
             }
         ]);
 
-        // Ejemplo de seed para el modelo Hospital_alas
-        await Hospital_alas.bulkCreate([
-            {
-                nombre: 'Ala Norte',
-                cantidad_Habitaciones: 10,
-                unidad: 'Pediatría'
-            },
-            {
-                nombre: 'Ala Sur',
-                cantidad_Habitaciones: 15,
-                unidad: 'Traumatología'
-            },
-            {
-                nombre: 'Ala Este',
-                cantidad_Habitaciones: 8,
-                unidad: 'Cardiología'
-            },
-            {
-                nombre: 'Ala Oeste',
-                cantidad_Habitaciones: 12,
-                unidad: 'Neurología'
-            },
-            {
-                nombre: 'Ala Central',
-                cantidad_Habitaciones: 20,
-                unidad: 'Emergencias'
-            },
-            {
-                nombre: 'Ala VIP',
-                cantidad_Habitaciones: 5,
-                unidad: 'Privada'
-            }
-        ]);
+       
 
         // Ejemplo de seed para el modelo Paciente_Evaluacion_Fisica
         await Paciente_Evaluacion_Fisica.bulkCreate([

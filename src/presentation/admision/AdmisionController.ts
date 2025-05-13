@@ -7,6 +7,7 @@ import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
 import { SeguroMedicoService } from "../services/SeguroMedicoService";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
+import { AlaService } from "../services/Hospital/AlaService";
 
 
 export class AdmisionController{
@@ -20,10 +21,21 @@ export class AdmisionController{
     }
 
     public vistaEmergencia = async(req:Request, res:Response)=> {
-        res.render("AdmisionViews/emergencia.pug")
+        const alas = await AlaService.getAlaFromDb()
+              
+        res.render("AdmisionViews/emergencia.pug", {
+            title: "prueba",
+            error: "errorPersonalizado",
+            success: "funciono bien",
+            info: "habia un caracol rojo",
+            warning: "fijate bien loco",
+            alas: alas
+        }) 
+        //res.render("AdmisionViews/emergencia.pug",{alas})
     }
 
     public vistaEmergenciaHabitacion = (req:Request, res:Response)=> {
+
         res.render("AdmisionViews/habitacion.pug")
     }
 
@@ -148,7 +160,7 @@ export class AdmisionController{
     
     public getHabitaciones = async(req:Request,res:Response) => {
         try{
-            const genero = req.params.genero;
+            const {ala,unidad,genero,motivo} = req.body;
             
 
             

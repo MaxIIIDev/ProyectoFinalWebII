@@ -1,0 +1,93 @@
+//- views/includes/alerts.pug
+style.
+  /* Estilos del sistema de alertas */
+  .alert-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    width: 350px;
+    max-width: 100%;
+  }
+  .alert-toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+  }
+  .alert-toast-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .alert-toast-body {
+    padding: 16px;
+  }
+  .alert-toast-error {
+    background-color: #dc3545;
+    color: white;
+  }
+  .alert-toast-success {
+    background-color: #28a745;
+    color: white;
+  }
+  .alert-toast-warning {
+    background-color: #ffc107;
+    color: #212529;
+  }
+  .alert-toast-info {
+    background-color: #17a2b8;
+    color: white;
+  }
+  .alert-close-btn {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+
+.alert-toast-container#alertToastContainer
+  if error
+    .alert-toast.alert-toast-error.show(role="alert")
+      .alert-toast-header
+        strong Error
+        button.btn-close.alert-close-btn(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .alert-toast-body= error
+  
+  if success
+    .alert-toast.alert-toast-success.show(role="alert")
+      .alert-toast-header
+        strong Éxito
+        button.btn-close.alert-close-btn(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .alert-toast-body= success
+  
+  if warning
+    .alert-toast.alert-toast-warning.show(role="alert")
+      .alert-toast-header
+        strong Advertencia
+        button.btn-close(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .alert-toast-body= warning
+  
+  if info
+    .alert-toast.alert-toast-info.show(role="alert")
+      .alert-toast-header
+        strong Información
+        button.btn-close.alert-close-btn(type="button" data-bs-dismiss="toast" aria-label="Close")
+      .alert-toast-body= info
+
+script.
+  // Inicialización de toasts
+  document.addEventListener('DOMContentLoaded', function() {
+    const toastElList = [].slice.call(document.querySelectorAll('.alert-toast'));
+    toastElList.forEach(function(toastEl) {
+      const toast = new bootstrap.Toast(toastEl, {
+        autohide: true,
+        delay: 5000
+      });
+      toast.show();
+      
+      // Eliminar el toast del DOM cuando se cierre
+      toastEl.addEventListener('hidden.bs.toast', function() {
+        toastEl.remove();
+      });
+    });
+  });
