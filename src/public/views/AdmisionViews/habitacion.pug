@@ -6,6 +6,7 @@ html(lang="es")
     title Sistema de Habitaciones
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
+    include ../mixin/mixins
     style.
       .principal-panel {
         background: linear-gradient(135deg, #05f479 0%, #0837b0 100%);
@@ -38,14 +39,7 @@ html(lang="es")
           i.bi.bi-building.me-2
           | Información de Habitación
         
-        .d-flex.flex-column.gap-3.mb-4
-          .info-box.p-3
-            h4.text-muted Ala
-            h2.fw-bold A1
-          
-          .info-box.p-3
-            h4.text-muted Habitación
-            h2.fw-bold 205
+        +agregarHabitacionSeleccionada(habitacion)
         
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

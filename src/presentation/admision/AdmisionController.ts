@@ -38,16 +38,24 @@ export class AdmisionController{
         //aca tambien tenemos que agregarlos a la tabla de enfermeros
         try{
             const {ala,unidad,genero,motivo} = req.body;
+            console.log(ala);
+            
             const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero,ala);
             if(habitaciones[0]){
-                throw Error(habitaciones[0])
+                const alas = await AlaService.getAlaFromDb()
+                res.render("AdmisionViews/emergencia.pug",{
+                    error: `${habitaciones[0]}`,
+                    alas: alas
+                    
+                })
+                return
             }
-            console.log(habitaciones[1]);
+            console.log(habitaciones[1][0]);
             
             
             res.render("AdmisionViews/habitacion.pug",{
                 success: "funciono bien",
-                habitaciones: habitaciones[1]
+                habitacion: habitaciones[1][0]
             })
             
 
