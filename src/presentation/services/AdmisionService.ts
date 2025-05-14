@@ -1,4 +1,5 @@
 import { Admision } from "../../data/models/admision"
+import { Pacientes } from "../../data/models/pacientes";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/crearAdmisionDTO";
 import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/getAdmisionPorPacienteDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
@@ -27,7 +28,15 @@ export class AdmisionService {
 
     public static async buscarTodasLasAdmisiones(): Promise<[string?, Admision[]?]> {
         try {
-            const admisiones = await Admision.findAll({ where: { estado: "Activo" } });
+            const admisiones = await Admision.findAll({
+                include: [
+                    {
+                        model: Pacientes,
+                        as: "pacientes"
+                    }                    
+                ], 
+                where: { estado: "Activo" }
+                 });
 
             if (admisiones.length === 0) {
                 return ["No hay admisiones activas", undefined];
