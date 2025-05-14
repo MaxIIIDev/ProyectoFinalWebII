@@ -16,7 +16,7 @@ export class AdmisionRoutes{
         //vistas
         router.get("/", controller.vistaPrincipal)//todo:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//todo:Comprobado
-        router.post("/emergencia/habitacion", controller.vistaHabitacionDeEmergencia)
+        router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)
 
         //GETTERS PACIENTES
         router.get("/find/paciente/:dni", controller.buscarPacientePorDni) //devuelve la informacion del paciente //todo:Comprobado

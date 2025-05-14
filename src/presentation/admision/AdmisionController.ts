@@ -38,7 +38,7 @@ export class AdmisionController{
         //res.render("AdmisionViews/emergencia.pug",{alas})
     }
 
-    public vistaHabitacionDeEmergencia = async (req: Request, res: Response): Promise<void> => {
+    public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
         try {
             const { ala, unidad, genero, motivo } = req.body;
             console.log(ala);
