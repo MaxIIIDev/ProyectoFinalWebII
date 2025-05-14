@@ -32,7 +32,8 @@ export class AdmisionRoutes{
         router.put("/update/secure", controller.actualizarSeguroMedico)//actualizar Paciente//todo:Comprobado
        
         //ADMICION
-        //router.get("/getAdmision")
+        router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Comprobado
+        router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Comprobado
         // router.post("/create/admision",)
         // router.put("/update/admision")
         // router.delete("/delete/admision")

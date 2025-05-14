@@ -26,7 +26,7 @@ type datosNecesarios = {
 export class HabitacionService {
 
     static getHabitacionesDisponibles = async (genero: string, ala: string): Promise<[string?, any?]> => {
-        const generoDeBusqueda = genero === "Masculino" ? "F" : "M";
+       
 
         try {
 

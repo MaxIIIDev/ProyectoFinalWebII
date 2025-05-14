@@ -10,6 +10,7 @@ import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_famili
 import { paciente_cirugias } from "./paciente_cirugias";
 import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 import { Paciente_Evaluacion_Fisica } from "./paciente_evaluacion_fisica";
+
 import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
 import { Paciente_recetas } from "./paciente_recetas";
 import { Paciente_seguro_medico } from "./paciente_seguro_medico";
@@ -21,4 +22,4 @@ import { Roles } from "./roles";
 import { Turnos } from "./turnos";
 import { Usuarios } from "./usuarios";
 
-export const importaciones = [Admision,Enfermero,Hospital_alas,Hospital_camas,Hospital_habitaciones,Medicamentos,Medicos,Paciente_Alergias,Paciente_antecedentes_familiares,paciente_cirugias,Paciente_Diagnosticos,Paciente_Evaluacion_Fisica,Paciente_pruebas_diagnosticas,Paciente_recetas,Paciente_seguro_medico,paciente_terapia_fisica,paciente_tratamientos,Pacientes,Personal_de_admision,Roles,Turnos,Usuarios];
+export const importaciones = [Admision,Enfermero,Hospital_alas,Hospital_camas,Hospital_habitaciones,Medicamentos,Medicos,Paciente_Alergias,Paciente_antecedentes_familiares,paciente_cirugias,Paciente_Diagnosticos,Paciente_pruebas_diagnosticas,Paciente_recetas,Paciente_Evaluacion_Fisica,Paciente_seguro_medico,paciente_tratamientos,Pacientes,Personal_de_admision,Roles,Turnos,Usuarios];

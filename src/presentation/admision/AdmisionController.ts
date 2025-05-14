@@ -11,6 +11,8 @@ import { AlaService } from "../services/Hospital/AlaService";
 import { HabitacionService } from "../services/Hospital/HabitacionService";
 import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
 import { getSeguroMedicoDTO } from "../../domain/Dtos/SeguroMedico/getSeguroMedico";
+import { AdmisionService } from "../services/AdmisionService";
+import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/getAdmisionPorPacienteDTO";
 
 
 export class AdmisionController{
@@ -36,41 +38,34 @@ export class AdmisionController{
         //res.render("AdmisionViews/emergencia.pug",{alas})
     }
 
-    public vistaHabitacionDeEmergencia = async(req:Request, res:Response)=> {
-        //aca tambien tenemos que agregarlos a la tabla de enfermeros
-        try{
-            const {ala,unidad,genero,motivo} = req.body;
+    public vistaHabitacionDeEmergencia = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { ala, unidad, genero, motivo } = req.body;
             console.log(ala);
-            
-            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero,ala);
 
-            if(habitaciones[0]){
-                const alas = await AlaService.getAlaFromDb()
-                res.render("AdmisionViews/emergencia.pug",{
+            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
+
+            if (habitaciones[0]) {
+                const alas = await AlaService.getAlaFromDb();
+                res.render("AdmisionViews/emergencia.pug", {
                     error: `${habitaciones[0]}`,
                     alas: alas
-                    
-                })
-                return
+                });
+                return;
             }
+
             console.log(habitaciones[1][0]);
-            
-            
-            res.render("AdmisionViews/habitacion.pug",{
+
+            res.render("AdmisionViews/habitacion.pug", {
                 success: "funciono bien",
                 habitacion: habitaciones[1][0]
-            })
-            
-
-
-        }catch(error){
+            });
+        } catch (error) {
             res.status(500).render("AdmisionViews/habitacion.pug", {
-                error: error
-            })
+                error: error instanceof Error ? error.message : "Error desconocido"
+            });
         }
-
-       // res.render("AdmisionViews/habitacion.pug")
-    }
+    };
 
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
@@ -107,6 +102,9 @@ export class AdmisionController{
 
         try {
             const dniRecibido = req.params.dni ;
+            if(!dniRecibido.trim()){
+                res.status(404).json("Se requiere el dni")
+            }
             const [errorDto, getPacienteDto] = GetPacienteDto.create(parseInt(dniRecibido));
             if(errorDto){
                 // res.status(500).render("vista", {
@@ -279,17 +277,60 @@ export class AdmisionController{
         }
 
     }
-    
-    public getHabitacionesByGender = async(req:Request,res:Response) => {
-        try{
-            const {ala,unidad,genero,motivo} = req.body;
+    public getTodasLasAdmisiones = async(req:Request,res:Response) => {
 
-        }catch(error){
-            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones","AdmisionController","Line 142",error as string));
-            //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
+        try {
+            
+            const [ errorDeBusqueda, admisiones ] = await AdmisionService.buscarTodasLasAdmisiones();
+            if(errorDeBusqueda){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
+                res.status(404).json(`${errorDeBusqueda}`)
+            }
+            res.status(200).json(admisiones)
+        } catch (error) {
+            res.status(500).json(error as string)
         }
 
+    }
+    public buscarAdmisionPorPaciente = async(req:Request,res:Response) => {
+
+        try{
+            const [ errorDto, getAdmisionPacienteDto ] = GetAdmisionPorPacienteDTO.create(parseInt(req.params.dni));
+            if(errorDto){
+                res.status(404).json(`${errorDto}`)
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionPorPaciente","AdmisionController","301",errorDto)
+                return
+            }
+            const [errorBusquedaDePaciente, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getAdmisionPacienteDto?.dni!,1);
+            if(!errorBusquedaDePaciente) {
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("BuscarAdmisionPorPaciente","AdmisionController","305","No se encontro el paciente")
+                res.status(404).json(`No se encontro el paciente`)
+                return
+            }
+            console.log(pacienteEncontrado);
+            
+            const [errorBusquedaDeAdmisionIndividual, admisionEncontrada] = await AdmisionService.buscarAdmisionVigentePorPaciente(pacienteEncontrado?.dataValues.id_Paciente!)
+            if(errorBusquedaDeAdmisionIndividual){
+                res.status(404).json(`${errorBusquedaDeAdmisionIndividual}`)
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("BuscarAdmisionPorPaciente","AdmisionController","311",errorBusquedaDeAdmisionIndividual)
+                return
+            }
+            res.status(200).json(admisionEncontrada)
+        }catch(error){
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionPorPaciente","AdmisionController","310",error as string)
+            res.status(500).json(`${error}`)
+        }
 
     }
+    // public getHabitacionesByGender = async(req:Request,res:Response) => {
+    //     try{
+    //         const {ala,unidad,genero,motivo} = req.body;
+
+    //     }catch(error){
+    //         console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones","AdmisionController","Line 142",error as string));
+    //         //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
+    //     }
+    // }
+
 
 }

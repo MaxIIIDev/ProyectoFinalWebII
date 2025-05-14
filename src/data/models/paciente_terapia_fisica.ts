@@ -36,10 +36,10 @@ export class paciente_terapia_fisica extends Model{
     declare paciente: Pacientes
 
 
-    @ForeignKey(()=> paciente_tratamientos)
-    @Column(DataType.INTEGER)
-    declare id_tratamiento: number
+    // @ForeignKey(()=> paciente_tratamientos)
+    // @Column(DataType.INTEGER)
+    // declare id_tratamiento: number
     
-    @BelongsTo(()=> paciente_tratamientos)
-    declare tratamiento: paciente_tratamientos
+    // @BelongsTo(()=> paciente_tratamientos)
+    // declare tratamiento: paciente_tratamientos
 }

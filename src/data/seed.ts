@@ -1024,56 +1024,56 @@ export async function seedDatabase() {
        
 
         // Ejemplo de seed para el modelo Paciente_Evaluacion_Fisica
-        await Paciente_Evaluacion_Fisica.bulkCreate([
-            {
-                presion_arterial: 120,
-                frecuencia_cardiaca: 80,
-                color_de_piel: 'Normal',
-                respuesta_a_estimulos: 'Adecuada',
-                paciente_id: 1,
-                enfermero_id: 1
-            },
-            {
-                presion_arterial: 130,
-                frecuencia_cardiaca: 85,
-                color_de_piel: 'Pálida',
-                respuesta_a_estimulos: 'Lenta',
-                paciente_id: 2,
-                enfermero_id: 2
-            },
-            {
-                presion_arterial: 110,
-                frecuencia_cardiaca: 75,
-                color_de_piel: 'Normal',
-                respuesta_a_estimulos: 'Adecuada',
-                paciente_id: 3,
-                enfermero_id: 3
-            },
-            {
-                presion_arterial: 140,
-                frecuencia_cardiaca: 90,
-                color_de_piel: 'Rojiza',
-                respuesta_a_estimulos: 'Adecuada',
-                paciente_id: 4,
-                enfermero_id: 4
-            },
-            {
-                presion_arterial: 125,
-                frecuencia_cardiaca: 78,
-                color_de_piel: 'Normal',
-                respuesta_a_estimulos: 'Adecuada',
-                paciente_id: 5,
-                enfermero_id: 5
-            },
-            {
-                presion_arterial: 135,
-                frecuencia_cardiaca: 82,
-                color_de_piel: 'Pálida',
-                respuesta_a_estimulos: 'Lenta',
-                paciente_id: 6,
-                enfermero_id: 6
-            }
-        ]);
+        // await Paciente_Evaluacion_Fisica.bulkCreate([
+        //     {
+        //         presion_arterial: 120,
+        //         frecuencia_cardiaca: 80,
+        //         color_de_piel: 'Normal',
+        //         respuesta_a_estimulos: 'Adecuada',
+        //         paciente_id: 1,
+        //         enfermero_id: 1
+        //     },
+        //     {
+        //         presion_arterial: 130,
+        //         frecuencia_cardiaca: 85,
+        //         color_de_piel: 'Pálida',
+        //         respuesta_a_estimulos: 'Lenta',
+        //         paciente_id: 2,
+        //         enfermero_id: 2
+        //     },
+        //     {
+        //         presion_arterial: 110,
+        //         frecuencia_cardiaca: 75,
+        //         color_de_piel: 'Normal',
+        //         respuesta_a_estimulos: 'Adecuada',
+        //         paciente_id: 3,
+        //         enfermero_id: 3
+        //     },
+        //     {
+        //         presion_arterial: 140,
+        //         frecuencia_cardiaca: 90,
+        //         color_de_piel: 'Rojiza',
+        //         respuesta_a_estimulos: 'Adecuada',
+        //         paciente_id: 4,
+        //         enfermero_id: 4
+        //     },
+        //     {
+        //         presion_arterial: 125,
+        //         frecuencia_cardiaca: 78,
+        //         color_de_piel: 'Normal',
+        //         respuesta_a_estimulos: 'Adecuada',
+        //         paciente_id: 5,
+        //         enfermero_id: 5
+        //     },
+        //     {
+        //         presion_arterial: 135,
+        //         frecuencia_cardiaca: 82,
+        //         color_de_piel: 'Pálida',
+        //         respuesta_a_estimulos: 'Lenta',
+        //         paciente_id: 6,
+        //         enfermero_id: 6
+        //     }
+        // ]);
 
         console.log('Seed completado exitosamente.');
     } catch (error) {

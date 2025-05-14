@@ -29,6 +29,13 @@ export class Admision extends Model{
     @Column(DataType.STRING)
     declare motivo_De_Internacion:string;
 
+    @Length({min:3,max:255})
+    @Column(DataType.STRING)
+    declare sintomas:string
+
+    @Column(DataType.ENUM("BAJA","MEDIA","ALTA"))
+    declare prioridad: string;
+    
     @CreatedAt
     @AllowNull(false)
     @Column(DataType.DATE)

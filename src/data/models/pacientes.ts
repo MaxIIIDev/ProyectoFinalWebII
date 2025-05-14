@@ -109,8 +109,8 @@ export class Pacientes extends Model{
     @HasMany(()=> Paciente_recetas)
     declare recetas: Paciente_recetas
 
-    @HasMany(()=> paciente_terapia_fisica)
-    declare terapias_fisicas: paciente_terapia_fisica
+    // @HasMany(()=> paciente_terapia_fisica)
+    // declare terapias_fisicas: paciente_terapia_fisica
 
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]
