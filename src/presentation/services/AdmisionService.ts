@@ -1,4 +1,5 @@
 import { Admision } from "../../data/models/admision"
+import { CrearAdmisionDto } from "../../domain/Dtos/admision/crearAdmisionDTO";
 import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/getAdmisionPorPacienteDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
 
@@ -7,11 +8,22 @@ import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
 export class AdmisionService {
 
 
-    // static crearAdmision = async()=> {
+    public static crearAdmision = async(crearAdmisionDto: CrearAdmisionDto):Promise<[(string | undefined)?, (boolean | undefined)?, (Admision | undefined)?]> => {
+        try {
 
-
-
-    // }
+            const [,admisionVigente] = await this.buscarAdmisionVigentePorPaciente(crearAdmisionDto.id_Paciente);
+            if(admisionVigente){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision","AdmisionService","16","Ya hay una admision para dicho paciente activa")
+                return["Ya hay una admision para dicho paciente activa"]
+            }
+            const admisionCreada = await Admision.create(CrearAdmisionDto.toObject(crearAdmisionDto))
+            if(!admisionCreada) return ["No se creo la admision"]
+            console.log("Se creo la admision" + admisionCreada.toJSON());
+            return [ undefined,true,admisionCreada]
+        } catch (error) {
+            return [error as string,false]
+        }
+    }
 
     public static async buscarTodasLasAdmisiones(): Promise<[string?, Admision[]?]> {
         try {
