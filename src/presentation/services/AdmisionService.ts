@@ -1,7 +1,6 @@
 import { Admision } from "../../data/models/admision"
 import { Pacientes } from "../../data/models/pacientes";
-import { CrearAdmisionDto } from "../../domain/Dtos/admision/crearAdmisionDTO";
-import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/getAdmisionPorPacienteDTO";
+import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
 
 

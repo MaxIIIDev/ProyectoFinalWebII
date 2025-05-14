@@ -1,5 +1,3 @@
-
-
 mixin agregarAlasDesdeDb(alas)
     for ala of alas 
         option(value=ala.nombre)  #{ala.nombre}
@@ -8,13 +6,13 @@ mixin agregarHabitacionSeleccionada(ala)
     .d-flex.flex-column.gap-3.mb-4
           .info-box.p-3
             h4.text-muted Ala
-            if(ala.nombre_ala != undefined)
+            if(ala && ala.nombre_ala != undefined)
                 h2.fw-bold #{ala.nombre_ala}
             else 
                 h2.fw-bold 
           .info-box.p-3
             h4.text-muted Habitación
-            if(ala.nro_habitacion != undefined)
+            if(ala && ala.nro_habitacion != undefined)
                 h2.fw-bold #{ala.nro_habitacion}
             else 
                 h2.fw-bold

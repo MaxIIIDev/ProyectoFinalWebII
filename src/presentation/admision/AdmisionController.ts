@@ -12,7 +12,10 @@ import { HabitacionService } from "../services/Hospital/HabitacionService";
 import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
 import { getSeguroMedicoDTO } from "../../domain/Dtos/SeguroMedico/getSeguroMedico";
 import { AdmisionService } from "../services/AdmisionService";
-import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/getAdmisionPorPacienteDTO";
+import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/GetAdmisionPorPacienteDTO";
+import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
+import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
+import { Pacientes } from "../../data/models/pacientes";
 
 
 export class AdmisionController{
@@ -41,11 +44,22 @@ export class AdmisionController{
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
         try {
             const { ala, unidad, genero, motivo } = req.body;
-            console.log(ala);
+            
 
             const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
-
+            let pacienteAnonimo;
+            if(genero =="Masculino"){
+                pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
+            }else{
+                pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
+            }
+            const pacienteAnonimoCreado = await Pacientes.create(pacienteAnonimo)
+            if(!pacienteAnonimoCreado){
+                throw Error("No se pudo crear al paciente en admitir emergencia")
+            }
             if (habitaciones[0]) {
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
+
                 const alas = await AlaService.getAlaFromDb();
                 res.render("AdmisionViews/emergencia.pug", {
                     error: `${habitaciones[0]}`,
@@ -53,16 +67,44 @@ export class AdmisionController{
                 });
                 return;
             }
+            const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
+                tipo_De_Admision: "Emergencia",
+                motivo_De_Internacion: motivo,
+                id_Paciente: pacienteAnonimoCreado.dataValues.id_Paciente,
+                id_Cama: habitaciones[1][0].camas.id_cama_1
+            })
+            if(errorDto){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","70",errorDto)
+                const alas = await AlaService.getAlaFromDb();
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${errorDto}`,
+                    alas: alas
+                });
+                return;
+            }
+            
+            const [errorAlCrearAdmision,confirmacion, admisionCreada] = await AdmisionService.crearAdmision(CrearAdmisionDto.toObject(crearAdmisionDTO!))
+            if(!confirmacion){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","83",errorAlCrearAdmision!)
 
-            console.log(habitaciones[1][0]);
+                const alas = await AlaService.getAlaFromDb();
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${errorAlCrearAdmision}`,
+                    alas: alas
+                });
+                return;
+            }
+            
 
             res.render("AdmisionViews/habitacion.pug", {
-                success: "funciono bien",
+                success: "Paciente Admitido",
                 habitacion: habitaciones[1][0]
             });
         } catch (error) {
-            res.status(500).render("AdmisionViews/habitacion.pug", {
-                error: error instanceof Error ? error.message : "Error desconocido"
+            const alas = await AlaService.getAlaFromDb();
+            res.status(500).render("AdmisionViews/emergencia.pug", {
+                error: error instanceof Error ? error.message : "Error desconocido",
+                alas: alas
             });
         }
     };
