@@ -30,7 +30,18 @@ export class AdmisionRoutes{
         router.get("/get/seguro/medico/:numero", controller.getSeguroMedico); //obtener seguro medico por numero //todo:Comprobado
         router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Crea el seguro medico y lo asigna al paciente //todo: Comprobado
         router.put("/update/secure", controller.actualizarSeguroMedico)//actualizar Paciente//todo:Comprobado
-       // router.get("/get/getRooms/:genero/:ala", controller.getHabitaciones)
+       
+        //ADMICION
+        //router.get("/getAdmision")
+        // router.post("/create/admision",)
+        // router.put("/update/admision")
+        // router.delete("/delete/admision")
+
+        //TURNOS
+        //router.post("/crear/turno")
+        // router.get("/get/turno")
+        // router.put("/actualizar/turno")
+        // router.delete("/delete/turno")
         return router
     }
 

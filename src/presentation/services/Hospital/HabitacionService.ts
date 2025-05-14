@@ -132,19 +132,6 @@ export class HabitacionService {
                        
                     } else {
                        
-                        console.log("se agrego CAMA NO DISPONIBLE linea 103");
-                        console.log("ES EN 134");
-                        console.log(habitacion.dataValues.id_Habitacion);
-                        console.log(habitacion.dataValues.nro_Habitacion);
-                        console.log(habitacion.dataValues.ala.dataValues.id_Ala);
-                        console.log( habitacion.dataValues.ala.dataValues.nombre);
-                        console.log(habitacion.dataValues.ala.dataValues.unidad);
-                        console.log("IDCAMA"+cama.dataValues.id_Cama);
-                        console.log(habitacion.dataValues.camas[0].dataValues.admision.dataValues.pacientes.dataValues.genero);
-                        
-                        
-                        
-                        
                         const objetoNuevoNoDisponible : datosNecesarios = {
                             id_habitacion: habitacion.dataValues.id_Habitacion,
                             nro_habitacion: habitacion.dataValues.nro_Habitacion,
@@ -165,12 +152,6 @@ export class HabitacionService {
                     }
                 }
             }
-            //console.log(objetosDisponibles);
-            console.log("============");
-            //console.log(objetosNoDisponibles);
-            
-            
-            
             if (!objetosDisponibles && !elementosListos) {
                 throw Error("No hay habitaciones disponibles en esta ala")
             }
