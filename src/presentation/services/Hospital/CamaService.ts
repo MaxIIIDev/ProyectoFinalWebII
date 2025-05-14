@@ -14,7 +14,6 @@ export class CamaService{
             if(!id_habitacion){
                 throw ("Debe enviar el id_habitacion")
             }
-
             const cama = await Hospital_camas.findOne({
                 include: [
                     {
@@ -37,9 +36,6 @@ export class CamaService{
                 return "No tiene paciente"
                 
             }
-            
-            
-            
             return cama.dataValues.admision.pacientes.genero 
         }catch(error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarCamaOcupadaPorHabitacion","CamaService", "20",error as string)

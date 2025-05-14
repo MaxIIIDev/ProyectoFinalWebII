@@ -20,11 +20,19 @@ export class UpdateSeguroMedicoDto {
 
     // Método para crear una instancia validando los campos
     static create(object: { [key: string]: any }): [string?, UpdateSeguroMedicoDto?] {
-        const { numero, estado, categoria } = object;
+        try{
+            if(!object){
+                return ["Se requiere: numero, estado(opcional), categoria(opcional)"]
+            }
+            const { numero, estado, categoria } = object;
 
-        if (!numero) return ["Se requiere el número del seguro médico"];
-
-        return [undefined, new UpdateSeguroMedicoDto(numero, estado, categoria)];
+            if (!numero) return ["Se requiere el número del seguro médico"];
+    
+            return [undefined, new UpdateSeguroMedicoDto(numero, estado, categoria)];
+        }catch(error){
+            return[ error as string]
+        }
+       
     }
 
 }

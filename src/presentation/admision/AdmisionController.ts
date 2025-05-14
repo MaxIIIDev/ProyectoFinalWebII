@@ -9,6 +9,8 @@ import { SeguroMedicoService } from "../services/SeguroMedicoService";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 import { AlaService } from "../services/Hospital/AlaService";
 import { HabitacionService } from "../services/Hospital/HabitacionService";
+import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
+import { getSeguroMedicoDTO } from "../../domain/Dtos/SeguroMedico/getSeguroMedico";
 
 
 export class AdmisionController{
@@ -41,6 +43,7 @@ export class AdmisionController{
             console.log(ala);
             
             const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero,ala);
+
             if(habitaciones[0]){
                 const alas = await AlaService.getAlaFromDb()
                 res.render("AdmisionViews/emergencia.pug",{
@@ -100,6 +103,74 @@ export class AdmisionController{
         }
 
     }
+    public buscarPacientePorDni = async(req:Request,res:Response)=> {
+
+        try {
+            const dniRecibido = req.params.dni ;
+            const [errorDto, getPacienteDto] = GetPacienteDto.create(parseInt(dniRecibido));
+            if(errorDto){
+                // res.status(500).render("vista", {
+                //     error:errorDto
+                // })
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","114",errorDto);
+                res.status(403).json(errorDto)
+            }
+            const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
+            if(!errorBusqueda){
+                // res.status(404).render("vista",{
+                //     error: "No se encontro el paciente"
+                // })
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","122","ERROR: No se encontro el paciente")
+                res.status(404).json("ERROR: No se encontro el paciente")
+            }
+            res.status(200).json(pacienteEncontrado)
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","128",error as string)
+            res.status(500).json(error as string)
+        }
+    }
+    public buscarTodaLaInformacionDelPaciente = async(req:Request,res:Response) => {
+
+        try {
+            const dniRecibido = req.params.dni ;
+            const [errorDto, getPacienteDto] = GetPacienteDto.create(parseInt(dniRecibido));
+            if(errorDto){
+                // res.status(500).render("vista", {
+                //     error:errorDto
+                // })
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","141",errorDto)
+                res.status(403).json(errorDto)
+            }
+            const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
+            if(!errorBusqueda){
+                // res.status(404).render("vista",{
+                //     error: "No se encontro el paciente"
+                // })
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","149","ERROR:No se encontro el paciente")
+                res.status(404).json("ERROR: No se encontro el paciente")
+            }
+            if(!pacienteEncontrado?.id_seguro_medico){
+                
+                res.status(404).json("ERROR: El paciente no tiene asignado un seguro medico")
+            }
+                        
+            const [errorSeguroMedico, seguroMedicoEncontrado] = await SeguroMedicoService.buscarSeguroMedico(pacienteEncontrado?.id_seguro_medico!);
+
+            if(errorSeguroMedico){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","160","Hubo un error al buscar el seguro medico")
+                res.status(404).json("Hubo un error al buscar el seguro medico")
+            }
+            const resultado = {
+                pacienteEncontrado: pacienteEncontrado,
+                seguroMedico: seguroMedicoEncontrado
+            }
+            res.json(resultado);
+        } catch (error) {
+            res.status(500).json(error as string)
+        }
+    }
+
     public actualizarPaciente = async(req:Request,res:Response) =>  {
 
         try {
@@ -125,17 +196,38 @@ export class AdmisionController{
             return;            
         }
     }
+    public getSeguroMedico = async(req:Request, res:Response) => {
+
+        try {
+            const [errorDto, numeroDeSeguroMedico] = getSeguroMedicoDTO.create(req.params.numero)
+            if(errorDto){
+                res.status(400).json(errorDto)
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico","AdmisionController","205",errorDto)
+            }
+            const [errorBusqueda, seguroMedicoBuscado] = await SeguroMedicoService.buscarSeguroMedicoExistente(getSeguroMedicoDTO.toObject(numeroDeSeguroMedico!).numero,1)
+            if(!errorBusqueda){
+                res.status(404).json("No se encontro el seguro medico")
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico", "AdmisionController","210","No se encontro el seguro medico")
+            }
+            res.status(200).json(seguroMedicoBuscado)
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico","AdmisionController", "213", error as string)
+            res.status(500).json(error as string)
+        }
+
+    }
     public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => {
 
         try{
             console.clear();
-            if(!req.body){
-                throw new Error("Atributos incorrectos en body")
-            }
+            
             const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
-                throw new Error();
+                
+                
+                res.status(404).json(`${error}`)
+                return
             }
             const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
             if(errorCrearSeguroMedico && !confirmacion){
@@ -169,14 +261,14 @@ export class AdmisionController{
 
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 117", error);
-                //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
-                throw Error(error);
+                res.status(404).json(`${error}`)//Enviar con render
+                
             }
             const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!);
             if(errorInService && !confirmacion){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 123", errorInService);
                 //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
-                throw Error(error);
+                res.status(404).json(`${errorInService}`)
             }
             console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
             res.status(200).json({message: "Seguro medico actualizado"})
@@ -191,9 +283,6 @@ export class AdmisionController{
     public getHabitacionesByGender = async(req:Request,res:Response) => {
         try{
             const {ala,unidad,genero,motivo} = req.body;
-            
-            
-            
 
         }catch(error){
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones","AdmisionController","Line 142",error as string));

@@ -18,10 +18,22 @@ export class CreateSeguroMedicoDto {
 
     // Método para crear una instancia validando los campos
     static create(object: { [key: string]: any }): [string?, CreateSeguroMedicoDto?] {
-        const { numero, dni_Paciente , estado, categoria } = object;
+        try{
+            if(!object){
+                throw Error("Se requiere= "+
+                    " dni_Paciente: "+
+                    " numero:" +
+                    " estado:"+
+                    " categoria:")
+            }
+            const { numero, dni_Paciente , estado, categoria } = object;
 
-        if (!numero) return ["Se requiere el número del seguro médico"];
-        if(!dni_Paciente) return ["Se requiere el dni del paciente"];
-        return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, categoria)];
+            if (!numero) return ["Se requiere el número del seguro médico"];
+            if(!dni_Paciente) return ["Se requiere el dni del paciente"];
+            return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, categoria)];
+        }catch(error){
+            return [error as string, undefined]
+        }
+        
     }
 }

@@ -4,6 +4,7 @@ import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { SeguroMedicoService } from "./SeguroMedicoService";
+import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
 
 
 export class PacienteServices{
@@ -25,7 +26,7 @@ export class PacienteServices{
             
         }catch(Error){
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarUsuarioExistente","PacienteService", "Line 23", Error as string));           
-            
+            return [false, undefined]
         }
         console.log("Paciente no encontrado");
         

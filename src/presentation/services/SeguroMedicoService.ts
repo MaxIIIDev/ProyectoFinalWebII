@@ -11,6 +11,7 @@ export class SeguroMedicoService{
 
         try{
             const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({where:{numero: numero}})
+           
             
             
             if(seguroMedicoBuscado && modo === 0){//retorna booleano
@@ -25,6 +26,25 @@ export class SeguroMedicoService{
             }
             
             
+        }catch(Error){
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarSeguroMedicoExistente","SeguroMedicoService", "Line 25", Error as string);           
+            
+        }
+        console.log("No se encontro el seguro medico");
+        
+        return [false, undefined]
+
+
+    }
+    static buscarSeguroMedico = async(id:number):Promise<[boolean?,any?]> =>{
+
+        try{
+            const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({where:{id_seguro_medico: id}})
+            if(seguroMedicoBuscado ){ //retorna el objeto
+                console.log("Seguro medico encontrado con exito devuelto por modo 1");
+
+                return [false,seguroMedicoBuscado]
+            }
         }catch(Error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarSeguroMedicoExistente","SeguroMedicoService", "Line 25", Error as string);           
             
@@ -67,7 +87,7 @@ export class SeguroMedicoService{
         try {   
             const seguroMedicoEncontrado = await this.buscarSeguroMedicoExistente(updateSeguroMedicoDto.numero!,1);
             if(!seguroMedicoEncontrado[0]){
-                throw Error("no se encontro al seguro médico");
+               return ["No se encontro al seguro médico"];
             }
             const object = UpdateSeguroMedicoDto.toObject(updateSeguroMedicoDto);
             const [filasActualizadas] = await Paciente_seguro_medico.update(object,{where:{

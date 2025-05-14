@@ -14,14 +14,22 @@ export class AdmisionRoutes{
         const controller = new AdmisionController(conexionBd);
         
         //vistas
-        router.get("/", controller.vistaPrincipal)
-        router.get("/emergencia", controller.vistaEmergencia)
+        router.get("/", controller.vistaPrincipal)//todo:Comprobado
+        router.get("/emergencia", controller.vistaEmergencia)//todo:Comprobado
         router.post("/emergencia/habitacion", controller.vistaHabitacionDeEmergencia)
 
-        router.post("/register/patient", controller.registrarPaciente);
-        router.put("/update/patient", controller.actualizarPaciente)
-        router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Armar la relacion entre ambos al registrar
-        router.put("/update/secure", controller.actualizarSeguroMedico)//Armar la relacion entre ambos al registrar
+        //GETTERS PACIENTES
+        router.get("/find/paciente/:dni", controller.buscarPacientePorDni) //devuelve la informacion del paciente //todo:Comprobado
+        router.get("/get/info/paciente/:dni", controller.buscarTodaLaInformacionDelPaciente) //Trae la info del paciente incluyendo el seguro medico //todo:Comprobado
+
+        //POST PACIENTES
+        router.post("/register/paciente", controller.registrarPaciente);//todo:Comprobado
+        router.put("/update/paciente", controller.actualizarPaciente)//todo:Comprobado
+        
+        //SEGUROS MEDICOS
+        router.get("/get/seguro/medico/:numero", controller.getSeguroMedico); //obtener seguro medico por numero //todo:Comprobado
+        router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Crea el seguro medico y lo asigna al paciente //todo: Comprobado
+        router.put("/update/secure", controller.actualizarSeguroMedico)//actualizar Paciente//todo:Comprobado
        // router.get("/get/getRooms/:genero/:ala", controller.getHabitaciones)
         return router
     }
