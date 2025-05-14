@@ -1,5 +1,6 @@
 import path from "path";
-
+import dotenv from "dotenv"
+dotenv.config()
 interface DbConfig{
     username: string;
     password: string;
@@ -16,9 +17,9 @@ interface Config{
 //SOLUCIONAR EL TEMA DE USERNAME Y PASSWORD TIRA ERROR
 export const config: Config = {
     development: {
-        username: "root",
-        password: "1234",
-        database: "prueba",
+        username: process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        database:  process.env.DB_NAME!,
         host: process.env.DB_HOST!,
         dialect: "mysql",
         port: parseInt(process.env.DB_PORT!),

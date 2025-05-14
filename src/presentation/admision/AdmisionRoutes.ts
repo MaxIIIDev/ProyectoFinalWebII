@@ -16,7 +16,7 @@ export class AdmisionRoutes{
         //vistas
         router.get("/", controller.vistaPrincipal)//todo:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//todo:Comprobado
-        router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)
+        router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//TODO: FUNCIONANDO; ASIGNA HABITACION Y AGREGA ADMICION
 
         //GETTERS PACIENTES
         router.get("/find/paciente/:dni", controller.buscarPacientePorDni) //devuelve la informacion del paciente //todo:Comprobado
@@ -31,7 +31,7 @@ export class AdmisionRoutes{
         router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Crea el seguro medico y lo asigna al paciente //todo: Comprobado
         router.put("/update/secure", controller.actualizarSeguroMedico)//actualizar Paciente//todo:Comprobado
        
-        //ADMICION
+        //ADMISION
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Comprobado
         router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Comprobado
         // router.post("/create/admision",)

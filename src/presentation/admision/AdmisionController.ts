@@ -26,6 +26,7 @@ export class AdmisionController{
 
     public vistaPrincipal = async(req: Request, res:Response)=> {
         res.render("AdmisionViews/principal.pug");
+       
     }
 
     public vistaEmergencia = async(req:Request, res:Response)=> {
@@ -48,11 +49,13 @@ export class AdmisionController{
 
             const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
             let pacienteAnonimo;
+            
             if(genero =="Masculino"){
                 pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
             }else{
                 pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
             }
+        
             const pacienteAnonimoCreado = await Pacientes.create(pacienteAnonimo)
             if(!pacienteAnonimoCreado){
                 throw Error("No se pudo crear al paciente en admitir emergencia")

@@ -2,6 +2,7 @@ import { Admision } from "../../data/models/admision"
 import { Pacientes } from "../../data/models/pacientes";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
+import { CamaService } from "./Hospital/CamaService";
 
 
 
@@ -18,6 +19,9 @@ export class AdmisionService {
             }
             const admisionCreada = await Admision.create(CrearAdmisionDto.toObject(crearAdmisionDto))
             if(!admisionCreada) return ["No se creo la admision"]
+            // if(admisionCreada){
+            //     CamaService.marcarCamaComoOcupada(crearAdmisionDto.id_Cama)
+            // }
             console.log("Se creo la admision" + admisionCreada.toJSON());
             return [ undefined,true,admisionCreada]
         } catch (error) {
