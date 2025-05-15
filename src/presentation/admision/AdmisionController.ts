@@ -46,13 +46,17 @@ export class AdmisionController{
     }
 
     public vistaCrearPaciente = async ( req:Request, res:Response)=>{
-        res.render("AdmisionViews/CrearPaciente.pug")
+        res.render("AdmisionViews/CrearPaciente.pug", {
+            warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
+        })
     }
     public vistaPrincipalPaciente = async( req:Request, res:Response)=> {
         res.render("AdmisionViews/vistaPaciente.pug")
     }
 
     public vistaActualizarPaciente = async(req:Request, res:Response) => {
+        
+
         res.render("AdmisionViews/updatePaciente.pug")
     }
 
@@ -179,31 +183,42 @@ export class AdmisionController{
     public buscarPacientePorDni = async(req:Request,res:Response)=> {
 
         try {
-            const dniRecibido = req.params.dni ;
-            if(!dniRecibido.trim()){
+            const dniRecibido = req.query.dni ;
+            if(!dniRecibido){
                 res.status(404).json("Se requiere el dni")
             }
-            const [errorDto, getPacienteDto] = GetPacienteDto.create(parseInt(dniRecibido));
+            const dni = dniRecibido ? parseInt(dniRecibido as string) : NaN;
+            const [errorDto, getPacienteDto] = GetPacienteDto.create(dni);
             if(errorDto){
-                // res.status(500).render("vista", {
-                //     error:errorDto
-                // })
+                res.status(500).render("AdmisionViews/buscarPaciente.pug", {
+                     error:`${errorDto}`
+                })
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","114",errorDto);
-                res.status(403).json(errorDto)
+                //res.status(403).json(errorDto)
             }
             const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
             if(!errorBusqueda){
-                // res.status(404).render("vista",{
-                //     error: "No se encontro el paciente"
+                // res.status(404).render("AdmisionViews/buscarPaciente.pug",{
+                //      error: "No se encontro el paciente"
                 // })
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","122","ERROR: No se encontro el paciente")
-                res.status(404).json("ERROR: No se encontro el paciente")
+                //res.status(404).json("ERROR: No se encontro el paciente")
+                res.render("AdmisionViews/CrearPaciente.pug", {
+                    warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
+                })
             }
-            res.status(200).json(pacienteEncontrado)
+            //res.status(200).json(pacienteEncontrado)
+        
+            //console.log(pacienteEncontrado?.dataValues);
 
+            
+            res.status(200).render("AdmisionViews/vistaPaciente",{paciente: pacienteEncontrado?.dataValues})
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","128",error as string)
             res.status(500).json(error as string)
+            res.status(500).render("AdmisionViews/buscarPaciente.pug",{
+                error: `${error}`
+            })
         }
     }
     public buscarTodaLaInformacionDelPaciente = async(req:Request,res:Response) => {

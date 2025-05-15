@@ -23,7 +23,7 @@ export class AdmisionRoutes{
         router.get("/actualizar/paciente", controller.vistaActualizarPaciente)
 
         //GETTERS PACIENTES
-        router.get("/find/paciente/:dni", controller.buscarPacientePorDni) //devuelve la informacion del paciente //todo:Comprobado
+        router.get("/find/paciente", controller.buscarPacientePorDni); //todo: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
         router.get("/get/info/paciente/:dni", controller.buscarTodaLaInformacionDelPaciente) //Trae la info del paciente incluyendo el seguro medico //todo:Comprobado
 
         //POST PACIENTES
