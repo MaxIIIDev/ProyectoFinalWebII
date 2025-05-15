@@ -69,16 +69,40 @@ html(lang="es")
                 margin-top: 0.5rem;
                 font-size: 0.9rem;
             }
+            .home-btn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                background-color: white;
+                color:rgb(2, 0, 0);
+                border: none;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+            }
+            .home-btn:hover {
+                transform: scale(1.1);
+                background-color: #f8f9fa;
+            }
         include ../mixin/mixins
     
     body
+        include ../layout/alerts.pug
         .container-fluid.d-flex.align-items-center.justify-content-center.flex-column
+            a.home-btn(href="/admision") 
+                i.bi.bi-house-door-fill
             .search-container
                 h1.search-title.mb-4
                     i.bi.bi-search-heart.search-icon.me-2
                     | Buscar Paciente
                 
-                form(action="/find", method="GET" id="searchForm" novalidate)
+                form(action="/admision/crear/paciente", method="GET" id="searchForm" novalidate)
                     .input-group.mb-3
                         span.input-group-text.bg-white
                             i.bi.bi-person-badge

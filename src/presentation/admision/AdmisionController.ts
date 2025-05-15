@@ -45,6 +45,10 @@ export class AdmisionController{
         res.render("AdmisionViews/buscarPaciente.pug")
     }
 
+    public vistaCrearPaciente = async ( req:Request, res:Response)=>{
+        res.render("AdmisionViews/CrearPaciente.pug")
+    }
+
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
         try {
             const { ala, unidad, genero, motivo } = req.body;
