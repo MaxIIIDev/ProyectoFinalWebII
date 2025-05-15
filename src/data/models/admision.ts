@@ -3,6 +3,7 @@ import { Hospital_camas } from "./hospital_camas";
 import { Pacientes } from "./pacientes";
 import { tipo_De_Admision } from "./tipo_de_admision";
 import { prioridadDeAtencion } from "./prioridad";
+import { motivo_De_Internacion } from "./motivo_De_Internacion";
 
 
 
@@ -20,11 +21,12 @@ export class Admision extends Model{
     @Column(DataType.STRING)
     declare estado:string;
 
-    @AllowNull(false)
-    @NotNull
-    @Length({min:3,max:255})
-    @Column(DataType.STRING)
-    declare motivo_De_Internacion:string;
+    @ForeignKey(()=> motivo_De_Internacion)
+    @Column(DataType.INTEGER)
+    declare id_motivo_de_Internacion: number;
+
+    @BelongsTo(()=> motivo_De_Internacion)
+    declare motivo_de_internacion: motivo_De_Internacion
 
     @Length({min:3,max:255})
     @Column(DataType.STRING)
