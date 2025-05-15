@@ -4,6 +4,7 @@ import { paciente_cirugias } from "./paciente_cirugias";
 import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 import { Paciente_recetas } from "./paciente_recetas";
 import { Turnos } from "./turnos";
+import { Especialidad } from "./Especialidad";
 
 @Table
 export class Medicos extends Model{
@@ -63,8 +64,12 @@ export class Medicos extends Model{
     @Column(DataType.STRING)
     declare direccion:string;
 
-    @Column(DataType.STRING)
-    declare especialidad: string;
+    @ForeignKey(()=> Especialidad)
+    @Column(DataType.INTEGER)
+    declare id_Especialidad:number;
+    
+    @BelongsTo(()=> Especialidad)
+    declare especialidad: Especialidad
 
     @HasOne(()=> paciente_cirugias)
     declare cirugia: paciente_cirugias
