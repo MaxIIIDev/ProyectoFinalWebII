@@ -23,6 +23,7 @@ export class Medicamentos extends Model{
     
     @HasOne(()=> Tipo_De_Medicamento)
     declare tipo_de_medicamento: Tipo_De_Medicamento
+    
     @AllowNull(false)
     @NotNull
     @Column(DataType.DOUBLE)
