@@ -3,20 +3,19 @@ import { Admision } from "./admision";
 
 
 @Table
-export class prioridadDeAtencion extends Model{
+export class PrioridadDeAtencion extends Model {
 
     @PrimaryKey
     @AutoIncrement
-    @Column(DataType.NUMBER)
-    declare id_prioridad_de_atencion:number
+    @Column(DataType.INTEGER)
+    declare id_prioridad_de_atencion: number;
 
     @AllowNull(false)
     @NotNull
     @Column(DataType.STRING)
-    declare prioridad:string
+    declare prioridad: string;
 
-    @HasOne(()=> Admision)
-    declare admision: Admision
-
+    @HasOne(() => Admision)
+    declare admision: Admision;
 
 }

@@ -1,4 +1,4 @@
-import { AllowNull, AutoIncrement, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Paciente_recetas } from "./paciente_recetas";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Tipo_De_Medicamento } from "./tipo_de_medicamento";
@@ -21,7 +21,7 @@ export class Medicamentos extends Model{
     @Column(DataType.INTEGER)
     declare id_tipo_de_medicamento:number;
     
-    @HasOne(()=> Tipo_De_Medicamento)
+    @BelongsTo(()=> Tipo_De_Medicamento)
     declare tipo_de_medicamento: Tipo_De_Medicamento
     
     @AllowNull(false)

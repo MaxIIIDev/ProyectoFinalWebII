@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, DataType, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Medicamentos } from "./medicamentos";
 
 
@@ -13,7 +13,7 @@ export class Tipo_De_Medicamento extends Model{
     @Column(DataType.STRING)
     declare nombre: string
 
-    @BelongsTo(()=> Medicamentos)
+    @HasOne(()=> Medicamentos)
     declare medicamentos: Medicamentos
 
 }
