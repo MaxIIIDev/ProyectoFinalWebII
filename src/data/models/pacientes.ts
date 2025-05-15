@@ -13,6 +13,7 @@ import { paciente_tratamientos } from "./paciente_tratamientos";
 
 import { Turnos } from "./turnos";
 import { Admision } from "./admision";
+import { TipoSanguineo } from "./tipoSanguineo";
 
 
 @Table
@@ -73,8 +74,12 @@ export class Pacientes extends Model{
     declare direccion:string;
 
     
-    @Column(DataType.STRING)
-    declare tipo_sanguineo:string;
+    @ForeignKey(()=> TipoSanguineo)
+    @Column(DataType.INTEGER)
+    declare id_tipo_sanguineo:number;
+    
+    @BelongsTo(()=> TipoSanguineo)
+    declare tipo_sanguineo: TipoSanguineo
 
     @HasMany( () => Admision)
     declare admisiones: Admision[]
