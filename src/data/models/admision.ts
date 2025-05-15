@@ -1,9 +1,10 @@
-import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 import { Hospital_camas } from "./hospital_camas";
 import { Pacientes } from "./pacientes";
 import { tipo_De_Admision } from "./tipo_de_admision";
 import { prioridadDeAtencion } from "./prioridad";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
+import { Sintomas } from "./sintomas";
 
 
 
@@ -28,9 +29,9 @@ export class Admision extends Model{
     @BelongsTo(()=> motivo_De_Internacion)
     declare motivo_de_internacion: motivo_De_Internacion
 
-    @Length({min:3,max:255})
-    @Column(DataType.STRING)
-    declare sintomas:string
+   
+    @HasMany(()=> Sintomas)
+    declare sintomas: Sintomas[]
 
     @ForeignKey(()=> prioridadDeAtencion)
     @Column(DataType.INTEGER)
