@@ -2,6 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, Forei
 import { Hospital_camas } from "./hospital_camas";
 import { Pacientes } from "./pacientes";
 import { tipo_De_Admision } from "./tipo_de_admision";
+import { prioridadDeAtencion } from "./prioridad";
 
 
 
@@ -29,8 +30,12 @@ export class Admision extends Model{
     @Column(DataType.STRING)
     declare sintomas:string
 
-    @Column(DataType.ENUM("BAJA","MEDIA","ALTA"))
-    declare prioridad: string;
+    @ForeignKey(()=> prioridadDeAtencion)
+    @Column(DataType.INTEGER)
+    declare id_prioridad_de_atencion:number
+
+    @BelongsTo(()=> prioridadDeAtencion)
+    declare prioridad_de_atencion: string
     
     @ForeignKey(()=> tipo_De_Admision)
     @Column(DataType.INTEGER)
