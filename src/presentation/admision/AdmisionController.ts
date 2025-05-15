@@ -15,7 +15,7 @@ import { AdmisionService } from "../services/AdmisionService";
 import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/GetAdmisionPorPacienteDTO";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
-import { Pacientes } from "../../data/models/pacientes";
+
 
 
 export class AdmisionController{
@@ -40,6 +40,9 @@ export class AdmisionController{
             alas: alas
         }) 
         //res.render("AdmisionViews/emergencia.pug",{alas})
+    }
+    public vistaBuscarPorDni = async ( req:Request, res:Response)=> {
+        res.render("AdmisionViews/buscarPaciente.pug")
     }
 
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
