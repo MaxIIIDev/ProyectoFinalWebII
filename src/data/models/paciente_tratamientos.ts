@@ -4,6 +4,7 @@ import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 import { Pacientes } from "./pacientes";
 import { Medicamentos } from "./medicamentos";
 import { Enfermero } from "./enfermeros";
+import { Tipo_De_tratamiento } from "./tipoDeTratamiento";
 
 @Table
 export class paciente_tratamientos extends Model{
@@ -14,10 +15,12 @@ export class paciente_tratamientos extends Model{
     @Column(DataType.INTEGER)
     declare id_tratamiento: number;
 
-    @AllowNull(false)
-    @NotNull
-    @Column(DataType.STRING)
-    declare tipo: string;
+    @ForeignKey(()=> Tipo_De_tratamiento)
+    @Column(DataType.INTEGER)
+    declare id_tipo_de_tratamiento: number;
+
+    @BelongsTo(()=> Tipo_De_tratamiento)
+    declare tipo_de_tratamiento: Tipo_De_tratamiento
 
     @AllowNull(false)
     @NotNull
