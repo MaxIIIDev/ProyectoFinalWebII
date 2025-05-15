@@ -1,5 +1,6 @@
-import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
+import { Lazo_Familiar } from "./lazo_familiar";
 
 
 
@@ -24,11 +25,8 @@ export class Paciente_antecedentes_familiares extends Model{
     @Column(DataType.STRING)
     declare detalles:string;
 
-    @AllowNull(false)
-    @NotNull
-    @Length({min:10,max:100})
-    @Column(DataType.STRING)
-    declare lazo_familiar:string;
+    @HasMany(()=> Lazo_Familiar)
+    declare lazo_familiar: Lazo_Familiar[]
 
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
