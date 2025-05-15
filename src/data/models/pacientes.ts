@@ -35,8 +35,7 @@ export class Pacientes extends Model{
     @Column(DataType.STRING)
     declare apellido:string;
 
-    @AllowNull(false)
-    @NotNull
+    @AllowNull(true)
     @Unique
     @Column(DataType.INTEGER)
     declare dni:number;
@@ -88,8 +87,8 @@ export class Pacientes extends Model{
     @BelongsTo(()=> Paciente_seguro_medico)
     declare seguro_medico: Paciente_seguro_medico
 
-    @HasOne(()=> Paciente_Alergias)
-    declare alergia: Paciente_Alergias
+    @HasMany(()=> Paciente_Alergias)
+    declare alergias: Paciente_Alergias[]
 
     @HasMany(()=> Paciente_antecedentes_familiares)
     declare antecedentes: Paciente_antecedentes_familiares[]

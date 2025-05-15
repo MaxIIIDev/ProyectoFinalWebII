@@ -1,6 +1,7 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 import { Hospital_camas } from "./hospital_camas";
 import { Pacientes } from "./pacientes";
+import { tipo_De_Admision } from "./tipo_de_admision";
 
 
 
@@ -11,11 +12,6 @@ export class Admision extends Model{
     @AutoIncrement
     @Column(DataType.INTEGER)
     declare id_Admision : number;
-
-    @AllowNull(false)
-    @Length({min: 3, max:255})
-    @Column(DataType.STRING)
-    declare tipo_De_Admision: string;
 
     @AllowNull(false)
     @NotNull
@@ -36,6 +32,13 @@ export class Admision extends Model{
     @Column(DataType.ENUM("BAJA","MEDIA","ALTA"))
     declare prioridad: string;
     
+    @ForeignKey(()=> tipo_De_Admision)
+    @Column(DataType.INTEGER)
+    declare id_tipo_de_admision:number
+
+    @BelongsTo(()=> tipo_De_Admision)
+    declare tipo_de_admision: tipo_De_Admision
+
     @CreatedAt
     @AllowNull(false)
     @Column(DataType.DATE)
