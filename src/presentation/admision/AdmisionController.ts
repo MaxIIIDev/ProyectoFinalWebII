@@ -48,8 +48,12 @@ export class AdmisionController{
     public vistaCrearPaciente = async ( req:Request, res:Response)=>{
         res.render("AdmisionViews/CrearPaciente.pug")
     }
-    public vistaActualizarPaciente = async( req:Request, res:Response)=> {
+    public vistaPrincipalPaciente = async( req:Request, res:Response)=> {
         res.render("AdmisionViews/vistaPaciente.pug")
+    }
+
+    public vistaActualizarPaciente = async(req:Request, res:Response) => {
+        res.render("AdmisionViews/updatePaciente.pug")
     }
 
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
