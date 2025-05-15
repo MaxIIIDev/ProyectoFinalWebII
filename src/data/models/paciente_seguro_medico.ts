@@ -1,5 +1,6 @@
-import { AllowNull, AutoIncrement, Column, DataType, Default, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
+import { CategoriaSeguro } from "./categoriaSeguro";
 
 
 @Table
@@ -20,9 +21,12 @@ export class Paciente_seguro_medico extends Model{
     @Column(DataType.BOOLEAN)
     declare estado: boolean;
 
-    @Length({min:5,max:100})
-    @Column(DataType.STRING)
-    declare categoria: string;
+    @ForeignKey(()=> CategoriaSeguro)
+    @Column(DataType.INTEGER)
+    declare id_categoria_seguro: number;
+
+    @BelongsTo(()=> CategoriaSeguro)
+    declare categoria_seguro: CategoriaSeguro
 
     @HasOne(()=> Pacientes)
     declare paciente: Pacientes
