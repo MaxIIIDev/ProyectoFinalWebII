@@ -4,9 +4,6 @@ import { Hospital_camas } from "../../../data/models/hospital_camas"
 import { Pacientes } from "../../../data/models/pacientes"
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors"
 
-
-
-
 export class CamaService{
 
     static buscarCama = async(id_Cama: number): Promise<[(string | undefined)?, (Hospital_camas | undefined)?]>=> {
@@ -70,14 +67,13 @@ export class CamaService{
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoOcupada","CamaService","69",camaEncontrada[0])
                 return [camaEncontrada[0]]
             }
-            camaEncontrada[1]!.dataValues.disponible = false;
-            const camaModificada =  camaEncontrada[1]?.save
-            if(!camaModificada){
+            const[filasActualizadas] = await Hospital_camas.update({disponible: false},{where:{id_Cama}})
+            if(filasActualizadas === 0){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoOcupada","CamaService","76","No se modifico la cama")
                 return ["No se actualizo marco como ocupada la cama"]
             } 
             console.log("Se marco la cama como ocupada");
-            return [undefined, camaModificada]
+            return [undefined, true]
         }catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoOcupada","CamaServie","77",error as string)
             return [error as string]

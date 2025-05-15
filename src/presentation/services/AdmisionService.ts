@@ -19,9 +19,9 @@ export class AdmisionService {
             }
             const admisionCreada = await Admision.create(CrearAdmisionDto.toObject(crearAdmisionDto))
             if(!admisionCreada) return ["No se creo la admision"]
-            // if(admisionCreada){
-            //     CamaService.marcarCamaComoOcupada(crearAdmisionDto.id_Cama)
-            // }
+             if(admisionCreada){
+                 CamaService.marcarCamaComoOcupada(admisionCreada.dataValues.id_Cama)
+             }
             console.log("Se creo la admision" + admisionCreada.toJSON());
             return [ undefined,true,admisionCreada]
         } catch (error) {

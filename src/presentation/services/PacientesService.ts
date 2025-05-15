@@ -34,11 +34,11 @@ export class PacienteServices{
     }
     
 
-    static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,boolean?]> => {
+    static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,Pacientes?]> => {
 
         try{
             const pacienteEncontrado = await this.buscarPacienteExistente(_createPacienteDto.dni,0);
-            if(pacienteEncontrado[0]) return ["El paciente ya existe",false]
+            if(pacienteEncontrado[0]) return ["El paciente ya existe"]
             const object= CreatePacienteDto.toObject(_createPacienteDto);
             console.log(object);
             
@@ -46,12 +46,12 @@ export class PacienteServices{
                 object
             )
             console.log("Paciente creado: " + crearPaciente.toJSON())
-            return [undefined,true]
+            return [undefined,crearPaciente]
         }catch(Error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","PacienteService", "Line 44", Error as string);
            // console.log(Error);
             
-            return ["Error al crear el paciente",false]
+            return ["Error al crear el paciente"]
 
             
         }

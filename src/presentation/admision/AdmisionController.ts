@@ -49,17 +49,6 @@ export class AdmisionController{
 
             const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
             let pacienteAnonimo;
-            
-            if(genero =="Masculino"){
-                pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
-            }else{
-                pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
-            }
-        
-            const pacienteAnonimoCreado = await Pacientes.create(pacienteAnonimo)
-            if(!pacienteAnonimoCreado){
-                throw Error("No se pudo crear al paciente en admitir emergencia")
-            }
             if (habitaciones[0]) {
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
 
@@ -70,10 +59,39 @@ export class AdmisionController{
                 });
                 return;
             }
+            if(genero =="Masculino"){
+                pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
+            }else{
+                pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
+            }
+            
+            
+            const[ error, pacienteListoDto] = await CreatePacienteDto.create(pacienteAnonimo)
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56",error)
+                const alas = await AlaService.getAlaFromDb();
+                res.status(500).render("AdmisionViews/emergencia.pug", {
+                    error: `${error}`,
+                    alas: alas
+                });
+                return
+            }
+            const [errorAlCrear, pacienteCreado] = await PacienteServices.crearPaciente(pacienteListoDto!)
+            
+            if(errorAlCrear){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("AdmitirPacienteDeEmergencia","AdmisionController","72",errorAlCrear)
+                const alas = await AlaService.getAlaFromDb();
+                res.status(500).render("AdmisionViews/emergencia.pug", {
+                    error: `${errorAlCrear}`,
+                    alas: alas
+                });
+                return
+            }
+           
             const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
                 tipo_De_Admision: "Emergencia",
                 motivo_De_Internacion: motivo,
-                id_Paciente: pacienteAnonimoCreado.dataValues.id_Paciente,
+                id_Paciente: pacienteCreado?.dataValues.id_Paciente,
                 id_Cama: habitaciones[1][0].camas.id_cama_1
             })
             if(errorDto){
@@ -104,6 +122,7 @@ export class AdmisionController{
                 habitacion: habitaciones[1][0]
             });
         } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController","107",error as string)
             const alas = await AlaService.getAlaFromDb();
             res.status(500).render("AdmisionViews/emergencia.pug", {
                 error: error instanceof Error ? error.message : "Error desconocido",
