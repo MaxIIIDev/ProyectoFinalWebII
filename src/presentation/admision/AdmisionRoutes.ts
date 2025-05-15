@@ -19,6 +19,7 @@ export class AdmisionRoutes{
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//TODO: FUNCIONANDO; ASIGNA HABITACION Y AGREGA ADMICION
         router.get("/find" , controller.vistaBuscarPorDni)
         router.get("/crear/paciente", controller.vistaCrearPaciente)
+        router.get("/update/paciente", controller.vistaActualizarPaciente)
 
 
         //GETTERS PACIENTES

@@ -169,7 +169,7 @@ html(lang="es")
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
     script.
       document.addEventListener('DOMContentLoaded', function() {
-        // Cálculo automático de edad
+        
         const fechaNac = document.getElementById('fecha_nac');
         const edadInput = document.getElementById('edad');
         
@@ -186,7 +186,7 @@ html(lang="es")
           edadInput.value = age >= 0 ? age : '';
         });
 
-        // Validación de DNI
+       
         const dniInput = document.getElementById('dni');
         dniInput.addEventListener('input', function() {
           if (this.value.length === 8 && /^\d+$/.test(this.value)) {
@@ -196,7 +196,7 @@ html(lang="es")
           }
         });
 
-        // Validación de fecha no futura
+        /
         fechaNac.addEventListener('change', function() {
           const today = new Date();
           const selectedDate = new Date(this.value);
@@ -210,7 +210,7 @@ html(lang="es")
           }
         });
 
-        // Validación al enviar
+       
         const form = document.getElementById('patientForm');
         form.addEventListener('submit', function(event) {
           let isValid = true;
