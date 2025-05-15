@@ -3,7 +3,7 @@ import { Admision } from "./admision";
 
 
 @Table
-export class PrioridadDeAtencion extends Model {
+export class Prioridad_De_Atencion extends Model {
 
     @PrimaryKey
     @AutoIncrement

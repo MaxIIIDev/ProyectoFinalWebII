@@ -4,6 +4,7 @@ import { Pacientes } from "./pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
 import { Sintomas } from "./sintomas";
+import { Tipo_De_Diagnostico } from "./tipoDeDiagnostico";
 
 
 @Table
@@ -18,11 +19,12 @@ export class Paciente_Diagnosticos extends Model{
     @Column(DataType.DATE)
     declare fecha: Date;
 
-    @AllowNull(false)
-    @NotNull
-    @Length({min:3,max:255})
-    @Column(DataType.STRING)
-    declare nombre: string;
+    @ForeignKey(()=> Tipo_De_Diagnostico)
+    @Column(DataType.INTEGER)
+    declare id_tipo_de_diagnostico: number
+    
+    @BelongsTo(()=> Tipo_De_Diagnostico)
+    declare tipo_de_diagnostico: Tipo_De_Diagnostico
 
     @HasMany(()=> Sintomas)
     declare sintomas: Sintomas[]

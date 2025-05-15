@@ -2,7 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, Forei
 import { Hospital_camas } from "./hospital_camas";
 import { Pacientes } from "./pacientes";
 import { tipo_De_Admision } from "./tipo_de_admision";
-import { PrioridadDeAtencion } from "./prioridadDeAtencion";
+import { Prioridad_De_Atencion } from "./prioridadDeAtencion";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
 import { Sintomas } from "./sintomas";
 
@@ -33,11 +33,11 @@ export class Admision extends Model{
     @HasMany(()=> Sintomas)
     declare sintomas: Sintomas[]
 
-    @ForeignKey(()=> PrioridadDeAtencion)
+    @ForeignKey(()=> Prioridad_De_Atencion)
     @Column(DataType.INTEGER)
     declare id_prioridad_de_atencion:number
 
-    @BelongsTo(()=> PrioridadDeAtencion)
+    @BelongsTo(()=> Prioridad_De_Atencion)
     declare prioridad_de_atencion: string
     
     @ForeignKey(()=> tipo_De_Admision)

@@ -56,10 +56,7 @@ export class Personal_de_admision extends Model{
     @Column(DataType.STRING)
     declare direccion:string;
 
-    @AllowNull(false)
-    @NotNull
-    @Column(DataType.STRING)
-    declare tipo_sanguineo: string
+   
 
     @ForeignKey(()=> Usuarios)
     @Column(DataType.INTEGER)
