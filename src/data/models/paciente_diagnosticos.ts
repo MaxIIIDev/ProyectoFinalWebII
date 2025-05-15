@@ -3,6 +3,7 @@ import { Medicos } from "./medicos";
 import { Pacientes } from "./pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
+import { Sintomas } from "./sintomas";
 
 
 @Table
@@ -23,11 +24,10 @@ export class Paciente_Diagnosticos extends Model{
     @Column(DataType.STRING)
     declare nombre: string;
 
-    @AllowNull(false)
-    @NotNull
-    @Length({min:3,max:255})
-    @Column(DataType.STRING)
-    declare sintomas: string;
+    @HasMany(()=> Sintomas)
+    declare sintomas: Sintomas[]
+
+
 
     @AllowNull(false)
     @NotNull

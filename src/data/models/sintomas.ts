@@ -1,5 +1,6 @@
 import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
 import { Admision } from "./admision";
+import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
 
 
 @Table
@@ -20,5 +21,12 @@ export class Sintomas extends Model{
 
     @BelongsTo(()=> Admision)
     declare admision: Admision
+
+    @ForeignKey(()=> Paciente_Diagnosticos)
+    @Column(DataType.INTEGER)
+    declare id_Paciente_Diagnosticos:number
+
+    @BelongsTo(()=> Paciente_Diagnosticos)
+    declare Paciente_Diagnosticos: Paciente_Diagnosticos
 
 }
