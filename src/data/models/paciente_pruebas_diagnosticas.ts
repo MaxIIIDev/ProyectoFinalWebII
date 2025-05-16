@@ -14,6 +14,7 @@ export class Paciente_pruebas_diagnosticas extends Model{
     @ForeignKey(()=> nombre_Prueba_Diagnostica)
     @Column(DataType.INTEGER)
     declare id_nombre_prueba_diagnostica: number;
+    
     @BelongsTo(()=> nombre_Prueba_Diagnostica)
     declare nombre_prueba_diagnostica: nombre_Prueba_Diagnostica
 

@@ -9,6 +9,8 @@ import { Lazo_Familiar } from "./lazo_familiar";
 import { Medicamentos } from "./medicamentos";
 import { Medicos } from "./medicos";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
+import { nombre_Alergia } from "./nombre_de_alergias";
+import { nombre_Cirugia } from "./nombre_de_cirugias";
 import { nombre_Prueba_Diagnostica } from "./nombrePruebaDiagnostica";
 import { Paciente_Alergias } from "./paciente_alergias";
 import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
@@ -23,7 +25,7 @@ import { Paciente_seguro_medico } from "./paciente_seguro_medico";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Pacientes } from "./pacientes";
 import { Personal_de_admision } from "./personal_de_admision";
-import { PrioridadDeAtencion } from "./prioridadDeAtencion";
+import { Prioridad_De_Atencion } from "./prioridadDeAtencion";
 
 import { Roles } from "./roles";
 import { Sintomas } from "./sintomas";
@@ -35,4 +37,36 @@ import { TipoSanguineo } from "./tipoSanguineo";
 import { Turnos } from "./turnos";
 import { Usuarios } from "./usuarios";
 
-export const importaciones = [Tipo_De_Diagnostico,nombre_Prueba_Diagnostica,CategoriaSeguro,Especialidad,Lazo_Familiar,PrioridadDeAtencion,motivo_De_Internacion,Sintomas,tipo_De_Admision,Tipo_De_Medicamento,Tipo_De_tratamiento,TipoSanguineo,Admision,Enfermero,Hospital_alas,Hospital_camas,Hospital_habitaciones,Medicamentos,Medicos,Paciente_Alergias,Paciente_antecedentes_familiares,paciente_cirugias,Paciente_Diagnosticos,Paciente_pruebas_diagnosticas,Paciente_recetas,Paciente_Evaluacion_Fisica,Paciente_seguro_medico,paciente_tratamientos,Pacientes,Personal_de_admision,Roles,Turnos,Usuarios];
+export const importaciones = [
+    nombre_Alergia,
+    nombre_Prueba_Diagnostica,
+    Tipo_De_Diagnostico,
+    CategoriaSeguro,Especialidad,
+    Lazo_Familiar,
+    Prioridad_De_Atencion,
+    motivo_De_Internacion,
+    Sintomas,
+    tipo_De_Admision,
+    Tipo_De_Medicamento,
+    Tipo_De_tratamiento,
+    TipoSanguineo,Admision,
+    Enfermero,
+    Hospital_alas,
+    Hospital_camas,
+    Hospital_habitaciones,
+    Medicamentos,
+    Medicos,
+    Paciente_Alergias,
+    Paciente_antecedentes_familiares,
+    paciente_cirugias,Paciente_Diagnosticos,
+    Paciente_pruebas_diagnosticas,
+    Paciente_recetas,
+    Paciente_Evaluacion_Fisica,
+    Paciente_seguro_medico,
+    paciente_tratamientos,
+    Pacientes,
+    Personal_de_admision,
+    Roles,
+    Turnos,
+    Usuarios,
+    nombre_Cirugia];

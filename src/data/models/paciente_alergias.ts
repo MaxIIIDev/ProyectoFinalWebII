@@ -1,6 +1,7 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
+import { nombre_Alergia } from "./nombre_de_alergias";
 
 @Table
 export class Paciente_Alergias extends Model{
@@ -10,10 +11,11 @@ export class Paciente_Alergias extends Model{
     @Column(DataType.INTEGER)
     declare id_Alergia:number;
 
-    @AllowNull(false)
-    @NotNull
-    @Column(DataType.STRING)
-    declare nombre: string;
+    @ForeignKey(() => nombre_Alergia)
+    @Column(DataType.INTEGER)
+    declare id_nombre_alergia: number;
+    @BelongsTo(() => nombre_Alergia)
+    declare nombre_alergia: nombre_Alergia
 
     @AllowNull(false)
     @NotNull

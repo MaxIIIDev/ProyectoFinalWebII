@@ -108,8 +108,8 @@ export class Pacientes extends Model{
      @HasMany(()=> Paciente_Evaluacion_Fisica)
      declare evaluaciones_fisicas: Paciente_Evaluacion_Fisica[]
 
-    @HasMany(()=> Paciente_pruebas_diagnosticas)
-    declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas
+    @HasMany(() => Paciente_pruebas_diagnosticas)
+    declare pruebasDiagnosticasDelPaciente: Paciente_pruebas_diagnosticas[];
 
     @HasMany(()=> Paciente_recetas)
     declare recetas: Paciente_recetas

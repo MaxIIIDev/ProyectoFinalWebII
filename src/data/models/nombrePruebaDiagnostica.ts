@@ -12,6 +12,6 @@ export class nombre_Prueba_Diagnostica extends Model{
     @Column(DataType.STRING)
     declare nombre: string;
 
-    @HasMany(()=> Paciente_pruebas_diagnosticas)
-    declare paciente_pruebas_diagnosticas: Paciente_pruebas_diagnosticas[]
+    @HasMany(() => Paciente_pruebas_diagnosticas)
+    declare paciente_pruebas_diagnosticas: Paciente_pruebas_diagnosticas[];
 }
