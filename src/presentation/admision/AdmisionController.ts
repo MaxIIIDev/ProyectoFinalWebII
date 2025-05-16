@@ -211,7 +211,8 @@ export class AdmisionController{
         
             //console.log(pacienteEncontrado?.dataValues);
 
-            
+            req.session.paciente = pacienteEncontrado?.dataValues;
+            console.log(req.session.paciente);
             res.status(200).render("AdmisionViews/vistaPaciente",{paciente: pacienteEncontrado?.dataValues})
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","128",error as string)
