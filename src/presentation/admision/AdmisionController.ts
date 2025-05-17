@@ -176,19 +176,29 @@ export class AdmisionController{
             const [ errorCrearPaciente, pacienteCreado ] = await PacienteServices.crearPaciente(createPacienteDto!);
             if(errorCrearPaciente){
                 throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 31", errorCrearPaciente));
+                
             }
             if(!pacienteCreado){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarPaciente","AdmisionController","34","La bd no pudo crear el paciente")
                 //res.status(500).render("error",{message: "El paciente ya existe"})
-                return;
+                res.render("AdmisionViews/principal.pug",{
+                    error: "El paciente no se ha creado"})
             }
             //res.status(200).render("confirmacion",{message: "Paciente creado"}); Enviar con render          
-
+            req.session.paciente = pacienteCreado?.dataValues;
+            console.log(req.session.paciente);
+            res.render("AdmisionViews/vistaPaciente.pug", {
+                paciente: req.session.paciente
+            })
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 30",error as string);
             //res.status(500).render("error",{message: "Error al registrar el paciente"})
-            res.status(500).json({message: `${error}`})
+            res.render("AdmisionViews/CrearPaciente.pug",{
+                error: `${error}`,
+                warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
+            })
+            return
         }
 
     }
@@ -324,7 +334,6 @@ export class AdmisionController{
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 40", error as string);
-            //res.status(500).render("error",{message: "Error al actualizar el paciente"})//Enviar con render
             res.render("AdmisionViews/updatePaciente.pug",{
                     error: `${error}`,
                     paciente: req.session.paciente
@@ -395,6 +404,7 @@ export class AdmisionController{
     public actualizarSeguroMedico = async(req:Request,res:Response) => {
 
         try {
+            console.log(req.body);
             const[ error, updateSeguroMedicoDto] = UpdateSeguroMedicoDto.create(req.body);
 
             if(error){

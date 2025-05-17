@@ -9,6 +9,7 @@ import { Lazo_Familiar } from "./lazo_familiar";
 import { Medicamentos } from "./medicamentos";
 import { Medicos } from "./medicos";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
+import { Mutual } from "./mutual";
 import { nombre_Alergia } from "./nombre_de_alergias";
 import { nombre_Cirugia } from "./nombre_de_cirugias";
 import { nombre_Prueba_Diagnostica } from "./nombrePruebaDiagnostica";
@@ -38,6 +39,7 @@ import { Turnos } from "./turnos";
 import { Usuarios } from "./usuarios";
 
 export const importaciones = [
+    Mutual,
     nombre_Alergia,
     nombre_Prueba_Diagnostica,
     Tipo_De_Diagnostico,

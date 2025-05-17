@@ -1,3 +1,4 @@
+import model from "sequelize/types/model";
 import { Paciente_seguro_medico } from "../../data/models/paciente_seguro_medico";
 import { Pacientes } from "../../data/models/pacientes";
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
@@ -10,7 +11,17 @@ export class SeguroMedicoService{
     static buscarSeguroMedicoExistente = async(numero:number,modo:number):Promise<[boolean?,any?]> =>{
 
         try{
-            const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({where:{numero: numero}})
+            const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({
+                include:[
+                    {
+                        model: Pacientes,
+                        as: "paciente",
+
+                    }
+                    
+                ],    
+                where:{numero: numero}
+            })
            
             
             
@@ -39,7 +50,12 @@ export class SeguroMedicoService{
     static buscarSeguroMedico = async(id:number):Promise<[boolean?,any?]> =>{
 
         try{
-            const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({where:{id_seguro_medico: id}})
+            const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({
+                include:[{
+                    model: Pacientes,
+                    as: "paciente",
+                }],
+                where:{id_seguro_medico: id}})
             if(seguroMedicoBuscado ){ //retorna el objeto
                 console.log("Seguro medico encontrado con exito devuelto por modo 1");
 

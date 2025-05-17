@@ -6,7 +6,7 @@ export class UpdateSeguroMedicoDto {
     constructor(
         public numero: number,
         public estado?: boolean,
-        public categoria?: string
+        public id_categoria_seguro?: string
     ) {}
 
     // Método para convertir la instancia a un objeto plano
@@ -14,7 +14,7 @@ export class UpdateSeguroMedicoDto {
         return {
             numero: updateSeguroMedicoDto.numero,
             estado: updateSeguroMedicoDto.estado,
-            categoria: updateSeguroMedicoDto.categoria
+            id_categoria_seguro: updateSeguroMedicoDto.id_categoria_seguro
         };
     };
 
@@ -22,13 +22,13 @@ export class UpdateSeguroMedicoDto {
     static create(object: { [key: string]: any }): [string?, UpdateSeguroMedicoDto?] {
         try{
             if(!object){
-                return ["Se requiere: numero, estado(opcional), categoria(opcional)"]
+                return ["Se requiere: numero, estado(opcional), id_categoria_seguro(opcional)"]
             }
-            const { numero, estado, categoria } = object;
+            const { numero, estado, id_categoria_seguro } = object;
 
             if (!numero) return ["Se requiere el número del seguro médico"];
     
-            return [undefined, new UpdateSeguroMedicoDto(numero, estado, categoria)];
+            return [undefined, new UpdateSeguroMedicoDto(numero, estado, id_categoria_seguro)];
         }catch(error){
             return[ error as string]
         }

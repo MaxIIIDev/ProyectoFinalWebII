@@ -104,7 +104,7 @@ html(lang="es")
             | Registro de Paciente
         
         .card-body
-          form#patientForm(action="/guardar-paciente", method="POST")
+          form#patientForm(action="/admision/register/paciente", method="POST")
             .row.g-3
               .col-md-6
                 label.form-label(for="nombre") Nombre
@@ -116,8 +116,8 @@ html(lang="es")
               
               .col-md-6
                 label.form-label(for="dni") DNI
-                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{8}", required)
-                .invalid-feedback Ingrese 8 dígitos numéricos
+                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{7,8}", required)
+                .invalid-feedback Ingrese 7 u 8 digitos numéricos
               
               .col-md-6
                 label.form-label(for="genero") Género
@@ -125,7 +125,7 @@ html(lang="es")
                   option(value="") Seleccionar...
                   option(value="Masculino") Masculino
                   option(value="Femenino") Femenino
-                  option(value="Otro") Otro
+                  
               
               .col-md-6
                 label.form-label(for="fecha_nac") Fecha de Nacimiento
@@ -143,24 +143,34 @@ html(lang="es")
               
               .col-md-6
                 label.form-label(for="telefono") Teléfono
-                input.form-control(type="tel", id="telefono", name="telefono", required)
+                input.form-control(type="tel", 
+                  id="telefono", 
+                  name="telefono", 
+                  required,                    
+                  maxlength="10",
+                  pattern="[0-9]{6,10}",
+                  title="Ingrese entre 6 y 10 dígitos numéricos")
               
               .col-md-6
                 label.form-label(for="telefono_emergencia") Teléfono de Emergencia
-                input.form-control(type="tel", id="telefono_emergencia", name="telefono_emergencia")
+                input.form-control(type="tel", id="telefono_emergencia", 
+                  name="telefono_De_Emergencia", 
+                  maxlength="10",
+                  pattern="[0-9]{6,10}",
+                  title="Ingrese entre 6 y 10 dígitos numéricos")
               
               .col-md-6
                 label.form-label(for="tipo_sanguineo") Tipo Sanguíneo
-                select.form-select(id="tipo_sanguineo", name="tipo_sanguineo")
-                  option(value="") No especificado
-                  option(value="A+") A+
-                  option(value="A-") A-
-                  option(value="B+") B+
-                  option(value="B-") B-
-                  option(value="AB+") AB+
-                  option(value="AB-") AB-
-                  option(value="O+") O+
-                  option(value="O-") O-
+                select.form-select(id="tipo_sanguineo", name="id_tipo_sanguineo")
+                  option(value="0") No especificado
+                  option(value="1") A+
+                  option(value="2") A-
+                  option(value="3") B+
+                  option(value="4") B-
+                  option(value="5") AB+
+                  option(value="6") AB-
+                  option(value="7") O+
+                  option(value="8") O-
 
             .d-flex.justify-content-end.mt-4
               button.btn.btn-primary(type="submit")
@@ -170,62 +180,53 @@ html(lang="es")
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
     script.
       document.addEventListener('DOMContentLoaded', function() {
-        
-        const fechaNac = document.getElementById('fecha_nac');
-        const edadInput = document.getElementById('edad');
-        
-        fechaNac.addEventListener('change', function() {
-          const birthDate = new Date(this.value);
-          const today = new Date();
-          let age = today.getFullYear() - birthDate.getFullYear();
-          const monthDiff = today.getMonth() - birthDate.getMonth();
-          
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          
-          edadInput.value = age >= 0 ? age : '';
-        });
+      const fechaNac = document.getElementById('fecha_nac');
+      const form = document.getElementById('patientForm');
 
-       
-        const dniInput = document.getElementById('dni');
-        dniInput.addEventListener('input', function() {
-          if (this.value.length === 8 && /^\d+$/.test(this.value)) {
-            this.classList.remove('is-invalid');
-          } else {
+      // Validación de fecha (no futura)
+      fechaNac.addEventListener('change', function() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalizamos a medianoche
+        
+        if (!this.value) {
+          // Si el campo está vacío, solo marcamos como inválido si es required
+          if (this.hasAttribute('required')) {
+            this.setCustomValidity('La fecha es requerida');
             this.classList.add('is-invalid');
           }
-        });
+          this.reportValidity();
+          return;
+        }
 
-        /
-        fechaNac.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        selectedDate.setHours(0, 0, 0, 0); // Normalizamos
+        
+        if (selectedDate > today) {
+          this.setCustomValidity('La fecha no puede ser futura');
+          this.classList.add('is-invalid');
+        } else {
+          this.setCustomValidity('');
+          this.classList.remove('is-invalid');
+        }
+        this.reportValidity();
+      });
+
+      // Validación al enviar el formulario
+      form.addEventListener('submit', function(event) {
+        if (fechaNac.value) {
           const today = new Date();
-          const selectedDate = new Date(this.value);
+          today.setHours(0, 0, 0, 0);
+          const selectedDate = new Date(fechaNac.value);
           
           if (selectedDate > today) {
-            this.setCustomValidity('La fecha no puede ser futura');
-            this.classList.add('is-invalid');
-          } else {
-            this.setCustomValidity('');
-            this.classList.remove('is-invalid');
-          }
-        });
-
-       
-        const form = document.getElementById('patientForm');
-        form.addEventListener('submit', function(event) {
-          let isValid = true;
-          const requiredFields = form.querySelectorAll('[required]');
-          
-          requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-              field.classList.add('is-invalid');
-              isValid = false;
-            }
-          });
-          
-          if (!isValid) {
+            fechaNac.classList.add('is-invalid');
+            fechaNac.setCustomValidity('La fecha no puede ser futura');
+            fechaNac.reportValidity();
             event.preventDefault();
           }
-        });
+        }
+      });
+
+      // Validación inicial si hay valor
+        if (fechaNac.value) fechaNac.dispatchEvent(new Event('change'));
       });

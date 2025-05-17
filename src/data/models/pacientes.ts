@@ -63,11 +63,11 @@ export class Pacientes extends Model{
     declare genero :string ;
 
 
-    @Column(DataType.INTEGER)
-    declare telefono : number;
+    @Column(DataType.BIGINT)
+    declare telefono : bigint;
 
-    @Column(DataType.INTEGER)
-    declare telefono_De_Emergencia: number;
+    @Column(DataType.BIGINT)
+    declare telefono_De_Emergencia: bigint;
 
     @AllowNull(false)
     @NotNull

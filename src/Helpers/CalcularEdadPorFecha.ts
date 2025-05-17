@@ -1,19 +1,30 @@
+
+
 export function calcularEdad(fechaNacimiento: string): number {
-  const fechaActual = new Date();
-  const fechaNac = new Date(fechaNacimiento);
+    
+    
+    const partesFecha = fechaNacimiento.split('-');
+    const año = parseInt(partesFecha[0], 10);
+    const mes = parseInt(partesFecha[1], 10) - 1; 
+    const dia = parseInt(partesFecha[2], 10);
 
-  // Asegúrate de que la fecha de nacimiento sea válida
-  if (isNaN(fechaNac.getTime())) {
-    return NaN; // O lanza un error, dependiendo de tus necesidades
-  }
+    const fechaNac = new Date(año, mes, dia);
+    const fechaActual = new Date();
 
-  let edad = fechaActual.getFullYear() - fechaNac.getFullYear();
+    
+    if (isNaN(fechaNac.getTime()) || fechaNac > fechaActual) {
+        return NaN;
+    }
 
-  // Ajusta si el cumpleaños aún no ha ocurrido este año
-  if (fechaActual.getMonth() < fechaNac.getMonth() ||
-      (fechaActual.getMonth() === fechaNac.getMonth() && fechaActual.getDate() < fechaNac.getDate())) {
-    edad--;
-  }
+    let edad = fechaActual.getFullYear() - fechaNac.getFullYear();
 
-  return edad;
+    
+    const mesActual = fechaActual.getMonth();
+    const diaActual = fechaActual.getDate();
+
+    if (mesActual < mes || (mesActual === mes && diaActual < dia)) {
+        edad--;
+    }
+
+    return edad >= 0 ? edad : 0; 
 }

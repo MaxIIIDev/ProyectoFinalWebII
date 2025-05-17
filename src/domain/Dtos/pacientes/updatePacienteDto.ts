@@ -13,8 +13,8 @@ export class UpdatePacienteDto{
             public direccion?: string,       
             public edad?: number,
             public peso?: number,
-            public telefono?: number,
-            public telefono_De_Emergencia?: number,
+            public telefono?: bigint,
+            public telefono_De_Emergencia?: bigint,
             public id_tipo_sanguineo?: string
         ){}
     
@@ -43,9 +43,12 @@ export class UpdatePacienteDto{
             if(!id_Paciente) return ["Se requiere el id del paciente"]
             const dniParseada = parseInt(dni)
             let edadCalculada = edad
+            console.log(fecha_nac);
+            
             if(fecha_nac){
                 edadCalculada = calcularEdad(fecha_nac)
             }
+            let fechaNacimientoModificada = new Date(fecha_nac)
             return [undefined, new UpdatePacienteDto(
                 id_Paciente,
                 nombre,

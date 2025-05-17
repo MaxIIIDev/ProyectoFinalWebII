@@ -115,7 +115,7 @@ html(lang="es")
               
               .col-md-6
                 label.form-label(for="dni") DNI
-                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{8}", required ,value=paciente.dni)
+                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{7,8}", required ,value=paciente.dni)
                 .invalid-feedback Ingrese 8 dígitos numéricos
               
               .col-md-6
@@ -142,12 +142,30 @@ html(lang="es")
               
               .col-md-6
                 label.form-label(for="telefono") Teléfono
-                input.form-control(type="tel", id="telefono", name="telefono", required, value=paciente.telefono)
-              
+                input.form-control(
+                  type="tel", 
+                  id="telefono", 
+                  name="telefono", 
+                  required, 
+                  value=paciente.telefono, 
+                  maxlength="10",
+                  pattern="[0-9]{6,10}",
+                  title="Ingrese entre 6 y 10 dígitos numéricos"
+                )
+                .invalid-feedback Ingrese entre 6 y 15 dígitos numéricos
+                
               .col-md-6
                 label.form-label(for="telefono_De_Emergencia") Teléfono de Emergencia
-                input.form-control(type="tel", id="telefono_emergencia", name="telefono_De_Emergencia", value=paciente.telefono_De_Emergencia)
-              
+                input.form-control(
+                  type="tel", 
+                  id="telefono_emergencia", 
+                  name="telefono_De_Emergencia", 
+                  value=paciente.telefono_De_Emergencia, 
+                  maxlength="10",
+                  pattern="[0-9]{6,10}",
+                  title="Ingrese entre 6 y 10 dígitos numéricos"
+                )
+                .invalid-feedback Ingrese entre 6 y 15 dígitos numéricos
               .col-md-6
                 label.form-label(for="tipo_sanguineo") Tipo Sanguíneo
                 select.form-select(id="tipo_sanguineo", name="id_tipo_sanguineo", value=paciente.tipo_sanguineo)
@@ -160,8 +178,7 @@ html(lang="es")
                   option(value="6" selected=(paciente.id_tipo_sanguineo === 6)) AB-
                   option(value="7" selected=(paciente.id_tipo_sanguineo === 7)) O+
                   option(value="8" selected=(paciente.id_tipo_sanguineo === 8)) O-
-                  option(value="9" selected=(paciente.id_tipo_sanguineo === 9)) A+ RH nulo
-                  option(value="10" selected=(paciente.id_tipo_sanguineo === 10)) Bombay
+                  
 
             .d-flex.justify-content-end.mt-4
               button.btn.btn-primary(type="submit")
@@ -201,28 +218,7 @@ html(lang="es")
           tipoSanguineoSelect.value = paciente.tipo_sanguineo || '';
         }
         
-        // Calcular edad al cargar la página si hay fecha de nacimiento
-        if (fechaNacInput.value) {
-          const birthDate = new Date(fechaNacInput.value);
-          const today = new Date();
-          let age = today.getFullYear() - birthDate.getFullYear();
-          const monthDiff = today.getMonth() - birthDate.getMonth();
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          edadInput.value = age >= 0 ? age : '';
-        }
-
-        fechaNacInput.addEventListener('change', function() {
-          const birthDate = new Date(this.value);
-          const today = new Date();
-          let age = today.getFullYear() - birthDate.getFullYear();
-          const monthDiff = today.getMonth() - birthDate.getMonth();
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-          }
-          edadInput.value = age >= 0 ? age : '';
-        });
+        
 
         const dniInput = document.getElementById('dni');
         dniInput.addEventListener('input', function() {

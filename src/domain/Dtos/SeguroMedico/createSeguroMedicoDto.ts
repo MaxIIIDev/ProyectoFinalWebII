@@ -3,7 +3,7 @@ export class CreateSeguroMedicoDto {
         public numero: number,
         public dni_Paciente: number,
         public estado?: boolean,
-        public categoria?: string
+        public id_categoria_seguro?: number
         
     ) {}
 
@@ -12,7 +12,7 @@ export class CreateSeguroMedicoDto {
         return {
             numero: createSeguroMedicoDto.numero,
             estado: createSeguroMedicoDto.estado,
-            categoria: createSeguroMedicoDto.categoria
+            id_categoria_seguro: createSeguroMedicoDto.id_categoria_seguro
         };
     };
 
@@ -24,13 +24,13 @@ export class CreateSeguroMedicoDto {
                     " dni_Paciente: "+
                     " numero:" +
                     " estado:"+
-                    " categoria:")
+                    " id_categoria_seguro:")
             }
-            const { numero, dni_Paciente , estado, categoria } = object;
+            const { numero, dni_Paciente , estado, id_categoria_seguro } = object;
 
             if (!numero) return ["Se requiere el número del seguro médico"];
             if(!dni_Paciente) return ["Se requiere el dni del paciente"];
-            return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, categoria)];
+            return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, id_categoria_seguro)];
         }catch(error){
             return [error as string, undefined]
         }

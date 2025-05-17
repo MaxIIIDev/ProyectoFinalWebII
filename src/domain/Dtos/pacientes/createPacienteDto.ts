@@ -1,3 +1,4 @@
+import { calcularEdad } from "../../../Helpers/CalcularEdadPorFecha";
 
 
 export class CreatePacienteDto{
@@ -11,12 +12,12 @@ export class CreatePacienteDto{
         public fecha_nac: Date,
         public genero: string,
         public direccion:string,       
-        public edad: number,
+        public edad?: number,
         public peso?: number,
-        public telefono?: number,
-        public telefono_De_Emergencia?: number,
-        public tipo_sanguineo?: string
-
+        public telefono?: bigint,
+        public telefono_De_Emergencia?: bigint,
+        public id_tipo_sanguineo?: string,
+        public id_seguro_medico?: number
 
     ){}
 
@@ -33,7 +34,8 @@ export class CreatePacienteDto{
             telefono: createPacienteDto.telefono,
             telefono_De_Emergencia: createPacienteDto.telefono_De_Emergencia,
             direccion: createPacienteDto.direccion,
-            tipo_sanguineo: createPacienteDto.tipo_sanguineo
+            id_tipo_sanguineo: createPacienteDto.id_tipo_sanguineo,
+            id_seguro_medico: createPacienteDto.id_seguro_medico
             
         }
 
@@ -42,29 +44,38 @@ export class CreatePacienteDto{
     static create(object:{ [ key:string]: any } ):[string?, CreatePacienteDto? ] {
         
         
-        const { nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, tipo_sanguineo } = object;
+        const { nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo, id_seguro_medico } = object;
 
         if(!nombre) return ["Se requiere el nombre"]
         if( !apellido) return ["Se requiere el apellido"]
         if(!dni) return ["Se requiere el dni"]
-        if(!fecha_nac) ["Se requiere la fecha de nacimiento"]
-        if(!edad) return ["Se requiere la edad"]
-        if(!peso) return ["Se requiere el peso"]
+        if(!fecha_nac) ["Se requiere la fecha de nacimiento"]       
         if(!genero) return ["Se requiere el genero"]
         if(!direccion) return ["Se requiere la direccion"]
-
+        let edadCalculada;
+        if(fecha_nac){
+            edadCalculada = calcularEdad(fecha_nac)
+        }
+        let fechaNacimientoModificada = fecha_nac.split("T")[0]
+        let id_tipo_sanguineoCambio ;
+        if(id_tipo_sanguineo == 0){
+            id_tipo_sanguineoCambio = undefined
+        }else{
+            id_tipo_sanguineoCambio = id_tipo_sanguineo
+        }
         return [undefined, new CreatePacienteDto(
             nombre,
             apellido,
             dni,
-            fecha_nac,
+            fechaNacimientoModificada,
             genero,
             direccion,
-            edad,
+            edadCalculada!,
             peso,
             telefono,
             telefono_De_Emergencia,
-            tipo_sanguineo
+            id_tipo_sanguineoCambio,
+            id_seguro_medico
          )]
         
     }
