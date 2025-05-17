@@ -103,63 +103,65 @@ html(lang="es")
             | Actualizar Paciente
         
         .card-body
-          form#patientForm(action="/guardar-paciente", method="PUT")
+          form#patientForm(action="/admision/update/paciente", method="POST")
             .row.g-3
               .col-md-6
-                label.form-label(for="nombre") Nombre
-                input.form-control(type="text", id="nombre", name="nombre", required)
+                label.form-label(for="nombre") Nombre 
+                input.form-control(type="text", id="nombre", name="nombre", required, value=paciente.nombre) 
               
               .col-md-6
                 label.form-label(for="apellido") Apellido
-                input.form-control(type="text", id="apellido", name="apellido", required)
+                input.form-control(type="text", id="apellido", name="apellido", required, value=paciente.apellido)
               
               .col-md-6
                 label.form-label(for="dni") DNI
-                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{8}", required)
+                input.form-control(type="text", id="dni", name="dni", pattern="[0-9]{8}", required ,value=paciente.dni)
                 .invalid-feedback Ingrese 8 dígitos numéricos
               
               .col-md-6
                 label.form-label(for="genero") Género
-                select.form-select(id="genero", name="genero", required)
-                  option(value="") Seleccionar...
-                  option(value="Masculino") Masculino
-                  option(value="Femenino") Femenino
-                  option(value="Otro") Otro
+                select.form-select(id="genero", name="genero", required ,value=paciente.genero)
+                  option(value="Masculino" selected=(paciente.genero ==="Masculino")) Masculino
+                  option(value="Femenino" selected=(paciente.genero ==="Femenino")) Femenino
+                  
               
               .col-md-6
                 label.form-label(for="fecha_nac") Fecha de Nacimiento
-                input.form-control(type="date", id="fecha_nac", name="fecha_nac", required)
+                input.form-control(type="date", id="fecha_nac", name="fecha_nac", required, value=paciente.fecha_nac)
+                .invalid-feedback Fecha no válida
               
               .col-md-6
                 label.form-label(for="edad") Edad
                 .input-group
-                  input.form-control(type="text", id="edad", name="edad", readonly)
+                  input.form-control(type="text", id="edad", name="edad",value=paciente.edad ,readonly)
                   span.input-group-text.age-badge años
               
               .col-12
                 label.form-label(for="direccion") Dirección
-                input.form-control(type="text", id="direccion", name="direccion", required)
+                input.form-control(type="text", id="direccion", name="direccion", required, value=paciente.direccion)
               
               .col-md-6
                 label.form-label(for="telefono") Teléfono
-                input.form-control(type="tel", id="telefono", name="telefono", required)
+                input.form-control(type="tel", id="telefono", name="telefono", required, value=paciente.telefono)
               
               .col-md-6
-                label.form-label(for="telefono_emergencia") Teléfono de Emergencia
-                input.form-control(type="tel", id="telefono_emergencia", name="telefono_emergencia")
+                label.form-label(for="telefono_De_Emergencia") Teléfono de Emergencia
+                input.form-control(type="tel", id="telefono_emergencia", name="telefono_De_Emergencia", value=paciente.telefono_De_Emergencia)
               
               .col-md-6
                 label.form-label(for="tipo_sanguineo") Tipo Sanguíneo
-                select.form-select(id="tipo_sanguineo", name="tipo_sanguineo")
+                select.form-select(id="tipo_sanguineo", name="id_tipo_sanguineo", value=paciente.tipo_sanguineo)
                   option(value="") No especificado
-                  option(value="A+") A+
-                  option(value="A-") A-
-                  option(value="B+") B+
-                  option(value="B-") B-
-                  option(value="AB+") AB+
-                  option(value="AB-") AB-
-                  option(value="O+") O+
-                  option(value="O-") O-
+                  option(value="1" selected=(paciente.id_tipo_sanguineo === 1)) A+
+                  option(value="2" selected=(paciente.id_tipo_sanguineo === 2)) A-
+                  option(value="3" selected=(paciente.id_tipo_sanguineo === 3)) B+
+                  option(value="4" selected=(paciente.id_tipo_sanguineo === 4)) B-
+                  option(value="5" selected=(paciente.id_tipo_sanguineo === 5)) AB+
+                  option(value="6" selected=(paciente.id_tipo_sanguineo === 6)) AB-
+                  option(value="7" selected=(paciente.id_tipo_sanguineo === 7)) O+
+                  option(value="8" selected=(paciente.id_tipo_sanguineo === 8)) O-
+                  option(value="9" selected=(paciente.id_tipo_sanguineo === 9)) A+ RH nulo
+                  option(value="10" selected=(paciente.id_tipo_sanguineo === 10)) Bombay
 
             .d-flex.justify-content-end.mt-4
               button.btn.btn-primary(type="submit")
@@ -168,25 +170,60 @@ html(lang="es")
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
     script.
+
       document.addEventListener('DOMContentLoaded', function() {
-        
-        const fechaNac = document.getElementById('fecha_nac');
+        const nombreInput = document.getElementById('nombre');
+        const apellidoInput = document.getElementById('apellido');
+        const dniInput = document.getElementById('dni');
+        const generoSelect = document.getElementById('genero');
+        const direccionInput = document.getElementById('direccion');
+        const telefonoInput = document.getElementById('telefono');
+        const telefonoEmergenciaInput = document.getElementById('telefono_emergencia');
+        const tipoSanguineoSelect = document.getElementById('tipo_sanguineo');
+        const fechaNacInput = document.getElementById('fecha_nac');
         const edadInput = document.getElementById('edad');
         
-        fechaNac.addEventListener('change', function() {
+        const paciente = req.session.paciente;
+        if (paciente) {
+          alert('No se encontró información del paciente.');
+          return;
+        }
+        if (paciente) {
+          nombreInput.value = paciente.nombre || '';
+          apellidoInput.value = paciente.apellido || '';
+          dniInput.value = paciente.dni || '';
+          generoSelect.value = paciente.genero || '';
+          fechaNacInput.value = paciente.fecha_nac || '';
+          edadInput.value = paciente.edad || '';
+          direccionInput.value = paciente.direccion || '';
+          telefonoInput.value = paciente.telefono || '';
+          telefonoEmergenciaInput.value = paciente.telefono_emergencia || '';
+          tipoSanguineoSelect.value = paciente.tipo_sanguineo || '';
+        }
+        
+        // Calcular edad al cargar la página si hay fecha de nacimiento
+        if (fechaNacInput.value) {
+          const birthDate = new Date(fechaNacInput.value);
+          const today = new Date();
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const monthDiff = today.getMonth() - birthDate.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          edadInput.value = age >= 0 ? age : '';
+        }
+
+        fechaNacInput.addEventListener('change', function() {
           const birthDate = new Date(this.value);
           const today = new Date();
           let age = today.getFullYear() - birthDate.getFullYear();
           const monthDiff = today.getMonth() - birthDate.getMonth();
-          
           if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
             age--;
           }
-          
           edadInput.value = age >= 0 ? age : '';
         });
 
-       
         const dniInput = document.getElementById('dni');
         dniInput.addEventListener('input', function() {
           if (this.value.length === 8 && /^\d+$/.test(this.value)) {

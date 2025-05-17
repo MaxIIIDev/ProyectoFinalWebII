@@ -19,55 +19,57 @@ import { Paciente_Evaluacion_Fisica } from "./models/paciente_evaluacion_fisica"
 import { paciente_tratamientos } from "./models/paciente_tratamientos";
 import { Hospital_habitaciones } from "./models/hospital_habitaciones";
 import { Hospital_alas } from "./models/hospital_alas";
-
+import { Tipo_De_tratamiento } from "./models/tipoDeTratamiento";
+import { Tipo_De_Diagnostico } from "./models/tipoDeDiagnostico";
+import { nombre_Prueba_Diagnostica } from "./models/nombrePruebaDiagnostica";
+import { nombre_Cirugia } from "./models/nombre_de_cirugias";
 
 import { Enfermero } from "./models/enfermeros";
+import { tipo_De_Admision } from "./models/tipo_de_admision";
+import { CategoriaSeguro } from "./models/categoriaSeguro";
+import { Prioridad_De_Atencion } from "./models/prioridadDeAtencion";
+import { motivo_De_Internacion } from "./models/motivo_De_Internacion";
+import { Lazo_Familiar } from "./models/lazo_familiar";
+import { Especialidad } from "./models/Especialidad";
+import { Tipo_De_Medicamento } from "./models/tipo_de_medicamento";
+import { TipoSanguineo } from "./models/tipoSanguineo";
+import { Sintomas } from "./models/sintomas";
+import { nombre_Alergia } from "./models/nombre_de_alergias";
 
 export async function seedDatabase() {
     try {
-        
-
-        // Insertar los datos
-        await Paciente_seguro_medico.bulkCreate([
-            {
-                numero: 1001,
-                estado: true,
-                categoria: 'Premium'
-            },
-            {
-                numero: 1002,
-                estado: true,
-                categoria: 'Básico'
-            },
-            {
-                numero: 1003,
-                estado: false,
-                categoria: 'Estándar'
-            },
-            {
-                numero: 1004,
-                estado: true,
-                categoria: 'Premium'
-            },
-            {
-                numero: 1005,
-                estado: false,
-                categoria: 'Básico'
-            },
-            {
-                numero: 1006,
-                estado: true,
-                categoria: 'Estándar'
-            },
-            {
-                numero: 10033,
-                estado: true,
-                categoria: 'Estándar'
-            }
+        // Insertar datos en tablas sin dependencias primero
+        const categoriasSeguro = await CategoriaSeguro.bulkCreate([
+            { nombre: 'Premium' },
+            { nombre: 'Básico' },
+            { nombre: 'Estándar' }
         ]);
 
-        // Ejemplo para Pacientes
-        await Pacientes.bulkCreate([
+        const tiposSanguineos = await TipoSanguineo.bulkCreate([
+            { nombre: 'O+' },
+            { nombre: 'A-' },
+            { nombre: 'B+' },
+            { nombre: 'AB-' },
+            { nombre: 'O-' },
+            { nombre: 'A+' }
+        ]);
+
+        const nombrePruebasDiagnosticas = await nombre_Prueba_Diagnostica.bulkCreate([
+            { nombre: 'Radiografía de tórax' },
+            { nombre: 'Análisis de sangre' },
+            { nombre: 'Electrocardiograma' },
+            { nombre: 'Resonancia magnética' },
+            { nombre: 'Tomografía computarizada' }
+        ]);
+
+        // Insertar datos en tablas con dependencias
+        const segurosMedicos = await Paciente_seguro_medico.bulkCreate([
+            { numero: 1001, estado: true, id_categoria_seguro: categoriasSeguro[0].id },
+            { numero: 1002, estado: false, id_categoria_seguro: categoriasSeguro[1].id },
+            { numero: 1003, estado: true, id_categoria_seguro: categoriasSeguro[2].id }
+        ]);
+
+        const pacientes = await Pacientes.bulkCreate([
             {
                 nombre: 'Juan',
                 apellido: 'Pérez',
@@ -79,8 +81,8 @@ export async function seedDatabase() {
                 telefono: 123456789,
                 telefono_De_Emergencia: 987654321,
                 direccion: 'Calle Falsa 123',
-                tipo_sanguineo: 'O+',
-                id_seguro_medico: 1
+                id_tipo_sanguineo: tiposSanguineos[0].id,
+                id_seguro_medico: segurosMedicos[0].id
             },
             {
                 nombre: 'María',
@@ -93,181 +95,245 @@ export async function seedDatabase() {
                 telefono: 234567890,
                 telefono_De_Emergencia: 876543210,
                 direccion: 'Avenida Siempreviva 742',
-                tipo_sanguineo: 'A-',
-                id_seguro_medico: 2
-            },
-            {
-                nombre: 'Carlos',
-                apellido: 'López',
-                dni: 11223344,
-                fecha_nac: new Date('1975-03-20'),
-                edad: 50,
-                peso: 80.3,
-                genero: 'Masculino',
-                telefono: 345678901,
-                telefono_De_Emergencia: 765432109,
-                direccion: 'Boulevard Principal 456',
-                tipo_sanguineo: 'B+',
-                id_seguro_medico: 3
-            },
-            {
-                nombre: 'Ana',
-                apellido: 'Martínez',
-                dni: 55667788,
-                fecha_nac: new Date('2000-07-10'),
-                edad: 25,
-                peso: 55.0,
-                genero: 'Femenino',
-                telefono: 456789012,
-                telefono_De_Emergencia: 654321098,
-                direccion: 'Calle Secundaria 789',
-                tipo_sanguineo: 'AB-',
-                id_seguro_medico: 4
-            },
-            {
-                nombre: 'Luis',
-                apellido: 'Hernández',
-                dni: 99887766,
-                fecha_nac: new Date('1995-11-25'),
-                edad: 30,
-                peso: 75.4,
-                genero: 'Masculino',
-                telefono: 567890123,
-                telefono_De_Emergencia: 543210987,
-                direccion: 'Pasaje Oculto 321',
-                tipo_sanguineo: 'O-',
-                id_seguro_medico: 5
-            },
-            {
-                nombre: 'Laura',
-                apellido: 'Fernández',
-                dni: 33445566,
-                fecha_nac: new Date('1980-09-05'),
-                edad: 45,
-                peso: 60.8,
-                genero: 'Femenino',
-                telefono: 678901234,
-                telefono_De_Emergencia: 432109876,
-                direccion: 'Camino Real 654',
-                tipo_sanguineo: 'A+',
-                id_seguro_medico: 6
-            },
-            {
-                nombre: 'Prueba',
-                apellido: 'Fernández',
-                dni: 3333,
-                fecha_nac: new Date('1980-09-05'),
-                edad: 45,
-                peso: 60.8,
-                genero: 'Masculino',
-                telefono: 678901234,
-                telefono_De_Emergencia: 432109876,
-                direccion: 'Camino Real 654',
-                tipo_sanguineo: 'A+',
-                
+                id_tipo_sanguineo: tiposSanguineos[1].id,
+                id_seguro_medico: segurosMedicos[1].id
             }
         ]);
 
-        // Asegurar que los datos de hospital_alas se insertan antes de hospital_habitaciones
-        await Hospital_alas.bulkCreate([
-            { nombre: 'Ala Norte', cantidad_Habitaciones: 10, unidad: 'Pediatría' },
-            { nombre: 'Ala Sur', cantidad_Habitaciones: 15, unidad: 'Traumatología' },
-            { nombre: 'Ala Este', cantidad_Habitaciones: 8, unidad: 'Cardiología' },
-            { nombre: 'Ala Oeste', cantidad_Habitaciones: 12, unidad: 'Neurología' },
-            { nombre: 'Ala Central', cantidad_Habitaciones: 20, unidad: 'Emergencias' },
-            { nombre: 'Ala VIP', cantidad_Habitaciones: 5, unidad: 'Privada' }
+        // Insertar datos en paciente_diagnosticos antes de paciente_pruebas_diagnosticas
+        const diagnosticos = await Paciente_Diagnosticos.bulkCreate([
+            {
+                fecha: new Date('2025-05-01'),
+                detalles: 'Presión arterial elevada detectada en consulta médica.',
+                id_medico: 1,
+                id_paciente: 1,
+                id_tratamiento: 1
+            },
+            {
+                fecha: new Date('2025-05-02'),
+                detalles: 'Infección respiratoria aguda diagnosticada.',
+                id_medico: 2,
+                id_paciente: 2,
+                id_tratamiento: 2
+            }
         ]);
 
-        // Luego insertar los datos de hospital_habitaciones
-        await Hospital_habitaciones.bulkCreate([
-            { nro_Habitacion: 101, cantidad_Camas: 2, id_ala: 1 },
-            { nro_Habitacion: 102, cantidad_Camas: 2, id_ala: 2 },
-            { nro_Habitacion: 103, cantidad_Camas: 1, id_ala: 3 },
-            { nro_Habitacion: 104, cantidad_Camas: 2, id_ala: 4 },
-            { nro_Habitacion: 105, cantidad_Camas: 1, id_ala: 5 },
-            { nro_Habitacion: 106, cantidad_Camas: 2, id_ala: 2 },
-            { nro_Habitacion: 107, cantidad_Camas: 2, id_ala: 2 },
-            { nro_Habitacion: 108, cantidad_Camas: 1, id_ala: 2 },
-            { nro_Habitacion: 109, cantidad_Camas: 1, id_ala: 2 },
-            
+        // Ahora insertar datos en paciente_pruebas_diagnosticas
+        const pruebasDiagnosticas = await Paciente_pruebas_diagnosticas.bulkCreate([
+            {
+                id_nombre_prueba_diagnostica: 1,
+                resultado: 'No se detectaron anomalías en la radiografía.',
+                id_diagnostico: diagnosticos[0].id,
+                id_paciente: 1
+            },
+            {
+                id_nombre_prueba_diagnostica: 2,
+                resultado: 'Niveles elevados de glucosa en sangre.',
+                id_diagnostico: diagnosticos[1].id,
+                id_paciente: 2
+            }
         ]);
 
-        // Insertar datos en hospital_camas y obtener los IDs generados automáticamente
-        const camas = await Hospital_camas.bulkCreate([
-            { disponible: false, id_habitacion: 1 },
-            { disponible: false, id_habitacion: 2 },
-            { disponible: false, id_habitacion: 3 },
-            { disponible: false, id_habitacion: 4 },
-            { disponible: false, id_habitacion: 5 },
-            { disponible: true, id_habitacion: 2 },
-            { disponible: true, id_habitacion: 4 },
-            { disponible: true, id_habitacion: 6 },
-            { disponible: true, id_habitacion: 6 },
-            { disponible: true, id_habitacion: 7 },
-            { disponible: true, id_habitacion: 7 },
-            { disponible: true, id_habitacion: 8 },
-            { disponible: true, id_habitacion: 9 },
-        ], { returning: true });
+        // Insertar datos en Hospital_alas
+        const alas = await Hospital_alas.bulkCreate([
+            { nombre: 'Ala Norte', cantidad_Habitaciones: 3, unidad: 'Pediatría' },
+            { nombre: 'Ala Sur', cantidad_Habitaciones: 2, unidad: 'Traumatología' },
+            { nombre: 'Ala Este', cantidad_Habitaciones: 4, unidad: 'Cardiología' },
+            { nombre: 'Ala Oeste', cantidad_Habitaciones: 1, unidad: 'Neurología' },
+            { nombre: 'Ala Central', cantidad_Habitaciones: 5, unidad: 'Emergencias' }
+        ]);
 
-        // Usar los IDs generados para insertar en Admisions
+        // Insertar datos en Hospital_habitaciones
+        const habitaciones = await Hospital_habitaciones.bulkCreate([
+            { nro_Habitacion: 101, cantidad_Camas: 2, id_ala: alas[0].id_Ala },
+            { nro_Habitacion: 102, cantidad_Camas: 2, id_ala: alas[0].id_Ala },
+            { nro_Habitacion: 103, cantidad_Camas: 2, id_ala: alas[0].id_Ala },
+            { nro_Habitacion: 201, cantidad_Camas: 2, id_ala: alas[1].id_Ala },
+            { nro_Habitacion: 202, cantidad_Camas: 2, id_ala: alas[1].id_Ala },
+            { nro_Habitacion: 301, cantidad_Camas: 2, id_ala: alas[2].id_Ala },
+            { nro_Habitacion: 302, cantidad_Camas: 2, id_ala: alas[2].id_Ala },
+            { nro_Habitacion: 303, cantidad_Camas: 2, id_ala: alas[2].id_Ala },
+            { nro_Habitacion: 304, cantidad_Camas: 2, id_ala: alas[2].id_Ala },
+            { nro_Habitacion: 401, cantidad_Camas: 2, id_ala: alas[3].id_Ala },
+            { nro_Habitacion: 501, cantidad_Camas: 2, id_ala: alas[4].id_Ala },
+            { nro_Habitacion: 502, cantidad_Camas: 2, id_ala: alas[4].id_Ala },
+            { nro_Habitacion: 503, cantidad_Camas: 2, id_ala: alas[4].id_Ala },
+            { nro_Habitacion: 504, cantidad_Camas: 2, id_ala: alas[4].id_Ala },
+            { nro_Habitacion: 505, cantidad_Camas: 2, id_ala: alas[4].id_Ala }
+        ]);
+
+        // Insertar datos en Hospital_camas
+        await Hospital_camas.bulkCreate([
+            { disponible: true, id_habitacion: habitaciones[0].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[0].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[1].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[1].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[2].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[2].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[3].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[3].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[4].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[4].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[5].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[5].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[6].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[6].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[7].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[7].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[8].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[8].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[9].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[9].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[10].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[10].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[11].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[11].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[12].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[12].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[13].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[13].id_Habitacion },
+            { disponible: true, id_habitacion: habitaciones[14].id_Habitacion },
+            { disponible: false, id_habitacion: habitaciones[14].id_Habitacion }
+        ]);
+
+        // Insertar datos en tipo_De_Admision
+        await tipo_De_Admision.bulkCreate([
+            { tipo: 'Urgencia' },
+            { tipo: 'Programada' },
+            { tipo: 'Emergencia' },
+            { tipo: 'Consulta Externa' },
+            { tipo: 'Hospitalización' }
+        ]);
+
+        // Insertar datos en motivo_De_Internacion
+        await motivo_De_Internacion.bulkCreate([
+            { motivo: 'Fractura de pierna' },
+            { motivo: 'Chequeo general' },
+            { motivo: 'Apendicitis' },
+            { motivo: 'Cirugía de rodilla' },
+            { motivo: 'Accidente automovilístico' },
+            { motivo: 'Rehabilitación postoperatoria' },
+            { motivo: 'Dolor abdominal' },
+            { motivo: 'Infección respiratoria' },
+            { motivo: 'Control de diabetes' },
+            { motivo: 'Evaluación neurológica' }
+        ]);
+
+        // Insertar datos en PrioridadDeAtencion
+        await Prioridad_De_Atencion.bulkCreate([
+            { prioridad: 'Alta' },
+            { prioridad: 'Media' },
+            { prioridad: 'Baja' },
+            { prioridad: 'Crítica' },
+            { prioridad: 'Urgente' }
+        ]);
+
+        // Insertar datos en Admisiones
         await Admision.bulkCreate([
             {
-                tipo_De_Admision: 'Urgencia',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Fractura de pierna',
+                id_motivo_de_Internacion: 1,
+                id_prioridad_de_atencion: 1,
+                id_tipo_de_admision: 1,
                 fecha_De_Admision: new Date('2025-05-01'),
                 fecha_De_Actualizacion: new Date('2025-05-01'),
                 id_Paciente: 1,
-                id_Cama: camas[0].id_Cama
+                id_Cama: 1
             },
             {
-                tipo_De_Admision: 'Programada',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Chequeo general',
+                id_motivo_de_Internacion: 2,
+                id_prioridad_de_atencion: 2,
+                id_tipo_de_admision: 2,
                 fecha_De_Admision: new Date('2025-05-02'),
                 fecha_De_Actualizacion: new Date('2025-05-02'),
                 id_Paciente: 2,
-                id_Cama: camas[1].id_Cama
+                id_Cama: 2
             },
             {
-                tipo_De_Admision: 'Urgencia',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Apendicitis',
+                id_motivo_de_Internacion: 3,
+                id_prioridad_de_atencion: 3,
+                id_tipo_de_admision: 3,
                 fecha_De_Admision: new Date('2025-05-03'),
                 fecha_De_Actualizacion: new Date('2025-05-03'),
                 id_Paciente: 3,
-                id_Cama: camas[2].id_Cama
+                id_Cama: 3
             },
             {
-                tipo_De_Admision: 'Programada',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Cirugía de rodilla',
+                id_motivo_de_Internacion: 4,
+                id_prioridad_de_atencion: 4,
+                id_tipo_de_admision: 4,
                 fecha_De_Admision: new Date('2025-05-04'),
                 fecha_De_Actualizacion: new Date('2025-05-04'),
                 id_Paciente: 4,
-                id_Cama: camas[3].id_Cama
+                id_Cama: 4
             },
             {
-                tipo_De_Admision: 'Urgencia',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Accidente automovilístico',
+                id_motivo_de_Internacion: 5,
+                id_prioridad_de_atencion: 5,
+                id_tipo_de_admision: 5,
                 fecha_De_Admision: new Date('2025-05-05'),
                 fecha_De_Actualizacion: new Date('2025-05-05'),
                 id_Paciente: 5,
-                id_Cama: camas[4].id_Cama
+                id_Cama: 5
             },
             {
-                tipo_De_Admision: 'Programada',
                 estado: 'Activo',
-                motivo_De_Internacion: 'Rehabilitación postoperatoria',
+                id_motivo_de_Internacion: 6,
+                id_prioridad_de_atencion: 1,
+                id_tipo_de_admision: 1,
                 fecha_De_Admision: new Date('2025-05-06'),
                 fecha_De_Actualizacion: new Date('2025-05-06'),
                 id_Paciente: 6,
-                id_Cama: camas[5].id_Cama
+                id_Cama: 6
+            },
+            {
+                estado: 'Activo',
+                id_motivo_de_Internacion: 7,
+                id_prioridad_de_atencion: 2,
+                id_tipo_de_admision: 2,
+                fecha_De_Admision: new Date('2025-05-07'),
+                fecha_De_Actualizacion: new Date('2025-05-07'),
+                id_Paciente: 7,
+                id_Cama: 7
+            },
+            {
+                estado: 'Activo',
+                id_motivo_de_Internacion: 8,
+                id_prioridad_de_atencion: 3,
+                id_tipo_de_admision: 3,
+                fecha_De_Admision: new Date('2025-05-08'),
+                fecha_De_Actualizacion: new Date('2025-05-08'),
+                id_Paciente: 8,
+                id_Cama: 8
+            },
+            {
+                estado: 'Activo',
+                id_motivo_de_Internacion: 9,
+                id_prioridad_de_atencion: 4,
+                id_tipo_de_admision: 4,
+                fecha_De_Admision: new Date('2025-05-09'),
+                fecha_De_Actualizacion: new Date('2025-05-09'),
+                id_Paciente: 9,
+                id_Cama: 9
+            },
+            {
+                estado: 'Activo',
+                id_motivo_de_Internacion: 10,
+                id_prioridad_de_atencion: 5,
+                id_tipo_de_admision: 5,
+                fecha_De_Admision: new Date('2025-05-10'),
+                fecha_De_Actualizacion: new Date('2025-05-10'),
+                id_Paciente: 10,
+                id_Cama: 10
             }
         ]);
 
-       
+        // Actualizar disponibilidad de camas
+        await Hospital_camas.update({ disponible: false }, { where: { id_Cama: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] } });
 
         // Repite el proceso para cada modelo con sus respectivos atributos y ejemplos
         // Ejemplo de seed para el modelo Paciente_antecedentes_familiares
@@ -275,39 +341,37 @@ export async function seedDatabase() {
             {
                 nombre_Enfermedad: 'Diabetes tipo 2',
                 detalles: 'Presente en la familia desde hace dos generaciones.',
-                lazo_familiar: 'Padre',
                 id_Paciente: 1
             },
             {
                 nombre_Enfermedad: 'Hipertensión arterial',
                 detalles: 'Historial de hipertensión en la familia materna.',
-                lazo_familiar: 'Madre',
                 id_Paciente: 2
             },
             {
                 nombre_Enfermedad: 'Cáncer de colon',
                 detalles: 'Diagnóstico en un familiar cercano.',
-                lazo_familiar: 'Tío',
                 id_Paciente: 3
             },
             {
                 nombre_Enfermedad: 'Asma',
                 detalles: 'Condición hereditaria en la familia.',
-                lazo_familiar: 'Hermano',
                 id_Paciente: 4
             },
             {
                 nombre_Enfermedad: 'Enfermedad cardíaca',
                 detalles: 'Problemas cardíacos recurrentes en la familia.',
-                lazo_familiar: 'Abuelo',
                 id_Paciente: 5
-            },
-            {
-                nombre_Enfermedad: 'Artritis reumatoide',
-                detalles: 'Condición presente en familiares cercanos.',
-                lazo_familiar: 'Tía',
-                id_Paciente: 6
             }
+        ]);
+
+        // Insertar datos en Lazo_Familiar
+        await Lazo_Familiar.bulkCreate([
+            { lazo: 'Padre', id_paciente_antecedente_familiar: 1 },
+            { lazo: 'Madre', id_paciente_antecedente_familiar: 2 },
+            { lazo: 'Tío', id_paciente_antecedente_familiar: 3 },
+            { lazo: 'Hermano', id_paciente_antecedente_familiar: 4 },
+            { lazo: 'Abuelo', id_paciente_antecedente_familiar: 5 }
         ]);
 
         // Ejemplo de seed para el modelo Usuarios
@@ -320,8 +384,74 @@ export async function seedDatabase() {
             { email: 'usuario6@example.com', password_hash: 'hashedpassword6', activo: true, intentos_fallidos: 0 }
         ]);
 
-        // Ejemplo de seed para el modelo Medicos
-        await Medicos.bulkCreate([
+        // Insertar datos en Especialidad
+        await Especialidad.bulkCreate([
+            { nombre: 'Cardiología' },
+            { nombre: 'Neurología' },
+            { nombre: 'Traumatología' },
+            { nombre: 'Pediatría' },
+            { nombre: 'Dermatología' },
+            { nombre: 'Ginecología' }
+        ]);
+
+        // Insertar datos en Tipo_De_Medicamento
+        await Tipo_De_Medicamento.bulkCreate([
+            { nombre: 'Analgésico' },
+            { nombre: 'Antiinflamatorio' },
+            { nombre: 'Antibiótico' },
+            { nombre: 'Antihistamínico' },
+            { nombre: 'Antidiabético' },
+            { nombre: 'Inhibidor de la bomba de protones' }
+        ]);
+
+        // Insertar datos en Medicamentos
+        await Medicamentos.bulkCreate([
+            {
+                nombre: 'Paracetamol',
+                id_tipo_de_medicamento: 1,
+                dosis_Recomendada: 500,
+                cantidad_Contenida: 20,
+                codigo: 1001
+            },
+            {
+                nombre: 'Ibuprofeno',
+                id_tipo_de_medicamento: 2,
+                dosis_Recomendada: 400,
+                cantidad_Contenida: 30,
+                codigo: 1002
+            },
+            {
+                nombre: 'Amoxicilina',
+                id_tipo_de_medicamento: 3,
+                dosis_Recomendada: 250,
+                cantidad_Contenida: 15,
+                codigo: 1003
+            },
+            {
+                nombre: 'Loratadina',
+                id_tipo_de_medicamento: 4,
+                dosis_Recomendada: 10,
+                cantidad_Contenida: 10,
+                codigo: 1004
+            },
+            {
+                nombre: 'Metformina',
+                id_tipo_de_medicamento: 5,
+                dosis_Recomendada: 850,
+                cantidad_Contenida: 60,
+                codigo: 1005
+            },
+            {
+                nombre: 'Omeprazol',
+                id_tipo_de_medicamento: 6,
+                dosis_Recomendada: 20,
+                cantidad_Contenida: 14,
+                codigo: 1006
+            }
+        ]);
+
+        // Insertar datos en medicos y guardar los IDs generados
+        const medicos = await Medicos.bulkCreate([
             {
                 nombre: 'Dr. Juan',
                 apellido: 'Pérez',
@@ -333,7 +463,7 @@ export async function seedDatabase() {
                 telefono: 123456789,
                 telefono_De_Emergencia: 987654321,
                 direccion: 'Calle Principal 123',
-                especialidad: 'Cardiología',
+                id_Especialidad: 1,
                 id_usuario: 1
             },
             {
@@ -347,114 +477,33 @@ export async function seedDatabase() {
                 telefono: 234567890,
                 telefono_De_Emergencia: 876543210,
                 direccion: 'Avenida Central 456',
-                especialidad: 'Neurología',
+                id_Especialidad: 2,
                 id_usuario: 2
+            }
+        ], { returning: true });
+
+        // Mapear los IDs generados
+        const idMedicos = medicos.map(m => m.id_Medico);
+
+        // Crear ejemplos en Paciente_Diagnosticos y relacionarlos con Medicos usando los IDs generados
+        await Paciente_Diagnosticos.bulkCreate([
+            {
+                fecha: new Date('2025-05-01'),
+                id_medico: idMedicos[0],
+                detalles: 'Presión arterial elevada detectada en consulta médica.',
+                id_paciente: 1,
+                id_tratamiento: 1
             },
             {
-                nombre: 'Dr. Carlos',
-                apellido: 'López',
-                dni: 11223344,
-                fecha_nac: new Date('1975-03-20'),
-                edad: 50,
-                peso: 80.3,
-                genero: 'Masculino',
-                telefono: 345678901,
-                telefono_De_Emergencia: 765432109,
-                direccion: 'Boulevard Secundario 789',
-                especialidad: 'Traumatología',
-                id_usuario: 3
-            },
-            {
-                nombre: 'Dra. María',
-                apellido: 'Martínez',
-                dni: 55667788,
-                fecha_nac: new Date('1990-07-10'),
-                edad: 35,
-                peso: 55.0,
-                genero: 'Femenino',
-                telefono: 456789012,
-                telefono_De_Emergencia: 654321098,
-                direccion: 'Calle Tercera 321',
-                especialidad: 'Pediatría',
-                id_usuario: 4
-            },
-            {
-                nombre: 'Dr. Luis',
-                apellido: 'Hernández',
-                dni: 99887766,
-                fecha_nac: new Date('1970-11-25'),
-                edad: 55,
-                peso: 75.4,
-                genero: 'Masculino',
-                telefono: 567890123,
-                telefono_De_Emergencia: 543210987,
-                direccion: 'Pasaje Cuarto 654',
-                especialidad: 'Dermatología',
-                id_usuario: 5
-            },
-            {
-                nombre: 'Dra. Laura',
-                apellido: 'Fernández',
-                dni: 33445566,
-                fecha_nac: new Date('1980-09-05'),
-                edad: 45,
-                peso: 60.8,
-                genero: 'Femenino',
-                telefono: 678901234,
-                telefono_De_Emergencia: 432109876,
-                direccion: 'Camino Real 987',
-                especialidad: 'Ginecología',
-                id_usuario: 6
+                fecha: new Date('2025-05-02'),
+                id_medico: idMedicos[1],
+                detalles: 'Infección respiratoria aguda diagnosticada.',
+                id_paciente: 2,
+                id_tratamiento: 2
             }
         ]);
 
-        // Insertar datos en medicamentos antes de paciente_tratamientos
-        await Medicamentos.bulkCreate([
-            {
-                nombre: 'Paracetamol',
-                tipo: 'Analgésico',
-                dosis_Recomendada: 500,
-                cantidad_Contenida: 20,
-                codigo: 1001
-            },
-            {
-                nombre: 'Ibuprofeno',
-                tipo: 'Antiinflamatorio',
-                dosis_Recomendada: 400,
-                cantidad_Contenida: 30,
-                codigo: 1002
-            },
-            {
-                nombre: 'Amoxicilina',
-                tipo: 'Antibiótico',
-                dosis_Recomendada: 250,
-                cantidad_Contenida: 15,
-                codigo: 1003
-            },
-            {
-                nombre: 'Loratadina',
-                tipo: 'Antihistamínico',
-                dosis_Recomendada: 10,
-                cantidad_Contenida: 10,
-                codigo: 1004
-            },
-            {
-                nombre: 'Metformina',
-                tipo: 'Antidiabético',
-                dosis_Recomendada: 850,
-                cantidad_Contenida: 60,
-                codigo: 1005
-            },
-            {
-                nombre: 'Omeprazol',
-                tipo: 'Inhibidor de la bomba de protones',
-                dosis_Recomendada: 20,
-                cantidad_Contenida: 14,
-                codigo: 1006
-            }
-        ]);
-
-        // Insertar datos en enfermeros antes de paciente_tratamientos
+        // Insertar datos en Enfermeros
         await Enfermero.bulkCreate([
             {
                 nombre: 'Enfermero Juan',
@@ -467,8 +516,6 @@ export async function seedDatabase() {
                 telefono: 123456789,
                 telefono_De_Emergencia: 987654321,
                 direccion: 'Calle Principal 123',
-                tipo_sanguineo: 'O+',
-                id_usuario: 1
             },
             {
                 nombre: 'Enfermera Ana',
@@ -481,8 +528,6 @@ export async function seedDatabase() {
                 telefono: 234567890,
                 telefono_De_Emergencia: 876543210,
                 direccion: 'Avenida Central 456',
-                tipo_sanguineo: 'A-',
-                id_usuario: 2
             },
             {
                 nombre: 'Enfermero Carlos',
@@ -495,8 +540,6 @@ export async function seedDatabase() {
                 telefono: 345678901,
                 telefono_De_Emergencia: 765432109,
                 direccion: 'Boulevard Secundario 789',
-                tipo_sanguineo: 'B+',
-                id_usuario: 3
             },
             {
                 nombre: 'Enfermera María',
@@ -509,8 +552,6 @@ export async function seedDatabase() {
                 telefono: 456789012,
                 telefono_De_Emergencia: 654321098,
                 direccion: 'Calle Tercera 321',
-                tipo_sanguineo: 'AB-',
-                id_usuario: 4
             },
             {
                 nombre: 'Enfermero Luis',
@@ -523,8 +564,6 @@ export async function seedDatabase() {
                 telefono: 567890123,
                 telefono_De_Emergencia: 543210987,
                 direccion: 'Pasaje Cuarto 654',
-                tipo_sanguineo: 'O-',
-                id_usuario: 5
             },
             {
                 nombre: 'Enfermera Laura',
@@ -537,15 +576,22 @@ export async function seedDatabase() {
                 telefono: 678901234,
                 telefono_De_Emergencia: 432109876,
                 direccion: 'Camino Real 987',
-                tipo_sanguineo: 'A+',
-                id_usuario: 6
             }
         ]);
 
-        // Ejemplo de seed para el modelo paciente_tratamientos
+        // Insertar datos en Tipo_De_tratamiento
+        const tiposDeTratamiento = await Tipo_De_tratamiento.bulkCreate([
+            { nombre: 'Fisioterapia' },
+            { nombre: 'Medicación' },
+            { nombre: 'Terapia ocupacional' },
+            { nombre: 'Rehabilitación' },
+            { nombre: 'Terapia psicológica' }
+        ]);
+
+        // Insertar datos en paciente_tratamientos
         await paciente_tratamientos.bulkCreate([
             {
-                tipo: 'Fisioterapia',
+                id_tipo_de_tratamiento: tiposDeTratamiento[0].id_Tipo_De_Tratamiento,
                 detalle: 'Rehabilitación de rodilla',
                 cantidad_suministrada: 10,
                 fecha_de_inicio: new Date('2025-05-01'),
@@ -555,7 +601,7 @@ export async function seedDatabase() {
                 id_enfermero: 1
             },
             {
-                tipo: 'Medicación',
+                id_tipo_de_tratamiento: tiposDeTratamiento[1].id_Tipo_De_Tratamiento,
                 detalle: 'Tratamiento para hipertensión',
                 cantidad_suministrada: 20,
                 fecha_de_inicio: new Date('2025-05-02'),
@@ -565,7 +611,7 @@ export async function seedDatabase() {
                 id_enfermero: 2
             },
             {
-                tipo: 'Terapia ocupacional',
+                id_tipo_de_tratamiento: tiposDeTratamiento[2].id_Tipo_De_Tratamiento,
                 detalle: 'Mejorar habilidades motoras',
                 cantidad_suministrada: 15,
                 fecha_de_inicio: new Date('2025-05-03'),
@@ -575,7 +621,7 @@ export async function seedDatabase() {
                 id_enfermero: 3
             },
             {
-                tipo: 'Rehabilitación',
+                id_tipo_de_tratamiento: tiposDeTratamiento[3].id_Tipo_De_Tratamiento,
                 detalle: 'Recuperación postoperatoria',
                 cantidad_suministrada: 12,
                 fecha_de_inicio: new Date('2025-05-04'),
@@ -585,170 +631,180 @@ export async function seedDatabase() {
                 id_enfermero: 4
             },
             {
-                tipo: 'Fisioterapia',
-                detalle: 'Fortalecimiento muscular',
+                id_tipo_de_tratamiento: tiposDeTratamiento[4].id_Tipo_De_Tratamiento,
+                detalle: 'Terapia psicológica para ansiedad',
                 cantidad_suministrada: 8,
                 fecha_de_inicio: new Date('2025-05-05'),
                 fecha_de_fin: new Date('2025-05-15'),
                 id_paciente: 5,
                 id_medicamento: 5,
                 id_enfermero: 5
-            },
-            {
-                tipo: 'Medicación',
-                detalle: 'Control de diabetes',
-                cantidad_suministrada: 25,
-                fecha_de_inicio: new Date('2025-05-06'),
-                fecha_de_fin: new Date('2025-05-16'),
-                id_paciente: 6,
-                id_medicamento: 6,
-                id_enfermero: 6
             }
         ]);
 
-        // Ejemplo de seed para el modelo Paciente_Diagnosticos
+        // Limpiar la tabla tipo_de_diagnosticos antes de insertar datos
+        await Tipo_De_Diagnostico.destroy({ where: {}, truncate: true });
+
+        // Asegurar que los datos en tipo_de_diagnosticos se inserten correctamente antes de ser referenciados
+        const tiposDeDiagnosticos = await Tipo_De_Diagnostico.bulkCreate([
+            { nombre: 'Enfermedad crónica' },
+            { nombre: 'Enfermedad aguda' },
+            { nombre: 'Trastorno respiratorio' },
+            { nombre: 'Deficiencia nutricional' },
+            { nombre: 'Trastorno neurológico' }
+        ], { returning: true });
+        // Mapear los IDs generados
+        const idTipoDiagnostico = tiposDeDiagnosticos.map(t => t.id_tipo_de_diagnostico);
+
+        // Crear ejemplos en Paciente_Diagnosticos y relacionarlos con Tipo_De_Diagnosticos usando los IDs generados
         await Paciente_Diagnosticos.bulkCreate([
             {
                 fecha: new Date('2025-05-01'),
-                nombre: 'Diagnóstico 1',
-                sintomas: 'Síntomas 1',
-                detalles: 'Detalles 1',
+                id_tipo_de_diagnostico: idTipoDiagnostico[0],
+                detalles: 'Presión arterial elevada detectada en consulta médica.',
                 id_medico: 1,
                 id_paciente: 1,
                 id_tratamiento: 1
             },
             {
                 fecha: new Date('2025-05-02'),
-                nombre: 'Diagnóstico 2',
-                sintomas: 'Síntomas 2',
-                detalles: 'Detalles 2',
+                id_tipo_de_diagnostico: idTipoDiagnostico[1],
+                detalles: 'Infección respiratoria aguda diagnosticada.',
                 id_medico: 2,
                 id_paciente: 2,
                 id_tratamiento: 2
             },
             {
                 fecha: new Date('2025-05-03'),
-                nombre: 'Diagnóstico 3',
-                sintomas: 'Síntomas 3',
-                detalles: 'Detalles 3',
+                id_tipo_de_diagnostico: idTipoDiagnostico[2],
+                detalles: 'Asma crónica con episodios recurrentes.',
                 id_medico: 3,
                 id_paciente: 3,
                 id_tratamiento: 3
             },
             {
                 fecha: new Date('2025-05-04'),
-                nombre: 'Diagnóstico 4',
-                sintomas: 'Síntomas 4',
-                detalles: 'Detalles 4',
+                id_tipo_de_diagnostico: idTipoDiagnostico[3],
+                detalles: 'Deficiencia de hierro detectada en análisis de sangre.',
                 id_medico: 4,
                 id_paciente: 4,
                 id_tratamiento: 4
             },
             {
                 fecha: new Date('2025-05-05'),
-                nombre: 'Diagnóstico 5',
-                sintomas: 'Síntomas 5',
-                detalles: 'Detalles 5',
+                id_tipo_de_diagnostico: idTipoDiagnostico[4],
+                detalles: 'Epilepsia diagnosticada tras evaluación neurológica.',
                 id_medico: 5,
                 id_paciente: 5,
                 id_tratamiento: 5
-            },
-            {
-                fecha: new Date('2025-05-06'),
-                nombre: 'Diagnóstico 6',
-                sintomas: 'Síntomas 6',
-                detalles: 'Detalles 6',
-                id_medico: 6,
-                id_paciente: 6,
-                id_tratamiento: 6
             }
         ]);
 
-        // Ejemplo de seed para el modelo Paciente_pruebas_diagnosticas
+        // Crear ejemplos en Sintomas
+        await Sintomas.bulkCreate([
+            { nombre: 'Dolor de cabeza', id_Admision: 1, id_Paciente_Diagnosticos: 1 },
+            { nombre: 'Mareos', id_Admision: 1, id_Paciente_Diagnosticos: 1 },
+            { nombre: 'Visión borrosa', id_Admision: 1, id_Paciente_Diagnosticos: 1 },
+            { nombre: 'Sed excesiva', id_Admision: 2, id_Paciente_Diagnosticos: 2 },
+            { nombre: 'Micción frecuente', id_Admision: 2, id_Paciente_Diagnosticos: 2 },
+            { nombre: 'Fatiga', id_Admision: 2, id_Paciente_Diagnosticos: 2 },
+            { nombre: 'Dificultad para respirar', id_Admision: 3, id_Paciente_Diagnosticos: 3 },
+            { nombre: 'Opresión en el pecho', id_Admision: 3, id_Paciente_Diagnosticos: 3 },
+            { nombre: 'Tos', id_Admision: 3, id_Paciente_Diagnosticos: 3 },
+            { nombre: 'Piel pálida', id_Admision: 4, id_Paciente_Diagnosticos: 4 },
+            { nombre: 'Dificultad para concentrarse', id_Admision: 4, id_Paciente_Diagnosticos: 4 },
+            { nombre: 'Náuseas', id_Admision: 5, id_Paciente_Diagnosticos: 5 },
+            { nombre: 'Sensibilidad a la luz', id_Admision: 5, id_Paciente_Diagnosticos: 5 }
+        ]);
+
+        // Crear ejemplos en nombre_Prueba_Diagnostica
+        await nombre_Prueba_Diagnostica.bulkCreate([
+            { nombre: 'Radiografía de tórax' },
+            { nombre: 'Análisis de sangre' },
+            { nombre: 'Electrocardiograma' },
+            { nombre: 'Resonancia magnética' },
+            { nombre: 'Tomografía computarizada' }
+        ]);
+
+        // Actualizar ejemplos en Paciente_pruebas_diagnosticas para reflejar el modelo actualizado
         await Paciente_pruebas_diagnosticas.bulkCreate([
             {
-                nombre: 'Radiografía de tórax',
-                resultado: 'Sin anomalías detectadas.',
+                id_nombre_prueba_diagnostica: 1,
+                resultado: 'No se detectaron anomalías en la radiografía.',
                 id_diagnostico: 1,
                 id_paciente: 1
             },
             {
-                nombre: 'Análisis de sangre',
-                resultado: 'Niveles normales de hemoglobina.',
+                id_nombre_prueba_diagnostica: 2,
+                resultado: 'Niveles elevados de glucosa en sangre.',
                 id_diagnostico: 2,
                 id_paciente: 2
             },
             {
-                nombre: 'Electrocardiograma',
-                resultado: 'Ritmo cardíaco normal.',
+                id_nombre_prueba_diagnostica: 3,
+                resultado: 'Ritmo cardíaco irregular detectado.',
                 id_diagnostico: 3,
                 id_paciente: 3
             },
             {
-                nombre: 'Tomografía computarizada',
-                resultado: 'No se detectaron masas anormales.',
+                id_nombre_prueba_diagnostica: 4,
+                resultado: 'Lesión cerebral leve identificada.',
                 id_diagnostico: 4,
                 id_paciente: 4
             },
             {
-                nombre: 'Prueba de función pulmonar',
-                resultado: 'Capacidad pulmonar dentro del rango normal.',
+                id_nombre_prueba_diagnostica: 5,
+                resultado: 'Fractura ósea confirmada en la tomografía.',
                 id_diagnostico: 5,
                 id_paciente: 5
-            },
-            {
-                nombre: 'Ecografía abdominal',
-                resultado: 'Órganos abdominales sin alteraciones.',
-                id_diagnostico: 6,
-                id_paciente: 6
             }
         ]);
 
         // Ejemplo de seed para el modelo paciente_terapia_fisica
-        await paciente_terapia_fisica.bulkCreate([
-            {
-                fecha: new Date('2025-05-01'),
-                nombre: 'Rehabilitación de rodilla',
-                duracion: 30,
-                id_paciente: 1,
-                id_tratamiento: 1
-            },
-            {
-                fecha: new Date('2025-05-02'),
-                nombre: 'Terapia de espalda',
-                duracion: 45,
-                id_paciente: 2,
-                id_tratamiento: 2
-            },
-            {
-                fecha: new Date('2025-05-03'),
-                nombre: 'Fortalecimiento muscular',
-                duracion: 60,
-                id_paciente: 3,
-                id_tratamiento: 3
-            },
-            {
-                fecha: new Date('2025-05-04'),
-                nombre: 'Terapia de equilibrio',
-                duracion: 40,
-                id_paciente: 4,
-                id_tratamiento: 4
-            },
-            {
-                fecha: new Date('2025-05-05'),
-                nombre: 'Rehabilitación postoperatoria',
-                duracion: 50,
-                id_paciente: 5,
-                id_tratamiento: 5
-            },
-            {
-                fecha: new Date('2025-05-06'),
-                nombre: 'Terapia de movilidad',
-                duracion: 35,
-                id_paciente: 6,
-                id_tratamiento: 6
-            }
-        ]);
+        // await paciente_terapia_fisica.bulkCreate([
+        //     {
+        //         fecha: new Date('2025-05-01'),
+        //         nombre: 'Rehabilitación de rodilla',
+        //         duracion: 30,
+        //         id_paciente: 1,
+        //         id_tratamiento: 1
+        //     },
+        //     {
+        //         fecha: new Date('2025-05-02'),
+        //         nombre: 'Terapia de espalda',
+        //         duracion: 45,
+        //         id_paciente: 2,
+        //         id_tratamiento: 2
+        //     },
+        //     {
+        //         fecha: new Date('2025-05-03'),
+        //         nombre: 'Fortalecimiento muscular',
+        //         duracion: 60,
+        //         id_paciente: 3,
+        //         id_tratamiento: 3
+        //     },
+        //     {
+        //         fecha: new Date('2025-05-04'),
+        //         nombre: 'Terapia de equilibrio',
+        //         duracion: 40,
+        //         id_paciente: 4,
+        //         id_tratamiento: 4
+        //     },
+        //     {
+        //         fecha: new Date('2025-05-05'),
+        //         nombre: 'Rehabilitación postoperatoria',
+        //         duracion: 50,
+        //         id_paciente: 5,
+        //         id_tratamiento: 5
+        //     },
+        //     {
+        //         fecha: new Date('2025-05-06'),
+        //         nombre: 'Terapia de movilidad',
+        //         duracion: 35,
+        //         id_paciente: 6,
+        //         id_tratamiento: 6
+        //     }
+        // ]);
 
         // Ejemplo de seed para el modelo Personal_de_admision
         await Personal_de_admision.bulkCreate([
@@ -762,7 +818,7 @@ export async function seedDatabase() {
                 telefono: 123456789,
                 telefono_De_Emergencia: 987654321,
                 direccion: 'Calle Principal 123',
-                tipo_sanguineo: 'O+',
+                
                 id_usuario: 1
             },
             {
@@ -775,7 +831,7 @@ export async function seedDatabase() {
                 telefono: 234567890,
                 telefono_De_Emergencia: 876543210,
                 direccion: 'Avenida Central 456',
-                tipo_sanguineo: 'A-',
+                
                 id_usuario: 2
             },
             {
@@ -788,7 +844,7 @@ export async function seedDatabase() {
                 telefono: 345678901,
                 telefono_De_Emergencia: 765432109,
                 direccion: 'Boulevard Secundario 789',
-                tipo_sanguineo: 'B+',
+                
                 id_usuario: 3
             },
             {
@@ -801,7 +857,7 @@ export async function seedDatabase() {
                 telefono: 456789012,
                 telefono_De_Emergencia: 654321098,
                 direccion: 'Calle Tercera 321',
-                tipo_sanguineo: 'AB-',
+               
                 id_usuario: 4
             },
             {
@@ -814,7 +870,7 @@ export async function seedDatabase() {
                 telefono: 567890123,
                 telefono_De_Emergencia: 543210987,
                 direccion: 'Pasaje Cuarto 654',
-                tipo_sanguineo: 'O-',
+                
                 id_usuario: 5
             },
             {
@@ -827,95 +883,68 @@ export async function seedDatabase() {
                 telefono: 678901234,
                 telefono_De_Emergencia: 432109876,
                 direccion: 'Camino Real 987',
-                tipo_sanguineo: 'A+',
                 id_usuario: 6
             }
         ]);
 
-        // Ejemplo de seed para el modelo paciente_cirugias
+        // Crear ejemplos en nombre_Cirugia
+        await nombre_Cirugia.bulkCreate([
+            { nombre: 'Reparación de ligamentos cruzados' },
+            { nombre: 'Apendicectomía' },
+            { nombre: 'Cesárea' },
+            { nombre: 'Bypass gástrico' },
+            { nombre: 'Cirugía de cataratas' }
+        ]);
+
+        // Actualizar ejemplos en paciente_cirugias para reflejar el formato solicitado
         await paciente_cirugias.bulkCreate([
             {
                 fecha: new Date('2025-05-01'),
-                nombre: 'Cirugía de rodilla',
+                id_nombre_cirugia: 1,
                 descripcion: 'Reparación de ligamentos cruzados.',
                 id_medico: 1,
                 id_paciente: 1
             },
             {
                 fecha: new Date('2025-05-02'),
-                nombre: 'Cirugía de cadera',
-                descripcion: 'Reemplazo total de cadera.',
+                id_nombre_cirugia: 2,
+                descripcion: 'Extracción del apéndice inflamado.',
                 id_medico: 2,
                 id_paciente: 2
             },
             {
                 fecha: new Date('2025-05-03'),
-                nombre: 'Cirugía de corazón',
-                descripcion: 'Bypass coronario.',
+                id_nombre_cirugia: 3,
+                descripcion: 'Parto por cesárea programado.',
                 id_medico: 3,
                 id_paciente: 3
             },
             {
                 fecha: new Date('2025-05-04'),
-                nombre: 'Cirugía de columna',
-                descripcion: 'Fusión espinal.',
+                id_nombre_cirugia: 4,
+                descripcion: 'Reducción de peso mediante bypass gástrico.',
                 id_medico: 4,
                 id_paciente: 4
             },
             {
                 fecha: new Date('2025-05-05'),
-                nombre: 'Cirugía de mano',
-                descripcion: 'Reparación de tendones.',
+                id_nombre_cirugia: 5,
+                descripcion: 'Corrección de visión mediante cirugía de cataratas.',
                 id_medico: 5,
                 id_paciente: 5
-            },
-            {
-                fecha: new Date('2025-05-06'),
-                nombre: 'Cirugía ocular',
-                descripcion: 'Corrección de cataratas.',
-                id_medico: 6,
-                id_paciente: 6
             }
         ]);
 
         // Ejemplo de seed para el modelo Paciente_Alergias
+       
+
+        // Crear ejemplos en paciente_alergias
         await Paciente_Alergias.bulkCreate([
-            {
-                nombre: 'Polen',
-                descripcion: 'Reacción alérgica severa al polen.',
-                id_paciente: 1,
-                id_tratamiento: 1
-            },
-            {
-                nombre: 'Ácaros',
-                descripcion: 'Alergia a los ácaros del polvo.',
-                id_paciente: 2,
-                id_tratamiento: 2
-            },
-            {
-                nombre: 'Lácteos',
-                descripcion: 'Intolerancia severa a la lactosa.',
-                id_paciente: 3,
-                id_tratamiento: 3
-            },
-            {
-                nombre: 'Frutos secos',
-                descripcion: 'Alergia a nueces y almendras.',
-                id_paciente: 4,
-                id_tratamiento: 4
-            },
-            {
-                nombre: 'Mariscos',
-                descripcion: 'Reacción alérgica a camarones y cangrejo.',
-                id_paciente: 5,
-                id_tratamiento: 5
-            },
-            {
-                nombre: 'Medicamentos',
-                descripcion: 'Alergia a la penicilina.',
-                id_paciente: 6,
-                id_tratamiento: 6
-            }
+            { id_nombre_alergia: 1, descripcion: 'Reacción severa al polen en primavera', id_paciente: 1, id_tratamiento: 2 },
+            { id_nombre_alergia: 2, descripcion: 'Dificultad respiratoria por ácaros del polvo', id_paciente: 2, id_tratamiento: 3 },
+            { id_nombre_alergia: 3, descripcion: 'Erupción cutánea por contacto con pelo de animales', id_paciente: 3, id_tratamiento: 4 },
+            { id_nombre_alergia: 4, descripcion: 'Reacción alérgica severa a mariscos', id_paciente: 4, id_tratamiento: 5 },
+            { id_nombre_alergia: 5, descripcion: 'Anafilaxia por penicilina', id_paciente: 5, id_tratamiento: 6 }
         ]);
 
         // Ejemplo de seed para el modelo Paciente_recetas
@@ -968,11 +997,10 @@ export async function seedDatabase() {
             },
             {
                 nombre: 'Enfermero'
-            },            
+            },
             {
                 nombre: 'Paciente'
             }
-            
         ]);
 
         // Ejemplo de seed para el modelo Turnos
@@ -1021,59 +1049,14 @@ export async function seedDatabase() {
             }
         ]);
 
-       
-
-        // Ejemplo de seed para el modelo Paciente_Evaluacion_Fisica
-        // await Paciente_Evaluacion_Fisica.bulkCreate([
-        //     {
-        //         presion_arterial: 120,
-        //         frecuencia_cardiaca: 80,
-        //         color_de_piel: 'Normal',
-        //         respuesta_a_estimulos: 'Adecuada',
-        //         paciente_id: 1,
-        //         enfermero_id: 1
-        //     },
-        //     {
-        //         presion_arterial: 130,
-        //         frecuencia_cardiaca: 85,
-        //         color_de_piel: 'Pálida',
-        //         respuesta_a_estimulos: 'Lenta',
-        //         paciente_id: 2,
-        //         enfermero_id: 2
-        //     },
-        //     {
-        //         presion_arterial: 110,
-        //         frecuencia_cardiaca: 75,
-        //         color_de_piel: 'Normal',
-        //         respuesta_a_estimulos: 'Adecuada',
-        //         paciente_id: 3,
-        //         enfermero_id: 3
-        //     },
-        //     {
-        //         presion_arterial: 140,
-        //         frecuencia_cardiaca: 90,
-        //         color_de_piel: 'Rojiza',
-        //         respuesta_a_estimulos: 'Adecuada',
-        //         paciente_id: 4,
-        //         enfermero_id: 4
-        //     },
-        //     {
-        //         presion_arterial: 125,
-        //         frecuencia_cardiaca: 78,
-        //         color_de_piel: 'Normal',
-        //         respuesta_a_estimulos: 'Adecuada',
-        //         paciente_id: 5,
-        //         enfermero_id: 5
-        //     },
-        //     {
-        //         presion_arterial: 135,
-        //         frecuencia_cardiaca: 82,
-        //         color_de_piel: 'Pálida',
-        //         respuesta_a_estimulos: 'Lenta',
-        //         paciente_id: 6,
-        //         enfermero_id: 6
-        //     }
-        // ]);
+        // Crear ejemplos en nombre_de_alergias
+        await nombre_Alergia.bulkCreate([
+            { nombre: 'Polen' },
+            { nombre: 'Ácaros del polvo' },
+            { nombre: 'Pelo de animales' },
+            { nombre: 'Mariscos' },
+            { nombre: 'Penicilina' }
+        ]);
 
         console.log('Seed completado exitosamente.');
     } catch (error) {

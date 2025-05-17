@@ -1,9 +1,10 @@
+import { calcularEdad } from "../../../Helpers/CalcularEdadPorFecha";
 
 
 export class UpdatePacienteDto{
     
         private constructor(
-            public id_paciente: number,
+            public id_Paciente: number,
             public nombre?: string,
             public apellido?: string,
             public dni?: number,
@@ -14,12 +15,12 @@ export class UpdatePacienteDto{
             public peso?: number,
             public telefono?: number,
             public telefono_De_Emergencia?: number,
-            public tipo_sanguineo?: string
+            public id_tipo_sanguineo?: string
         ){}
     
         static toObject= (updatePacienteDto:UpdatePacienteDto):{ [key:string]: any }=> {
             return {
-                id_paciente: updatePacienteDto.id_paciente,
+                id_Paciente: updatePacienteDto.id_Paciente,
                 nombre: updatePacienteDto.nombre,
                 apellido: updatePacienteDto.apellido,
                 dni: updatePacienteDto.dni,
@@ -30,30 +31,34 @@ export class UpdatePacienteDto{
                 telefono: updatePacienteDto.telefono,
                 telefono_De_Emergencia: updatePacienteDto.telefono_De_Emergencia,
                 direccion: updatePacienteDto.direccion,
-                tipo_sanguineo: updatePacienteDto.tipo_sanguineo
+                id_tipo_sanguineo: updatePacienteDto.id_tipo_sanguineo
                 
             }
         }
     
-        static create(object:{ [ key:string]: any } ):[string?, UpdatePacienteDto? ] {
+        static create(object:{ [ key:string]: any } , actual : { [ key:string]: any }):[string?, UpdatePacienteDto? ] {
     
-            const { id_paciente, nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, tipo_sanguineo } = object;
+            const { id_Paciente, nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo } = object;
     
-            if(!id_paciente) return ["Se requiere el id del paciente"]
-    
+            if(!id_Paciente) return ["Se requiere el id del paciente"]
+            const dniParseada = parseInt(dni)
+            let edadCalculada = edad
+            if(fecha_nac){
+                edadCalculada = calcularEdad(fecha_nac)
+            }
             return [undefined, new UpdatePacienteDto(
-                id_paciente,
+                id_Paciente,
                 nombre,
                 apellido,
-                dni,
+                dniParseada,
                 fecha_nac,
                 genero,
-                telefono,
                 direccion,
-                edad,
+                edadCalculada,
                 peso,
+                telefono,               
                 telefono_De_Emergencia,
-                tipo_sanguineo
+                id_tipo_sanguineo
                 
             )]
         }

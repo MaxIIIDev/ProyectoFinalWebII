@@ -48,16 +48,28 @@ export class AdmisionController{
     public vistaCrearPaciente = async ( req:Request, res:Response)=>{
         res.render("AdmisionViews/CrearPaciente.pug", {
             warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
+
         })
     }
-    public vistaPrincipalPaciente = async( req:Request, res:Response)=> {
-        res.render("AdmisionViews/vistaPaciente.pug")
+    public vistaPrincipalPaciente = async( req:Request, res:Response)=> {//todo: Posiblemente no se use
+        const paciente = req.session.paciente;
+        if(!paciente){
+            res.render("AdmisionViews/buscarPaciente.pug", {
+                warning: "Se cerró la sesión del paciente"})
+            return
+        }
+        res.render("AdmisionViews/vistaPaciente.pug" , {paciente: paciente})
+
     }
 
     public vistaActualizarPaciente = async(req:Request, res:Response) => {
         
-
-        res.render("AdmisionViews/updatePaciente.pug")
+        if(!req.session.paciente){
+            res.render("AdmisionViews/principal.pug",{
+                warning:"Se cerró la sesión del paciente"
+            })
+        }
+        res.render("AdmisionViews/updatePaciente.pug", {paciente: req.session.paciente})
     }
 
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
@@ -207,13 +219,9 @@ export class AdmisionController{
                     warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
                 })
             }
-            //res.status(200).json(pacienteEncontrado)
-        
-            //console.log(pacienteEncontrado?.dataValues);
-
             req.session.paciente = pacienteEncontrado?.dataValues;
             console.log(req.session.paciente);
-            res.status(200).render("AdmisionViews/vistaPaciente",{paciente: pacienteEncontrado?.dataValues})
+            res.status(200).render("AdmisionViews/vistaPaciente",{paciente: req.session.paciente})
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","128",error as string)
             res.status(500).json(error as string)
@@ -266,24 +274,62 @@ export class AdmisionController{
     public actualizarPaciente = async(req:Request,res:Response) =>  {
 
         try {
-            const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body);
+            let alerta = false;
+            if(!req.session.paciente){
+                res.render("AdmisionViews/principal.pug",{
+                    warning:"Se cerró la sesión del paciente"
+                })
+                return
+            }
+            req.body.id_Paciente = req.session.paciente!.id_Paciente;
+            if(!req.body.nombre && req.session.paciente.nombre) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el nombre vacio", paciente: req.session.paciente})
+            if(!req.body.apellido && req.session.paciente.apellido) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente})
+            if(!req.body.direccion && req.session.paciente.direccion) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente})
+            if(!req.body.telefono && req.session.paciente.telefono) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente})
+            const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body, req.session.paciente);
+            
             if(error){
-                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error));
+                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error));               
+            }
+            // Convertir ambos a string para comparar correctamente
+            if(String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)){
+                res.render("AdmisionViews/updatePaciente.pug",{
+                    error: "No se puede cambiar el dni del paciente, notifique al administrador",
+                    paciente: req.session.paciente
+                })
+                return
             }
             const [errorInService, confirmacion] = await PacienteServices.actualizarPaciente(updatePacienteDto!); 
             if(errorInService){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarPaciente","AdmisionController","57",errorInService);    
-                //Enviar con render  
-                 //res.status(500).render("error",{message: "Error al actualizar el paciente"})//Enviar con render
+                res.render("AdmisionViews/updatePaciente.pug",{
+                    error: `${errorInService}`,
+                    paciente: req.session.paciente
+                })
+                return
             }
             if(confirmacion){
                 //Enviar con render
-                //res.status(200).render("success",{message: "Todo ok"})
+                
+                const pacienteEncontrado = await PacienteServices.buscarPacienteExistente(updatePacienteDto!.dni!,1)
+                if(pacienteEncontrado[0]) req.session.paciente = pacienteEncontrado[1]?.dataValues;
+                
+                
+                res.render("AdmisionViews/updatePaciente.pug",{
+                    success: "Paciente actualizado",
+                    paciente: req.session.paciente
+                })
+                return
             }
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 40", error as string);
             //res.status(500).render("error",{message: "Error al actualizar el paciente"})//Enviar con render
+            res.render("AdmisionViews/updatePaciente.pug",{
+                    error: `${error}`,
+                    paciente: req.session.paciente
+
+                });
             
             return;            
         }

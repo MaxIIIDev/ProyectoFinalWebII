@@ -19,6 +19,7 @@ declare module "express-session" {
             genero: string,
             telefono: string,
             telefono_emergencia: string,
+            direccion: string,
             id_tipo_sanguineo: number,
             id_seguro_medico: number,
         }
@@ -45,7 +46,7 @@ export class Server{
             saveUninitialized: false,
             cookie: {
                 secure: false,
-                maxAge: 1000 * 60 * 60 * 8 // 1 day
+                maxAge: 1000 * 60 * 60 * 24 // 1 day
             }
         }));
         this.app.use(express.urlencoded({extended:true}));

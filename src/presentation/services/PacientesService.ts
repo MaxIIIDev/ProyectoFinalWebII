@@ -19,6 +19,8 @@ export class PacienteServices{
             }
             if(pacienteBuscado && modo === 1){ //retorna el objeto
                 console.log("Paciente encontrado Con exito");
+                pacienteBuscado.dataValues.fecha_nac = pacienteBuscado.dataValues.fecha_nac.toISOString().split("T")[0];
+                
                 return [true ,pacienteBuscado]
 
             }

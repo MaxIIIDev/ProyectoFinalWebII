@@ -14,21 +14,33 @@ export class AdmisionRoutes{
         const controller = new AdmisionController(conexionBd);
         
         //vistas
+        //!: 1- Vista principal de admision
+
         router.get("/", controller.vistaPrincipal)//todo:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//todo:Comprobado
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//TODO: FUNCIONANDO; ASIGNA HABITACION Y AGREGA ADMICION
+        router.get("/principal/paciente", controller.vistaPrincipalPaciente)
+        //!: 2- Vista de buscar Paciente
         router.get("/find" , controller.vistaBuscarPorDni)
-        router.get("/crear/paciente", controller.vistaCrearPaciente)
-        router.get("/principal/paciente", controller.vistaPrincipalPaciente)    
+        
+        //!: 3.1 - Vista panel de crear paciente    
+         router.get("/crear/paciente", controller.vistaCrearPaciente)
+         //!: 3.2- Vista panel principal de paciente
+        router.get("/find/paciente", controller.buscarPacientePorDni); //todo: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
+         
+        
+        
+
+        //!: 4- Vista de actualizar paciente
         router.get("/actualizar/paciente", controller.vistaActualizarPaciente)
 
         //GETTERS PACIENTES
-        router.get("/find/paciente", controller.buscarPacientePorDni); //todo: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
+        
         router.get("/get/info/paciente/:dni", controller.buscarTodaLaInformacionDelPaciente) //Trae la info del paciente incluyendo el seguro medico //todo:Comprobado
 
         //POST PACIENTES
         router.post("/register/paciente", controller.registrarPaciente);//todo:Comprobado
-        router.put("/update/paciente", controller.actualizarPaciente)//todo:Comprobado
+        router.post("/update/paciente", controller.actualizarPaciente)//todo:Comprobado PUT
         
         //SEGUROS MEDICOS
         router.get("/get/seguro/medico/:numero", controller.getSeguroMedico); //obtener seguro medico por numero //todo:Comprobado
