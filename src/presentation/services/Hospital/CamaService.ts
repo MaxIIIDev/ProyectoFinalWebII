@@ -79,5 +79,24 @@ export class CamaService{
             return [error as string]
         }
     }
+    static marcarCamaComoLibre = async(id_Cama: number):Promise<[string?,boolean?]> => {//!SIn test, me tome unas cervezas de mas
+        try {
+            const camaEncontrada = await this.buscarCama(id_Cama);
+            if(camaEncontrada[0]){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoLibre","CamaService","89",camaEncontrada[0])
+                return [camaEncontrada[0],false]
+            }
+            const[filasActualizadas] = await Hospital_camas.update({disponible: true},{where:{id_Cama}})
+            if(filasActualizadas === 0){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoLibre","CamaService","96","No se modifico la cama")
+                return ["No se actualizo marco como libre la cama",false]
+            } 
+            console.log("Se marco la cama como libre");
+            return [undefined, true]
+        }catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoLibre","CamaServie","97",error as string)
+            return [error as string]
+        }
+    }
 
 }

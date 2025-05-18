@@ -360,6 +360,41 @@ export class AdmisionController{
     ////////////////////////////////////////////////
     //////////////!ADMISIONES///////////////////////
     ////////////////////////////////////////////////
+
+    public crearAdmision = async(req:Request,res:Response) => { //!FALTA TESTEAR 
+
+        try {
+            const [ error, crearAdmisionDto ] = CrearAdmisionDto.create(req.body);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision","AdmisionController", "Line 140", error);
+                res.status(404).json(`${error}`)
+                return
+            }
+            const [errorCrearAdmision, admisionCreada] = await AdmisionService.crearAdmision(crearAdmisionDto!);
+            if(errorCrearAdmision){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision","AdmisionController", "Line 145", errorCrearAdmision);
+                res.status(404).json(`${errorCrearAdmision}`)
+                return
+            }
+            res.status(200).json(admisionCreada)
+
+
+        } catch (error) {
+            res.status(500).json(error as string)    
+        }
+    }
+
+    // public actualizarAdmision = async(req:Request,res:Response) => {//!Pensar que si es necesario
+
+    //     try {
+            
+    //     } catch (error) {
+            
+    //     }
+
+    // }
+
+
     public getTodasLasAdmisiones = async(req:Request,res:Response) => { //!Deberia traer todas las admisiones
 
         try {
@@ -476,8 +511,7 @@ export class AdmisionController{
            
             const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
                 
-                id_motivo_de_Internacion: id_motivo_de_Internacion, //!CAMBIAR EN LA VISTA POR UN SELECT Y HACER UN METODO PARA TRAER LOS MOTIVOS
-                id_prioridad_de_atencion: 2,
+                id_motivo_de_Internacion: id_motivo_de_Internacion, 
                 id_tipo_de_admision: 3,
                 id_Paciente: pacienteCreado?.dataValues.id_Paciente,
                 id_Cama: habitaciones[1][0].camas.id_cama_1
@@ -493,7 +527,7 @@ export class AdmisionController{
                 });
                 return;
             }
-            //!ESTAMOS ACA
+           
             const [errorAlCrearAdmision,confirmacion, admisionCreada] = await AdmisionService.crearAdmision(CrearAdmisionDto.toObject(crearAdmisionDTO!))
             if(!confirmacion){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","479",errorAlCrearAdmision!)
@@ -521,6 +555,7 @@ export class AdmisionController{
                 motivoDeInternacion: motivosDeInternacion[1]
             });
         }
+
     };
     // public getHabitacionesByGender = async(req:Request,res:Response) => {
     //     try{
@@ -531,6 +566,24 @@ export class AdmisionController{
     //         //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
     //     }
     // }
+    static bajaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
 
+        try {
+            if(!req.params.id_Admision ){
+                res.status(400).json("Se requiere el id de la admision")
+            }
+            const id_Admision = parseInt(req.params.id_Admision);
+            const [error, confirmacion] = await AdmisionService.bajaLogicaAdmision(id_Admision);
+            if (error) {
+                res.status(500).json(error);
+                return;
+            }
+            res.status(200).json(confirmacion);
+        } catch (error) {
+            res.status(500).json(error as string);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("bajaLogicaAdmision","AdmisionController","Line 584",error as string)
+        }
+
+    }
 
 }

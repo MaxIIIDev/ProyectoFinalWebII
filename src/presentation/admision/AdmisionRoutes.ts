@@ -50,9 +50,11 @@ export class AdmisionRoutes{
         //ADMISION
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Deberia funcionar, no testeado
         router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Deberia funcionar, no testeado
-        // router.post("/create/admision",)
+        
+        
+        router.post("/create/admision", controller.crearAdmision)//todo: FALTA TESTEAR
         // router.put("/update/admision")
-        // router.delete("/delete/admision")
+        // router.delete("/baja/admision")
 
         //TURNOS
         //router.post("/crear/turno")
