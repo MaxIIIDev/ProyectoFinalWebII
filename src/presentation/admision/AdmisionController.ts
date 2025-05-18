@@ -566,14 +566,15 @@ export class AdmisionController{
     //         //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
     //     }
     // }
-    static bajaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
+    public bajaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
 
         try {
-            if(!req.params.id_Admision ){
+            if(!req.body.id_Admision ){
                 res.status(400).json("Se requiere el id de la admision")
+                return
             }
-            const id_Admision = parseInt(req.params.id_Admision);
-            const [error, confirmacion] = await AdmisionService.bajaLogicaAdmision(id_Admision);
+            
+            const [error, confirmacion] = await AdmisionService.bajaLogicaAdmision(req.body.id_Admision);
             if (error) {
                 res.status(500).json(error);
                 return;
@@ -583,7 +584,26 @@ export class AdmisionController{
             res.status(500).json(error as string);
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("bajaLogicaAdmision","AdmisionController","Line 584",error as string)
         }
-
     }
+    public altaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
+
+        try {
+            if(!req.body.id_Admision ){
+                res.status(400).json("Se requiere el id de la admision")
+                return
+            }
+            
+            const [error, confirmacion] = await AdmisionService.altaLogicaAdmision(req.body.id_Admision);
+            if (error) {
+                res.status(500).json(error);
+                return;
+            }
+            res.status(200).json(confirmacion);
+        } catch (error) {
+            res.status(500).json(error as string);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("altaLogicaAdmision","AdmisionController","Line 584",error as string)
+        }
+    }
+
 
 }

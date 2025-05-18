@@ -127,4 +127,19 @@ export class AdmisionService {
             return [error as string]
         }
     }
+    public static altaLogicaAdmision = async(id_Admision:number):Promise<[string?,boolean?]> => {
+        try {
+            const admisionEncontrada = await Admision.findOne({where:{
+                id_Admision: id_Admision
+            }})
+            if(!admisionEncontrada) return ["No se encontro la admision"]
+            const admisionBaja = await Admision.update({estado: "Activo"},{where:{id_Admision: id_Admision}})
+            if(!admisionBaja) return ["No se pudo dar de alta la admision"]
+            const seDioBajaLogica = await CamaService.marcarCamaComoOcupada(admisionEncontrada.dataValues.id_Cama)
+            if(!seDioBajaLogica[1]) return ["No se pudo marcar ocupada la cama",seDioBajaLogica[1]]
+            return [undefined,true]
+        } catch (error) {
+            return [error as string]
+        }
+    }
 }
