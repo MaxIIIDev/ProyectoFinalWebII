@@ -105,8 +105,8 @@ export class AdmisionController{
 
             const [ errorCrearPaciente, pacienteCreado ] = await PacienteServices.crearPaciente(createPacienteDto!);
             if(errorCrearPaciente){
-                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 31", errorCrearPaciente));
-                
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 31", errorCrearPaciente)      
+                throw new Error(errorCrearPaciente);
             }
             if(!pacienteCreado){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarPaciente","AdmisionController","34","La bd no pudo crear el paciente")
@@ -123,7 +123,6 @@ export class AdmisionController{
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 30",error as string);
-            
             res.render("AdmisionViews/CrearPaciente.pug",{
                 error: `${error}`,
                 warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
@@ -229,7 +228,8 @@ export class AdmisionController{
             const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body, req.session.paciente);
             
             if(error){
-                throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error));               
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error)
+                throw new Error(error);               
             }
             
             if(String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)){
