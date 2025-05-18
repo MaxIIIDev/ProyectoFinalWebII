@@ -1,7 +1,7 @@
 export class CreateSeguroMedicoDto {
     constructor(
-        public numero: number,
-        public dni_Paciente: number,
+        public id_mutual: number,
+        public numero: number,     
         public estado?: boolean,
         public id_categoria_seguro?: number
         
@@ -10,6 +10,7 @@ export class CreateSeguroMedicoDto {
     // Método para convertir la instancia a un objeto plano
     static toObject = (createSeguroMedicoDto: CreateSeguroMedicoDto): { [key: string]: any } => {
         return {
+            id_mutual: createSeguroMedicoDto.id_mutual,
             numero: createSeguroMedicoDto.numero,
             estado: createSeguroMedicoDto.estado,
             id_categoria_seguro: createSeguroMedicoDto.id_categoria_seguro
@@ -21,19 +22,19 @@ export class CreateSeguroMedicoDto {
         try{
             if(!object){
                 throw Error("Se requiere= "+
-                    " dni_Paciente: "+
+                    " id_mutual: "+
                     " numero:" +
                     " estado:"+
                     " id_categoria_seguro:")
             }
-            const { numero, dni_Paciente , estado, id_categoria_seguro } = object;
-
+            const {  id_mutual ,numero, estado, id_categoria_seguro } = object;
+            if(!id_mutual) return ["Se requiere el id de la mutual"];
+            if(!id_categoria_seguro) return ["Se requiere el id de la categoria del seguro"];
             if (!numero) return ["Se requiere el número del seguro médico"];
-            if(!dni_Paciente) return ["Se requiere el dni del paciente"];
-            return [undefined, new CreateSeguroMedicoDto(numero,dni_Paciente ,estado, id_categoria_seguro)];
+            
+            return [undefined, new CreateSeguroMedicoDto(id_mutual,numero ,estado, id_categoria_seguro)];
         }catch(error){
             return [error as string, undefined]
         }
-        
     }
 }

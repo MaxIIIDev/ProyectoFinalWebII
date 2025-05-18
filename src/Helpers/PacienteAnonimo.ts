@@ -1,14 +1,13 @@
 
 
 export class PacienteAnonimo{
-    static dni = 1
+    
     static getPacienteMasculina(){
-        this.dni++
+        
         return {
-            nombre: "Jhon",
+            nombre: "John",
             apellido: "doe",
-            dni: this.dni,
-            peso:3,
+            dni: null,
             fecha_nac: Date.now(),
             edad: 30,
             genero: "Masculino",
@@ -16,12 +15,11 @@ export class PacienteAnonimo{
         }
     }
     static getPacienteFemenina(){
-        this.dni++
+        
         return {
             nombre: "Jane",
             apellido: "doe",
-            dni: this.dni,
-            peso:3,
+            dni: null,
             fecha_nac: Date.now(),
             edad: 30,
             genero: "Femenino",

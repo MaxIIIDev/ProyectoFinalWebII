@@ -72,6 +72,7 @@ html(lang="es")
   body
     include ../layout/alerts.pug
     input(type="hidden", id="alasData",value=JSON.stringify(alas))
+    
     .emergency-panel.d-flex.align-items-center.justify-content-center.p-4
         a.home-btn(href="/admision") 
             i.bi.bi-house-door-fill
@@ -114,15 +115,15 @@ html(lang="es")
                     option(value="Femenino") Femenino
                   .invalid-feedback Por favor seleccione un género
                 .mb-3
-                  label.form-label(for="motivo") Motivo de Emergencia
-                  textarea.form-control(
-                    id="motivo" 
-                    name="motivo" 
-                    rows="3" 
-                    minlength=21
-                    placeholder="Describa brevemente la emergencia..." 
+                  label.form-label(for="id_motivo_de_Internacion") Motivo de Internación
+                  select.form-control(
+                    id="id_motivo_de_Internacion" 
+                    name="id_motivo_de_Internacion" 
                     required
                   )
+                    option(value="") Seleccione...
+                    +agregarMotivosDesdeDb(motivoDeInternacion)
+                    
                   .invalid-feedback Por favor describa el motivo
                 button.btn.emergency-btn.text-white.w-100(type="submit")
                   i.bi.bi-search-heart-fill.me-2
@@ -141,15 +142,15 @@ html(lang="es")
           return;
         }
       });
-       document.getElementById("motivo").addEventListener("input", function () {
+      //-  document.getElementById("motivo").addEventListener("input", function () {
        
-        if (this.value.length < 21) {
-          this.classList.add("is-invalid");
-          this.nextElementSibling.textContent = "Debe tener al menos 20 caracteres";
-        } else {
-          this.classList.remove("is-invalid");
-        }
-      });
+      //-   if (this.value.length < 21) {
+      //-     this.classList.add("is-invalid");
+      //-     this.nextElementSibling.textContent = "Debe tener al menos 20 caracteres";
+      //-   } else {
+      //-     this.classList.remove("is-invalid");
+      //-   }
+      //- });
       document.getElementById("ala").addEventListener("change", function (){
         
         const alas = JSON.parse(document.getElementById("alasData").value);
@@ -170,5 +171,6 @@ html(lang="es")
         newOption.textContent = valorAAgregar;
         selectElement.appendChild(newOption);
       });
+      
       
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

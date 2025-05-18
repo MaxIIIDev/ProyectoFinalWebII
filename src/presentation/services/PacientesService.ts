@@ -5,6 +5,7 @@ import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { SeguroMedicoService } from "./SeguroMedicoService";
 import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
+import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
 
 
 export class PacienteServices{
@@ -20,18 +21,15 @@ export class PacienteServices{
             if(pacienteBuscado && modo === 1){ //retorna el objeto
                 console.log("Paciente encontrado Con exito");
                 pacienteBuscado.dataValues.fecha_nac = pacienteBuscado.dataValues.fecha_nac.toISOString().split("T")[0];
-                
+
                 return [true ,pacienteBuscado]
 
             }
-            
-            
         }catch(Error){
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarUsuarioExistente","PacienteService", "Line 23", Error as string));           
             return [false, undefined]
         }
         console.log("Paciente no encontrado");
-        
         return [false, undefined]
     }
     
@@ -39,11 +37,9 @@ export class PacienteServices{
     static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,Pacientes?]> => {
 
         try{
-            const pacienteEncontrado = await this.buscarPacienteExistente(_createPacienteDto.dni,0);
+            const pacienteEncontrado = await this.buscarPacienteExistente(_createPacienteDto.dni!,0);
             if(pacienteEncontrado[0]) return ["El paciente ya existe"]
             const object= CreatePacienteDto.toObject(_createPacienteDto);
-            console.log(object);
-            
             const crearPaciente = await Pacientes.create(
                 object
             )
@@ -56,6 +52,23 @@ export class PacienteServices{
             return ["Error al crear el paciente"]
 
             
+        }
+    }
+    static crearPacienteNN = async(_createPacienteNNDto: CreatePacienteNNDto):Promise<[string?,Pacientes?]> => {
+
+        try {
+            
+            
+            const object= CreatePacienteNNDto.toObject(_createPacienteNNDto);
+            const crearPaciente = await Pacientes.create(
+                object
+            )
+            console.log("Paciente NN creado: " + crearPaciente.toJSON())
+            return [undefined,crearPaciente]
+
+        } catch (error) {
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPacienteNN","PacienteService", "Line 53", error as string));
+            return ["Error al crear el paciente NN"]
         }
     }
     static actualizarPaciente = async(_updatePacienteDto: UpdatePacienteDto):Promise<[string?,boolean?]> => {

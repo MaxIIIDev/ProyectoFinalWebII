@@ -4,6 +4,8 @@ import { Pacientes } from "../../data/models/pacientes";
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
+import { Mutual } from "../../data/models/mutual";
+import { CategoriaSeguro } from "../../data/models/categoriaSeguro";
 
 
 export class SeguroMedicoService{
@@ -17,14 +19,19 @@ export class SeguroMedicoService{
                         model: Pacientes,
                         as: "paciente",
 
+                    },
+                    {
+                        model: Mutual,
+                        as: "mutual",
+                    },
+                    {
+                        model: CategoriaSeguro,
+                        as: "categoria_seguro",
                     }
                     
                 ],    
                 where:{numero: numero}
             })
-           
-            
-            
             if(seguroMedicoBuscado && modo === 0){//retorna booleano
                 console.log("Seguro medico encontrado con exito y no devuelto por modo 0");
                 
@@ -35,26 +42,31 @@ export class SeguroMedicoService{
 
                 return [true ,seguroMedicoBuscado]
             }
-            
-            
         }catch(Error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarSeguroMedicoExistente","SeguroMedicoService", "Line 25", Error as string);           
-            
+            console.log("No se encontro el seguro medico");
+            return [false, undefined]
         }
-        console.log("No se encontro el seguro medico");
-        
-        return [false, undefined]
-
-
+        return [false, undefined]   
     }
     static buscarSeguroMedico = async(id:number):Promise<[boolean?,any?]> =>{
 
         try{
             const seguroMedicoBuscado =  await Paciente_seguro_medico.findOne({
-                include:[{
+                include:[
+                    {
                     model: Pacientes,
-                    as: "paciente",
-                }],
+                    as: "paciente"
+                    },
+                    {
+                        model: Mutual,
+                        as: "mutual"
+                    },
+                    {
+                        model: CategoriaSeguro,
+                        as: "categoria_seguro"
+                    }
+                ],
                 where:{id_seguro_medico: id}})
             if(seguroMedicoBuscado ){ //retorna el objeto
                 console.log("Seguro medico encontrado con exito devuelto por modo 1");
@@ -63,39 +75,28 @@ export class SeguroMedicoService{
             }
         }catch(Error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarSeguroMedicoExistente","SeguroMedicoService", "Line 25", Error as string);           
-            
+            return [false, undefined]
         }
         console.log("No se encontro el seguro medico");
-        
         return [false, undefined]
-
-
     }
 
-    static createSeguroMedico = async(createSeguroMedicoDto:CreateSeguroMedicoDto):Promise<[(string | undefined)?, (boolean | undefined)?]> =>{
+    static createSeguroMedico = async(createSeguroMedicoDto:CreateSeguroMedicoDto):Promise<[(string | undefined)?, Paciente_seguro_medico?]> =>{
 
         try{
             const seguroMedicoEncontrado = await this.buscarSeguroMedicoExistente(createSeguroMedicoDto.numero,0);
-            if(seguroMedicoEncontrado[0]) return ["El seguro médico ya existe",false]
+            if(seguroMedicoEncontrado[0]) return ["El seguro médico ya existe",undefined]
             const object= CreateSeguroMedicoDto.toObject(createSeguroMedicoDto);
-            
-            
-            const crearSeguroMedico = await Paciente_seguro_medico.create(
+            const seguroMedicoCreado = await Paciente_seguro_medico.create(
                 object
             )
-            if(crearSeguroMedico) console.log("Seguro médico creado: " )
+            if(seguroMedicoCreado) console.log("Seguro médico creado: " )
             
-            return [undefined,true]
+            return [undefined,seguroMedicoCreado]
         }catch(Error){
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("createSeguroMedico","SeguroMedicoService", "Line 48", Error as string);
-                       
-            return ["Error al crear el seguro médico",false]
-
-            
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("createSeguroMedico","SeguroMedicoService", "Line 99", Error as string);
+            return ["Error al crear el seguro médico",undefined]
         }
-
-
-
     } 
 
     static updateSeguroMedico = async(updateSeguroMedicoDto:UpdateSeguroMedicoDto):Promise<[string?, boolean?]> =>{
@@ -105,15 +106,19 @@ export class SeguroMedicoService{
             if(!seguroMedicoEncontrado[0]){
                return ["No se encontro al seguro médico"];
             }
-            const object = UpdateSeguroMedicoDto.toObject(updateSeguroMedicoDto);
-            const [filasActualizadas] = await Paciente_seguro_medico.update(object,{where:{
+            const [error, confirmacion] = await this.validarQueElSeguroMedicoNoEsteAsignado(updateSeguroMedicoDto.numero!);
+            if(!confirmacion){
+                return [error];
+            }
+            const updateSeguroMedicoToObject = UpdateSeguroMedicoDto.toObject(updateSeguroMedicoDto);
+            const [filasActualizadas] = await Paciente_seguro_medico.update(updateSeguroMedicoToObject,{where:{
                 numero: seguroMedicoEncontrado[1]!.dataValues.numero
             }})
           
             if(filasActualizadas === 0){
                 throw Error("no se actualizo el seguro médico")
             }
-            console.log("Seguro médico actualizado: " + object)
+            console.log("Seguro médico actualizado: " + updateSeguroMedicoToObject)
             return [undefined,true]
 
         } catch (error) {
@@ -121,7 +126,7 @@ export class SeguroMedicoService{
             return ["Error al actualizar el seguro médico", false]
         }
     }
-    static validarQueElSeguroMedicoNoEsteAsignado = async(numeroSeguroMedico:number):Promise<[string?, boolean?]> =>{
+    static validarQueElSeguroMedicoNoEsteAsignado = async(numeroSeguroMedico:number):Promise<[string?, boolean?]> =>{ //*Deberia funcionar
 
         try{
 

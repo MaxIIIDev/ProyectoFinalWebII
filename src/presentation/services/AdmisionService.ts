@@ -1,5 +1,9 @@
 import { Admision } from "../../data/models/admision"
+import { Hospital_camas } from "../../data/models/hospital_camas";
+import { motivo_De_Internacion } from "../../data/models/motivo_De_Internacion";
 import { Pacientes } from "../../data/models/pacientes";
+import { Prioridad_De_Atencion } from "../../data/models/prioridadDeAtencion";
+import { tipo_De_Admision } from "../../data/models/tipo_de_admision";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
 import { CamaService } from "./Hospital/CamaService";
@@ -19,8 +23,8 @@ export class AdmisionService {
             }
             const admisionCreada = await Admision.create(CrearAdmisionDto.toObject(crearAdmisionDto))
             if(!admisionCreada) return ["No se creo la admision"]
-             if(admisionCreada){
-                 CamaService.marcarCamaComoOcupada(admisionCreada.dataValues.id_Cama)
+             if(admisionCreada){ 
+                 CamaService.marcarCamaComoOcupada(admisionCreada.dataValues.id_Cama) //todo: revisar
              }
             console.log("Se creo la admision" + admisionCreada.toJSON());
             return [ undefined,true,admisionCreada]
@@ -29,13 +33,58 @@ export class AdmisionService {
         }
     }
 
-    public static async buscarTodasLasAdmisiones(): Promise<[string?, Admision[]?]> {
+    public static async buscarTodasLasAdmisiones(modo:number): Promise<[string?, Admision[]?]> {
         try {
-            const admisiones = await Admision.findAll({
+            if(modo === 1){ //*modo 1 trae todas las admisiones
+                const admisiones = await Admision.findAll({
+                    include: [
+                        {
+                            model: Pacientes,
+                            as: "pacientes"
+                        },
+                        {
+                            model: Hospital_camas,
+                            as: "camas"
+                        },
+                        {
+                            model: motivo_De_Internacion,
+                            as: "motivo_de_internacion"
+                        },
+                        {
+                            model: Prioridad_De_Atencion,
+                            as: "prioridad_de_atencion"
+                        },
+                        {
+                            model: tipo_De_Admision,
+                            as: "tipo_de_admision"
+                        }                    
+                    ], 
+                    
+                    });
+                return [undefined, admisiones];
+            }
+            
+            const admisiones = await Admision.findAll({ // *modo normal trae solo las admisiones activas	
                 include: [
                     {
                         model: Pacientes,
                         as: "pacientes"
+                    },
+                    {
+                        model: Hospital_camas,
+                        as: "camas"
+                    },
+                    {
+                        model: motivo_De_Internacion,
+                        as: "motivo_de_internacion"
+                    },
+                    {
+                        model: Prioridad_De_Atencion,
+                        as: "prioridad_de_atencion"
+                    },
+                    {
+                        model: tipo_De_Admision,
+                        as: "tipo_de_admision"
                     }                    
                 ], 
                 where: { estado: "Activo" }
@@ -51,7 +100,7 @@ export class AdmisionService {
             return ["Error al buscar admisiones", undefined];
         }
     }
-    public static  buscarAdmisionVigentePorPaciente = async(id_Paciente:number):Promise<[string?,Admision?]> => {
+    public static  buscarAdmisionVigentePorPaciente = async(id_Paciente:number):Promise<[string?,Admision?]> => {//*Deberia funcionar
         try {
             const admisionEncontrada = await Admision.findOne({where:{
                 estado: "Activo",

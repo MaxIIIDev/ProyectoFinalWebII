@@ -15,6 +15,8 @@ import { AdmisionService } from "../services/AdmisionService";
 import { GetAdmisionPorPacienteDTO } from "../../domain/Dtos/admision/GetAdmisionPorPacienteDTO";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
+import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
+import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
 
 
 
@@ -23,23 +25,34 @@ export class AdmisionController{
     public constructor(conexionbd: Conexion){
         this.conexionBd = conexionbd;
     }
-
+    ////////////////////////////////////////////////////
+    ////////////////////!VISTAS////////////////////////
+    ////////////////////////////////////////////////////
     public vistaPrincipal = async(req: Request, res:Response)=> {
         res.render("AdmisionViews/principal.pug");
        
     }
+    
+    
+
 
     public vistaEmergencia = async(req:Request, res:Response)=> {
         const alas = await AlaService.getAlaFromDb()
-              
+        const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+        for(let motivo of motivosDeInternacion[1]!){
+            console.log(motivo.dataValues);
+            
+        }
+        
         res.render("AdmisionViews/emergencia.pug", {
             error: "errorPersonalizado",
             success: "funciono bien",
             info: "habia un caracol rojo",
             warning: "fijate bien loco",
-            alas: alas
+            alas: alas,
+            motivoDeInternacion:motivosDeInternacion[1] 
         }) 
-        //res.render("AdmisionViews/emergencia.pug",{alas})
+        
     }
     public vistaBuscarPorDni = async ( req:Request, res:Response)=> {
         res.render("AdmisionViews/buscarPaciente.pug")
@@ -69,101 +82,18 @@ export class AdmisionController{
                 warning:"Se cerró la sesión del paciente"
             })
         }
-        res.render("AdmisionViews/updatePaciente.pug", {paciente: req.session.paciente})
+        
+        
+        res.render("AdmisionViews/ActualizarPaciente.pug", {paciente: req.session.paciente})
     }
 
-    public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
-        try {
-            const { ala, unidad, genero, motivo } = req.body;
-            
-
-            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
-            let pacienteAnonimo;
-            if (habitaciones[0]) {
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
-
-                const alas = await AlaService.getAlaFromDb();
-                res.render("AdmisionViews/emergencia.pug", {
-                    error: `${habitaciones[0]}`,
-                    alas: alas
-                });
-                return;
-            }
-            if(genero =="Masculino"){
-                pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
-            }else{
-                pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
-            }
-            
-            
-            const[ error, pacienteListoDto] = await CreatePacienteDto.create(pacienteAnonimo)
-            if(error){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56",error)
-                const alas = await AlaService.getAlaFromDb();
-                res.status(500).render("AdmisionViews/emergencia.pug", {
-                    error: `${error}`,
-                    alas: alas
-                });
-                return
-            }
-            const [errorAlCrear, pacienteCreado] = await PacienteServices.crearPaciente(pacienteListoDto!)
-            
-            if(errorAlCrear){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("AdmitirPacienteDeEmergencia","AdmisionController","72",errorAlCrear)
-                const alas = await AlaService.getAlaFromDb();
-                res.status(500).render("AdmisionViews/emergencia.pug", {
-                    error: `${errorAlCrear}`,
-                    alas: alas
-                });
-                return
-            }
-           
-            const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
-                tipo_De_Admision: "Emergencia",
-                motivo_De_Internacion: motivo,
-                id_Paciente: pacienteCreado?.dataValues.id_Paciente,
-                id_Cama: habitaciones[1][0].camas.id_cama_1
-            })
-            if(errorDto){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","70",errorDto)
-                const alas = await AlaService.getAlaFromDb();
-                res.render("AdmisionViews/emergencia.pug", {
-                    error: `${errorDto}`,
-                    alas: alas
-                });
-                return;
-            }
-            
-            const [errorAlCrearAdmision,confirmacion, admisionCreada] = await AdmisionService.crearAdmision(CrearAdmisionDto.toObject(crearAdmisionDTO!))
-            if(!confirmacion){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","83",errorAlCrearAdmision!)
-
-                const alas = await AlaService.getAlaFromDb();
-                res.render("AdmisionViews/emergencia.pug", {
-                    error: `${errorAlCrearAdmision}`,
-                    alas: alas
-                });
-                return;
-            }
-            
-
-            res.render("AdmisionViews/habitacion.pug", {
-                success: "Paciente Admitido",
-                habitacion: habitaciones[1][0]
-            });
-        } catch (error) {
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController","107",error as string)
-            const alas = await AlaService.getAlaFromDb();
-            res.status(500).render("AdmisionViews/emergencia.pug", {
-                error: error instanceof Error ? error.message : "Error desconocido",
-                alas: alas
-            });
-        }
-    };
-
+    
+    ////////////////////////////////////////////////////
+    ////////////////////!PACIENTES//////////////////////
+    ////////////////////////////////////////////////////
     public registrarPaciente = async(req:Request,res:Response) =>  {
        
-            console.log(req.body);
+           
             
         try {
             const [ error, createPacienteDto ] = CreatePacienteDto.create(req.body);
@@ -180,20 +110,20 @@ export class AdmisionController{
             }
             if(!pacienteCreado){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarPaciente","AdmisionController","34","La bd no pudo crear el paciente")
-                //res.status(500).render("error",{message: "El paciente ya existe"})
+                
                 res.render("AdmisionViews/principal.pug",{
                     error: "El paciente no se ha creado"})
             }
-            //res.status(200).render("confirmacion",{message: "Paciente creado"}); Enviar con render          
+                
             req.session.paciente = pacienteCreado?.dataValues;
-            console.log(req.session.paciente);
+            
             res.render("AdmisionViews/vistaPaciente.pug", {
                 paciente: req.session.paciente
             })
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 30",error as string);
-            //res.status(500).render("error",{message: "Error al registrar el paciente"})
+            
             res.render("AdmisionViews/CrearPaciente.pug",{
                 error: `${error}`,
                 warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
@@ -207,7 +137,12 @@ export class AdmisionController{
         try {
             const dniRecibido = req.query.dni ;
             if(!dniRecibido){
-                res.status(404).json("Se requiere el dni")
+               
+                res.status(500).render("AdmisionViews/buscarPaciente.pug", {
+                     error:"Se requiere el dni"
+                })
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","217","Se requiere el dni");
+                return
             }
             const dni = dniRecibido ? parseInt(dniRecibido as string) : NaN;
             const [errorDto, getPacienteDto] = GetPacienteDto.create(dni);
@@ -215,25 +150,24 @@ export class AdmisionController{
                 res.status(500).render("AdmisionViews/buscarPaciente.pug", {
                      error:`${errorDto}`
                 })
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","114",errorDto);
-                //res.status(403).json(errorDto)
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","208",errorDto);
+                return
             }
             const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
             if(!errorBusqueda){
-                // res.status(404).render("AdmisionViews/buscarPaciente.pug",{
-                //      error: "No se encontro el paciente"
-                // })
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","122","ERROR: No se encontro el paciente")
-                //res.status(404).json("ERROR: No se encontro el paciente")
+                
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","208","ERROR: No se encontro el paciente")
+                
                 res.render("AdmisionViews/CrearPaciente.pug", {
                     warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
                 })
+                return
             }
             req.session.paciente = pacienteEncontrado?.dataValues;
-            console.log(req.session.paciente);
+            
             res.status(200).render("AdmisionViews/vistaPaciente",{paciente: req.session.paciente})
         } catch (error) {
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","128",error as string)
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","208",error as string)
             res.status(500).json(error as string)
             res.status(500).render("AdmisionViews/buscarPaciente.pug",{
                 error: `${error}`
@@ -246,17 +180,13 @@ export class AdmisionController{
             const dniRecibido = req.params.dni ;
             const [errorDto, getPacienteDto] = GetPacienteDto.create(parseInt(dniRecibido));
             if(errorDto){
-                // res.status(500).render("vista", {
-                //     error:errorDto
-                // })
+                
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","141",errorDto)
                 res.status(403).json(errorDto)
             }
             const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
             if(!errorBusqueda){
-                // res.status(404).render("vista",{
-                //     error: "No se encontro el paciente"
-                // })
+               
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","149","ERROR:No se encontro el paciente")
                 res.status(404).json("ERROR: No se encontro el paciente")
             }
@@ -292,18 +222,18 @@ export class AdmisionController{
                 return
             }
             req.body.id_Paciente = req.session.paciente!.id_Paciente;
-            if(!req.body.nombre && req.session.paciente.nombre) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el nombre vacio", paciente: req.session.paciente})
-            if(!req.body.apellido && req.session.paciente.apellido) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente})
-            if(!req.body.direccion && req.session.paciente.direccion) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente})
-            if(!req.body.telefono && req.session.paciente.telefono) res.render("AdmisionViews/updatePaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente})
+            if(!req.body.nombre && req.session.paciente.nombre) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el nombre vacio", paciente: req.session.paciente})
+            if(!req.body.apellido && req.session.paciente.apellido) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente})
+            if(!req.body.direccion && req.session.paciente.direccion) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente})
+            if(!req.body.telefono && req.session.paciente.telefono) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente})
             const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body, req.session.paciente);
             
             if(error){
                 throw new Error(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error));               
             }
-            // Convertir ambos a string para comparar correctamente
+            
             if(String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)){
-                res.render("AdmisionViews/updatePaciente.pug",{
+                res.render("AdmisionViews/ActualizarPaciente.pug",{
                     error: "No se puede cambiar el dni del paciente, notifique al administrador",
                     paciente: req.session.paciente
                 })
@@ -312,20 +242,19 @@ export class AdmisionController{
             const [errorInService, confirmacion] = await PacienteServices.actualizarPaciente(updatePacienteDto!); 
             if(errorInService){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarPaciente","AdmisionController","57",errorInService);    
-                res.render("AdmisionViews/updatePaciente.pug",{
+                res.render("AdmisionViews/ActualizarPaciente.pug",{
                     error: `${errorInService}`,
                     paciente: req.session.paciente
                 })
                 return
             }
             if(confirmacion){
-                //Enviar con render
-                
+                               
                 const pacienteEncontrado = await PacienteServices.buscarPacienteExistente(updatePacienteDto!.dni!,1)
                 if(pacienteEncontrado[0]) req.session.paciente = pacienteEncontrado[1]?.dataValues;
                 
                 
-                res.render("AdmisionViews/updatePaciente.pug",{
+                res.render("AdmisionViews/ActualizarPaciente.pug",{
                     success: "Paciente actualizado",
                     paciente: req.session.paciente
                 })
@@ -334,7 +263,7 @@ export class AdmisionController{
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 40", error as string);
-            res.render("AdmisionViews/updatePaciente.pug",{
+            res.render("AdmisionViews/ActualizarPaciente.pug",{
                     error: `${error}`,
                     paciente: req.session.paciente
 
@@ -343,7 +272,10 @@ export class AdmisionController{
             return;            
         }
     }
-    public getSeguroMedico = async(req:Request, res:Response) => {
+    ///////////////////////////////////////////////////
+    ////////////////////!SEGURO MEDICO/////////////////
+    ///////////////////////////////////////////////////
+    public getSeguroMedico = async(req:Request, res:Response) => { //todo: DEBERIA FUNCIONAR
 
         try {
             const [errorDto, numeroDeSeguroMedico] = getSeguroMedicoDTO.create(req.params.numero)
@@ -363,45 +295,43 @@ export class AdmisionController{
         }
 
     }
-    public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => {
+    // public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => { //!deprecated: creo que no va aser utilizado
 
-        try{
-            console.clear();
-            
-            const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
-            if(error){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
+    //     try{
+    //         const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
+    //         if(error){
+    //             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
                 
                 
-                res.status(404).json(`${error}`)
-                return
-            }
-            const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
-            if(errorCrearSeguroMedico && !confirmacion){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
-                //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
-                res.status(500).json({messageError: errorCrearSeguroMedico})
-                return;
-            }
-            if(confirmacion){
-                const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente);
-                if(errorAsignarSeguroMedico && !confirmacionAsignar){
-                    HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
-                    //res.status(500).render("error",{message: "Error al asignar el seguro médico"})//Enviar con render
-                    res.status(500).json({messageError: errorAsignarSeguroMedico})
-                    return;
-                }else{
-                    res.status(200).json({message: "Todo ok, se le asigno el seguro medico al paciente"})
-                }
-            }
-        }catch(error){
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
-            //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
-            res.status(500).json({message: (error instanceof Error) ? error.message : "Unknown error"})
+    //             res.status(404).json(`${error}`)
+    //             return
+    //         }
+    //         const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
+    //         if(errorCrearSeguroMedico && !confirmacion){
+    //             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
+    //             //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+    //             res.status(500).json({messageError: errorCrearSeguroMedico})
+    //             return;
+    //         }
+    //         if(confirmacion){
+    //             const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente);
+    //             if(errorAsignarSeguroMedico && !confirmacionAsignar){
+    //                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
+    //                 //res.status(500).render("error",{message: "Error al asignar el seguro médico"})//Enviar con render
+    //                 res.status(500).json({messageError: errorAsignarSeguroMedico})
+    //                 return;
+    //             }else{
+    //                 res.status(200).json({message: "Todo ok, se le asigno el seguro medico al paciente"})
+    //             }
+    //         }
+    //     }catch(error){
+    //         HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
+    //         //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
+    //         res.status(500).json({message: (error instanceof Error) ? error.message : "Unknown error"})
             
-        }
-    }
-    public actualizarSeguroMedico = async(req:Request,res:Response) => {
+    //     }
+    // }
+    public actualizarSeguroMedico = async(req:Request,res:Response) => { //todo: Deberia funcionar pero hay que adaptarlo y testearlo
 
         try {
             console.log(req.body);
@@ -427,16 +357,34 @@ export class AdmisionController{
         }
 
     }
-    public getTodasLasAdmisiones = async(req:Request,res:Response) => {
+    ////////////////////////////////////////////////
+    //////////////!ADMISIONES///////////////////////
+    ////////////////////////////////////////////////
+    public getTodasLasAdmisiones = async(req:Request,res:Response) => { //!Deberia traer todas las admisiones
 
         try {
             
-            const [ errorDeBusqueda, admisiones ] = await AdmisionService.buscarTodasLasAdmisiones();
+            const [ errorDeBusqueda, admisiones ] = await AdmisionService.buscarTodasLasAdmisiones(1);
             if(errorDeBusqueda){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
                 res.status(404).json(`${errorDeBusqueda}`)
             }
             res.status(200).json(admisiones)
+        } catch (error) {
+            res.status(500).json(error as string)
+        }
+
+    }
+    public getTodasLasAdmisionesActivas = async(req:Request,res:Response) => { //!Deberia traer todas las admisiones activas
+
+        try {
+            
+            const [ errorDeBusqueda, admisionesActivas ] = await AdmisionService.buscarTodasLasAdmisiones(0);
+            if(errorDeBusqueda){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
+                res.status(404).json(`${errorDeBusqueda}`)
+            }
+            res.status(200).json(admisionesActivas)
         } catch (error) {
             res.status(500).json(error as string)
         }
@@ -472,6 +420,108 @@ export class AdmisionController{
         }
 
     }
+    public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
+        try {
+            console.log(req.body);
+            
+            const { ala, unidad, genero, id_motivo_de_Internacion } = req.body;
+            
+
+            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
+            let pacienteAnonimo;
+            if (habitaciones[0]) {
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
+
+                const alas = await AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${habitaciones[0]}`,
+                    alas: alas,
+                    motivoDeInternacion: motivosDeInternacion[1]
+                });
+                return;
+            }
+            if(genero =="Masculino"){
+                pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
+            }else{
+                pacienteAnonimo = PacienteAnonimo.getPacienteFemenina()
+            }
+            
+            
+            const[ error, pacienteListoDto] = await CreatePacienteNNDto.create(pacienteAnonimo)
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","439",error)
+                const alas = await AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+                res.status(500).render("AdmisionViews/emergencia.pug", {
+                    error: `${error}`,
+                    alas: alas,
+                    motivoDeInternacion: motivosDeInternacion[1]
+                });
+                return
+            }
+            const [errorAlCrear, pacienteCreado] = await PacienteServices.crearPacienteNN(pacienteListoDto!)
+            
+            if(errorAlCrear){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("AdmitirPacienteDeEmergencia","AdmisionController","72",errorAlCrear)
+                const alas = await AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+                res.status(500).render("AdmisionViews/emergencia.pug", {
+                    error: `${errorAlCrear}`,
+                    alas: alas,
+                    motivoDeInternacion: motivosDeInternacion[1]
+                });
+                return
+            }
+           
+            const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
+                
+                id_motivo_de_Internacion: id_motivo_de_Internacion, //!CAMBIAR EN LA VISTA POR UN SELECT Y HACER UN METODO PARA TRAER LOS MOTIVOS
+                id_prioridad_de_atencion: 2,
+                id_tipo_de_admision: 3,
+                id_Paciente: pacienteCreado?.dataValues.id_Paciente,
+                id_Cama: habitaciones[1][0].camas.id_cama_1
+            })
+            if(errorDto){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","468",errorDto)
+                const alas = await AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${errorDto}`,
+                    alas: alas,
+                    motivoDeInternacion: motivosDeInternacion[1]
+                });
+                return;
+            }
+            //!ESTAMOS ACA
+            const [errorAlCrearAdmision,confirmacion, admisionCreada] = await AdmisionService.crearAdmision(CrearAdmisionDto.toObject(crearAdmisionDTO!))
+            if(!confirmacion){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","479",errorAlCrearAdmision!)
+                const alas = await AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${errorAlCrearAdmision}`,
+                    alas: alas,
+                    motivoDeInternacion: motivosDeInternacion[1] 
+                });
+                return;
+            }
+            res.render("AdmisionViews/habitacion.pug", {
+                success: "Paciente Admitido",
+                habitacion: habitaciones[1][0],
+                id_Paciente: pacienteCreado?.dataValues.id_Paciente
+            });
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController","107",error as string)
+            const alas = await AlaService.getAlaFromDb();
+            const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            res.status(500).render("AdmisionViews/emergencia.pug", {
+                error: error instanceof Error ? error.message : "Error desconocido",
+                alas: alas,
+                motivoDeInternacion: motivosDeInternacion[1]
+            });
+        }
+    };
     // public getHabitacionesByGender = async(req:Request,res:Response) => {
     //     try{
     //         const {ala,unidad,genero,motivo} = req.body;
