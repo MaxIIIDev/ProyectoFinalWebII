@@ -2,6 +2,7 @@ import { Admision } from "./admision";
 import { CategoriaSeguro } from "./categoriaSeguro";
 import { Enfermero } from "./enfermeros";
 import { Especialidad } from "./Especialidad";
+import { horarios_Turnos } from "./horarios_Turnos";
 import { Hospital_alas } from "./hospital_alas";
 import { Hospital_camas } from "./hospital_camas";
 import { Hospital_habitaciones } from "./hospital_habitaciones";
@@ -39,6 +40,7 @@ import { Turnos } from "./turnos";
 import { Usuarios } from "./usuarios";
 
 export const importaciones = [
+    horarios_Turnos,
     Mutual,
     nombre_Alergia,
     nombre_Prueba_Diagnostica,

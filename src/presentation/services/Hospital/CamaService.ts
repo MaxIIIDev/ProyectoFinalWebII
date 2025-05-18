@@ -60,7 +60,7 @@ export class CamaService{
 
     }
     static marcarCamaComoOcupada = async(id_Cama: number):Promise<[string?,Hospital_camas["dataValues"]?]> => {
-
+        //*TESTEADO
         try {
             const camaEncontrada = await this.buscarCama(id_Cama);
             if(camaEncontrada[0]){
@@ -80,6 +80,7 @@ export class CamaService{
         }
     }
     static marcarCamaComoLibre = async(id_Cama: number):Promise<[string?,boolean?]> => {//!SIn test, me tome unas cervezas de mas
+        //*TESTEADO
         try {
             const camaEncontrada = await this.buscarCama(id_Cama);
             if(camaEncontrada[0]){

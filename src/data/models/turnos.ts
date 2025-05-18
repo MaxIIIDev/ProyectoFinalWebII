@@ -1,6 +1,7 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./pacientes";
 import { Medicos } from "./medicos";
+import { horarios_Turnos } from "./horarios_Turnos";
 
 
 @Table
@@ -16,10 +17,12 @@ export class Turnos extends Model{
     @Column(DataType.DATE)
     declare fecha: Date;
 
-    @AllowNull(false)
-    @NotNull
-    @Column(DataType.DATE)
-    declare horario:Date;
+    @ForeignKey(()=> horarios_Turnos)
+    @Column(DataType.INTEGER)
+    declare id_horario_turno: number
+
+    @BelongsTo(()=> horarios_Turnos)
+    declare horario_turno: horarios_Turnos
 
     @AllowNull(false)
     @NotNull

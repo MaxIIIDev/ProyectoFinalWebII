@@ -513,6 +513,7 @@ export class AdmisionController{
                 
                 id_motivo_de_Internacion: id_motivo_de_Internacion, 
                 id_tipo_de_admision: 3,
+                id_prioridad_de_atencion: 1,
                 id_Paciente: pacienteCreado?.dataValues.id_Paciente,
                 id_Cama: habitaciones[1][0].camas.id_cama_1
             })
@@ -604,6 +605,16 @@ export class AdmisionController{
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("altaLogicaAdmision","AdmisionController","Line 584",error as string)
         }
     }
+    ///////////////////////////////////////////////
+    ////////////////!TURNOS///////////////////////
+    ///////////////////////////////////////////////
 
+    public crearTurno = async(req:Request,res:Response) => {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
 
 }

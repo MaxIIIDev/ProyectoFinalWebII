@@ -54,12 +54,12 @@ export class AdmisionRoutes{
         
         router.post("/create/admision", controller.crearAdmision)//todo: FALTA TESTEAR
         // router.put("/update/admision")
-        router.post("/baja", controller.bajaLogicaAdmision)//*Testeado //todo: FALTA TESTEAR
-        router.post("/alta", controller.altaLogicaAdmision)//*Testeado //todo: FALTA TESTEAR
+        router.post("/baja", controller.bajaLogicaAdmision)//*Testeado
+        router.post("/alta", controller.altaLogicaAdmision)//*Testeado 
 
         //TURNOS
         //router.post("/crear/turno")
-        // router.get("/get/turno")
+        //router.get("/get/turno")
         // router.put("/actualizar/turno")
         // router.delete("/delete/turno")
         return router

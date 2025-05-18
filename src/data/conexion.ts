@@ -95,8 +95,8 @@ export class Conexion{
     public async arrancarLaBd(){
 
         await this.authenticated();
-       // await this.sync()
+        await this.sync()
       // await this.runSeed()
 
     }
-}
+} 
