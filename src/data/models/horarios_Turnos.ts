@@ -7,7 +7,7 @@ export class horarios_Turnos extends Model{
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
-    id_horario_turno!: number;
+    declare id_horario_turno: number;
     @Column(DataType.STRING)
     declare hora: string;
 
