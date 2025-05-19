@@ -22,6 +22,16 @@ declare module "express-session" {
             direccion: string,
             id_tipo_sanguineo: number,
             id_seguro_medico: number,
+        },
+        admision: {
+            id_Admision: number,
+            estado: string,
+            id_motivo_de_Internacion: number,
+            id_prioridad_de_atencion: number,
+            id_tipo_de_admision: number,
+            fecha_de_Admision: Date,
+            id_Paciente: number,
+            id_Cama: number
         }
     }
 }
