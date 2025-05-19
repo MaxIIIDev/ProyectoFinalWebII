@@ -398,9 +398,13 @@ export class AdmisionController{
              const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
              if(errorCrearSeguroMedico && !confirmacion){
                  HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
-                 
-                 res.render("AdmisionViews/CrearSeguroMedico.pug",{
-                    error: `${errorCrearSeguroMedico}`
+                const mutuales = await SeguroMedicoService.getMutualesFromDb();
+                const categorias = await SeguroMedicoService.getCategoriasFromDb();
+                res.render("AdmisionViews/CrearSeguroMedico.pug", {
+                    paciente: req.session.paciente,
+                    error: `${errorCrearSeguroMedico}`,
+                    mutuales: mutuales[1],
+                    categorias: categorias[1]
                 })
                  return;
              }
