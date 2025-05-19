@@ -114,7 +114,8 @@ export class AdmisionController{
                 res.redirect("/admision/crear/seguro/medico")
                 return
             }
-
+            res.redirect("/admision/actualizar/seguro/medico")
+            return
         } catch (error) {
             res.render("AdmisionViews/vistaPaciente.pug",{
                 paciente: req.session.paciente,
@@ -123,6 +124,7 @@ export class AdmisionController{
         }
 
     }
+
     public vistaActualizarPaciente = async(req:Request, res:Response) => {
         try {
             if(!req.session.paciente){
@@ -147,7 +149,7 @@ export class AdmisionController{
                     warning:"Se cerró la sesión del paciente"
                 })
             }
-            console.log(categorias[1]);
+            
             
             res.render("AdmisionViews/CrearSeguroMedico.pug", {
                 paciente: req.session.paciente,
@@ -160,6 +162,35 @@ export class AdmisionController{
             })
         }
         
+
+    }
+    public vistaActualizarSeguroMedico = async(req:Request, res:Response) =>{
+
+        try {
+            if(!req.session.paciente){
+                res.render("AdmisionViews/principal.pug",{
+                    warning: "Se cerro la sesion"
+                })
+                return
+            }
+            const mutuales = await SeguroMedicoService.getMutualesFromDb();
+            const categorias = await SeguroMedicoService.getCategoriasFromDb();
+            const seguroMedico = await SeguroMedicoService.buscarSeguroMedico(req.session.paciente?.id_seguro_medico!)
+            
+            console.log(seguroMedico[1].dataValues.categoria_seguro.dataValues);
+            
+            
+            res.render("AdmisionViews/actualizarSeguroMedico", {
+                paciente: req.session.paciente,
+                mutuales: mutuales[1],
+                categorias: categorias[1],
+                seguroMedico: seguroMedico[1].dataValues
+            })
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`
+            })
+        }
 
     }
 

@@ -28,8 +28,8 @@ export class AdmisionRoutes{
          //!: 3.2- Vista panel principal de paciente
         router.get("/find/paciente", controller.buscarPacientePorDni); //*: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
          //!3.3- Vista de crear seguro medico
-         router.get("/crear/seguro/medico", controller.vistaCrearSeguroMedico) //*:Comprobado
-        
+        router.get("/crear/seguro/medico", controller.vistaCrearSeguroMedico) //*:Comprobado
+        router.get("/actualizar/seguro/medico", controller.vistaActualizarSeguroMedico)
         
 
         //!: 4- Vista de actualizar paciente

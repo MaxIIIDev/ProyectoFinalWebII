@@ -33,3 +33,13 @@ mixin agregarCategoriasDesdeDb(categorias)
     for categoria of categorias
         option(value=categoria.dataValues.id_Categoria_Seguro
         ) #{categoria.dataValues.nombre}           
+
+mixin agregarMutualesYSeleccionar(mutuales,seguroMedico)
+    for mutual of mutuales
+        option(value=mutual.dataValues.id_mutual selected=(seguroMedico.mutual.dataValues.id_mutual === mutual.dataValues.id_mutual)
+        ) #{mutual.dataValues.nombre}
+
+mixin agregarCategoriasYSeleccionar(categorias,seguroMedico)
+    for categoria of categorias
+        option(value=categoria.dataValues.id_Categoria_Seguro selected=(seguroMedico.categoria_seguro.dataValues.id_Categoria_Seguro === categoria.dataValues.id_Categoria_Seguro)
+        ) #{categoria.dataValues.nombre}           
