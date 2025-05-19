@@ -12,6 +12,16 @@ import { CamaService } from "./Hospital/CamaService";
 
 export class AdmisionService {
 
+    public static getTiposDeAdmision = async():Promise<[string?,tipo_De_Admision[]?]> => {//!Programar
+        try {
+            const tiposDeAdmision: tipo_De_Admision[] = await tipo_De_Admision.findAll();
+            if(!tipo_De_Admision) return ["No se obtuvo los registros de tiposDeAdmision", undefined]
+            return [undefined, tiposDeAdmision]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTiposDeAdmision","AdmisionService","22",error as string)
+            return [error as string]
+        }
+    }
 
     public static crearAdmision = async(crearAdmisionDto: CrearAdmisionDto):Promise<[(string | undefined)?, (boolean | undefined)?, (Admision | undefined)?]> => {
         try {
@@ -142,4 +152,5 @@ export class AdmisionService {
             return [error as string]
         }
     }
+    
 }

@@ -6,7 +6,7 @@ import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 export class AlaService{
 
 
-    static getAlaFromDb = async() => {
+    static getAlaFromDb = async() => { //*DEVUELVE UN ARREGLO CON LAS ALAS DE LA BASE DE DATOS VALIDANDO QUE NO SEAN DUPLICADAS
         
         try {
             
