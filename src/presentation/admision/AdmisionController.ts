@@ -45,10 +45,10 @@ export class AdmisionController{
             const alas = await AlaService.getAlaFromDb()
             const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
             res.render("AdmisionViews/emergencia.pug", {
-                error: "errorPersonalizado",
-                success: "funciono bien",
-                info: "habia un caracol rojo",
-                warning: "fijate bien loco",
+                //error: "errorPersonalizado",
+                //success: "funciono bien",
+                //info: "habia un caracol rojo",
+                //warning: "fijate bien loco",
                 alas: alas,
                 motivoDeInternacion:motivosDeInternacion[1] 
             }) 
@@ -83,11 +83,27 @@ export class AdmisionController{
         }
     }
     public vistaPrincipalPaciente = async( req:Request, res:Response)=> {//todo: Posiblemente no se use
+        const error = req.query.error as string | undefined;
+        const confirmacion = req.query.confirmacion as string | undefined;
         try {
             const paciente = req.session.paciente;
             if(!paciente){
                 res.render("AdmisionViews/buscarPaciente.pug", {
                     warning: "Se cerró la sesión del paciente"})
+                return
+            }
+            if(error){
+                    res.render("AdmisionViews/vistaPaciente.pug", {
+                        paciente:paciente,
+                        error: `${error}`}
+                    )
+                return
+            }
+            if(confirmacion){
+                res.render("AdmisionViews/vistaPaciente.pug", {
+                    paciente:paciente,    
+                    success: `${confirmacion}`}
+                    )
                 return
             }
             res.render("AdmisionViews/vistaPaciente.pug" , {paciente: paciente})
@@ -165,7 +181,8 @@ export class AdmisionController{
 
     }
     public vistaActualizarSeguroMedico = async(req:Request, res:Response) =>{
-
+        const error = req.query.error as string | undefined;
+        const confirmacion = req.query.confirmacion as string | undefined;
         try {
             if(!req.session.paciente){
                 res.render("AdmisionViews/principal.pug",{
@@ -178,7 +195,26 @@ export class AdmisionController{
             const seguroMedico = await SeguroMedicoService.buscarSeguroMedico(req.session.paciente?.id_seguro_medico!)
             
             console.log(seguroMedico[1].dataValues.categoria_seguro.dataValues);
-            
+            if(error){
+                res.render("AdmisionViews/actualizarSeguroMedico", {
+                paciente: req.session.paciente,
+                mutuales: mutuales[1],
+                categorias: categorias[1],
+                seguroMedico: seguroMedico[1].dataValues,
+                error:`${error}`
+                })
+                return
+            }
+            if(confirmacion){
+                res.render("AdmisionViews/actualizarSeguroMedico", {
+                paciente: req.session.paciente,
+                mutuales: mutuales[1],
+                categorias: categorias[1],
+                seguroMedico: seguroMedico[1].dataValues,
+                success:`${confirmacion}`
+                })
+                return
+            }
             
             res.render("AdmisionViews/actualizarSeguroMedico", {
                 paciente: req.session.paciente,
@@ -398,7 +434,7 @@ export class AdmisionController{
         }
 
     }
-     public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => { //!deprecated: creo que no va a ser utilizad
+     public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => { //*FUNCA
          try{
             if(!req.session.paciente){
                     res.render("AdmisionViews/principal.pug",{
@@ -449,12 +485,11 @@ export class AdmisionController{
                     return;
                 }
             }
-            res.render("AdmisionViews/vistaPaciente.pug", { 
-                    paciente: req.session.paciente,
-                    success: "Se creo y asigno el seguro al paciente"
-                })
-            console.log("Se creo el seguro y se le asigno al paciente");
+            req.session.paciente!.id_seguro_medico = confirmacion?.dataValues.id_seguro_medico;
+            res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se creo y asigno el seguro al paciente")}`)
             
+            console.log("Se creo el seguro y se le asigno al paciente");
+            return
          }catch(error){
              HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
             res.render("AdmisionViews/CrearSeguroMedico.pug",{
@@ -466,26 +501,24 @@ export class AdmisionController{
     public actualizarSeguroMedico = async(req:Request,res:Response) => { //todo: Deberia funcionar pero hay que adaptarlo y testearlo
 
         try {
-            console.log(req.body);
             const[ error, updateSeguroMedicoDto] = UpdateSeguroMedicoDto.create(req.body);
-
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 117", error);
-                res.status(404).json(`${error}`)//Enviar con render
-                
+                return res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(error)}`)             
             }
-            const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!);
+            const [errorInService, confirmacion] = await SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto!,req.session.paciente!.id_seguro_medico,req.session.paciente!.id_Paciente);
             if(errorInService && !confirmacion){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 123", errorInService);
-                //res.status(500).render("error",{message: "Error al actualizar el seguro médico"})//Enviar con render
-                res.status(404).json(`${errorInService}`)
+                return res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(errorInService)}`)             
+
             }
-            console.log("Seguro médico actualizado: " + updateSeguroMedicoDto);
-            res.status(200).json({message: "Seguro medico actualizado"})
-            
+            console.log("Seguro médico actualizado: ");
+            res.redirect(`/admision/actualizar/seguro/medico?confirmacion=${encodeURIComponent("Seguro medico actualizado")}`);
+            return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico","AdmisionController", "Line 130",error as string);
-            res.status(500).json({messageError: error instanceof Error ? error.message : "error desconocido"})
+            res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(error as string)}`)
+            return
         }
 
     }

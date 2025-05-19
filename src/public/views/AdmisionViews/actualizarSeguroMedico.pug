@@ -75,7 +75,7 @@ html(lang="es")
                 | Actualizar Seguro Médico
 
             .card-body.p-4
-              form(action="/admision/registrar/seguro/medico", method="POST")
+              form(action="/admision/actualizar/seguro/medico", method="POST")
                 .mb-4
                   label.form-label.fw-bold(for="id_mutual")
                     i.bi.bi-building.me-2
@@ -102,8 +102,8 @@ html(lang="es")
                     i.bi.bi-card-checklist.me-2
                     | Estado
                   select.form-select.py-2(name="estado")
-                    option(value=true, selected=(seguroMedico.estado === true)) Activo
-                    option(value=false,selected= (seguroMedico.estado === false)) Inactivo
+                    option(value="true", selected=(seguroMedico.estado === true)) Activo
+                    option(value="false",selected= (seguroMedico.estado === false)) Inactivo
 
                 .d-grid.gap-2.d-md-flex.justify-content-md-end.mt-4
                   

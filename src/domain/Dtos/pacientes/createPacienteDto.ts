@@ -53,7 +53,7 @@ export class CreatePacienteDto{
         if(!genero) return ["Se requiere el genero"]
         if(!direccion) return ["Se requiere la direccion"]
         let edadCalculada;
-        if(fecha_nac > new Date()) return ["La fecha de nacimiento no puede ser mayor a la fecha actual"]
+        if(new Date(fecha_nac) > new Date()) return ["La fecha de nacimiento no puede ser mayor a la fecha actual"]
         if(fecha_nac){
             edadCalculada = calcularEdad(fecha_nac)
         }

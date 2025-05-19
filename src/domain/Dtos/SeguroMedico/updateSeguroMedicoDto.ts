@@ -27,10 +27,13 @@ export class UpdateSeguroMedicoDto {
                 return ["Se requiere: id_mutual , numero, estado(opcional), id_categoria_seguro(opcional)"]
             }
             const { id_mutual, numero, estado, id_categoria_seguro } = object;
-
+            let estadoModificado;
             if (!numero) return ["Se requiere el número del seguro médico"];
-    
-            return [undefined, new UpdateSeguroMedicoDto(id_mutual,numero, estado, id_categoria_seguro)];
+            if(estado){
+                if(estado == "true") estadoModificado = true
+                if(estado == "false") estadoModificado = false
+            }
+            return [undefined, new UpdateSeguroMedicoDto(id_mutual,numero, estadoModificado, id_categoria_seguro)];
         }catch(error){
             return[ error as string]
         }
