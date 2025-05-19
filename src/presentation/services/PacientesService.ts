@@ -32,7 +32,18 @@ export class PacienteServices{
         console.log("Paciente no encontrado");
         return [false, undefined]
     }
-    
+    static saberSiElPacienteTieneSeguroMedico = async(dni:number): Promise<[(string | undefined)?, (boolean | undefined)?]> => {
+
+        try {
+            const paciente = await this.buscarPacienteExistente(dni,1);
+            if(paciente[1]?.dataValues.id_seguro_medico){
+                return [undefined,true]
+            }
+        } catch (error) {
+            return[ error as string]
+        }
+        return [undefined, false]
+    }
 
     static crearPaciente = async(_createPacienteDto: CreatePacienteDto):Promise<[string?,Pacientes?]> => {
 
@@ -108,17 +119,12 @@ export class PacienteServices{
             if(validado[0]){
                 throw Error(validado[0]);
             }
-            console.log(            instanciaPacienteEncontrada
-            );
+            console.log(instanciaPacienteEncontrada);
 
             instanciaPacienteEncontrada!.id_seguro_medico = seguroMedicoEncontrado[1]!.dataValues.id_seguro_medico; 
 
             let ver = await instanciaPacienteEncontrada!.save()
-            
-                        
           //console.log("Paciente actualizado: " + pacienteEncontrado[1]!)
-            
-            
             return [undefined,true]
         } catch (error) {
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("asignarSeguroMedico","PacienteService", "Line 93", error as string));

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { Conexion } from "../../data/conexion";
 import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto";
 import { PacienteServices } from "../services/PacientesService";
@@ -17,6 +17,7 @@ import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
 import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
 import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
+import { Mutual } from "../../data/models/mutual";
 
 
 
@@ -29,62 +30,137 @@ export class AdmisionController{
     ////////////////////!VISTAS////////////////////////
     ////////////////////////////////////////////////////
     public vistaPrincipal = async(req: Request, res:Response)=> {
-        res.render("AdmisionViews/principal.pug");
-       
-    }
-    
-    
+        try {
+            res.render("AdmisionViews/principal.pug");
 
-
-    public vistaEmergencia = async(req:Request, res:Response)=> {
-        const alas = await AlaService.getAlaFromDb()
-        const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
-        for(let motivo of motivosDeInternacion[1]!){
-            console.log(motivo.dataValues);
-            
-        }
-        
-        res.render("AdmisionViews/emergencia.pug", {
-            error: "errorPersonalizado",
-            success: "funciono bien",
-            info: "habia un caracol rojo",
-            warning: "fijate bien loco",
-            alas: alas,
-            motivoDeInternacion:motivosDeInternacion[1] 
-        }) 
-        
-    }
-    public vistaBuscarPorDni = async ( req:Request, res:Response)=> {
-        res.render("AdmisionViews/buscarPaciente.pug")
-    }
-
-    public vistaCrearPaciente = async ( req:Request, res:Response)=>{
-        res.render("AdmisionViews/CrearPaciente.pug", {
-            warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
-
-        })
-    }
-    public vistaPrincipalPaciente = async( req:Request, res:Response)=> {//todo: Posiblemente no se use
-        const paciente = req.session.paciente;
-        if(!paciente){
-            res.render("AdmisionViews/buscarPaciente.pug", {
-                warning: "Se cerró la sesión del paciente"})
-            return
-        }
-        res.render("AdmisionViews/vistaPaciente.pug" , {paciente: paciente})
-
-    }
-
-    public vistaActualizarPaciente = async(req:Request, res:Response) => {
-        
-        if(!req.session.paciente){
+        } catch (error) {
             res.render("AdmisionViews/principal.pug",{
-                warning:"Se cerró la sesión del paciente"
+                error: `${error}`,
+                
+            });
+        }
+    }
+    public vistaEmergencia = async(req:Request, res:Response)=> {
+        try {
+            const alas = await AlaService.getAlaFromDb()
+            const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            res.render("AdmisionViews/emergencia.pug", {
+                error: "errorPersonalizado",
+                success: "funciono bien",
+                info: "habia un caracol rojo",
+                warning: "fijate bien loco",
+                alas: alas,
+                motivoDeInternacion:motivosDeInternacion[1] 
+            }) 
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`,
+                
             })
         }
         
         
-        res.render("AdmisionViews/ActualizarPaciente.pug", {paciente: req.session.paciente})
+    }
+    public vistaBuscarPorDni = async ( req:Request, res:Response)=> {
+        try {
+            res.render("AdmisionViews/buscarPaciente.pug")
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`,
+            })
+        }
+    }
+
+    public vistaCrearPaciente = async ( req:Request, res:Response)=>{
+        try {
+            res.render("AdmisionViews/CrearPaciente.pug", {
+            warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
+            })
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`,
+            })
+        }
+    }
+    public vistaPrincipalPaciente = async( req:Request, res:Response)=> {//todo: Posiblemente no se use
+        try {
+            const paciente = req.session.paciente;
+            if(!paciente){
+                res.render("AdmisionViews/buscarPaciente.pug", {
+                    warning: "Se cerró la sesión del paciente"})
+                return
+            }
+            res.render("AdmisionViews/vistaPaciente.pug" , {paciente: paciente})
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`,
+                
+            })
+        }
+        
+
+    }
+    public redireccionarAVistaDeSeguros = async(req:Request, res:Response) =>{
+
+        try {
+            if(!req.session.paciente){
+                res.render("AdmisionViews/principal.pug",{
+                    warning: "Se ha cerrado la session"
+                })
+            }
+            
+            const validado = await PacienteServices.saberSiElPacienteTieneSeguroMedico(req.session.paciente?.dni!);
+            if(!validado[1]){
+                res.redirect("/admision/crear/seguro/medico")
+                return
+            }
+
+        } catch (error) {
+            res.render("AdmisionViews/vistaPaciente.pug",{
+                paciente: req.session.paciente,
+                error: `${error}`
+            })
+        }
+
+    }
+    public vistaActualizarPaciente = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+            res.render("AdmisionViews/principal.pug",{
+                warning:"Se cerró la sesión del paciente"
+                })
+            }
+            res.render("AdmisionViews/ActualizarPaciente.pug", {paciente: req.session.paciente})
+        } catch (error) {
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`
+            })
+        }
+        
+    }
+    public vistaCrearSeguroMedico = async(req:Request, res:Response) => {
+        try{
+            const mutuales = await SeguroMedicoService.getMutualesFromDb();
+            const categorias = await SeguroMedicoService.getCategoriasFromDb();
+            if(!req.session.paciente){
+                res.render("AdmisionViews/principal.pug",{
+                    warning:"Se cerró la sesión del paciente"
+                })
+            }
+            console.log(categorias[1]);
+            
+            res.render("AdmisionViews/CrearSeguroMedico.pug", {
+                paciente: req.session.paciente,
+                mutuales: mutuales[1],
+                categorias: categorias[1]
+            })
+        }catch(error){
+            res.render("AdmisionViews/principal.pug",{
+                error: `${error}`
+            })
+        }
+        
+
     }
 
     
@@ -92,9 +168,6 @@ export class AdmisionController{
     ////////////////////!PACIENTES//////////////////////
     ////////////////////////////////////////////////////
     public registrarPaciente = async(req:Request,res:Response) =>  {
-       
-           
-            
         try {
             const [ error, createPacienteDto ] = CreatePacienteDto.create(req.body);
             if(error){
@@ -114,12 +187,12 @@ export class AdmisionController{
                 res.render("AdmisionViews/principal.pug",{
                     error: "El paciente no se ha creado"})
             }
-                
+            const fechaNueva = new Date(pacienteCreado?.dataValues.fecha_nac)
+            pacienteCreado!.dataValues.fecha_nac = fechaNueva.toISOString().split("T")[0]; 
             req.session.paciente = pacienteCreado?.dataValues;
             
-            res.render("AdmisionViews/vistaPaciente.pug", {
-                paciente: req.session.paciente
-            })
+            res.redirect("/admision/principal/paciente")
+            return
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 30",error as string);
@@ -157,14 +230,13 @@ export class AdmisionController{
                 
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","208","ERROR: No se encontro el paciente")
                 
-                res.render("AdmisionViews/CrearPaciente.pug", {
-                    warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
-                })
+                res.redirect("/admision/crear/paciente")
                 return
             }
             req.session.paciente = pacienteEncontrado?.dataValues;
             
-            res.status(200).render("AdmisionViews/vistaPaciente",{paciente: req.session.paciente})
+            res.redirect("/admision/principal/paciente")
+            return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni","AdmisionController","208",error as string)
             res.status(500).json(error as string)
@@ -295,42 +367,67 @@ export class AdmisionController{
         }
 
     }
-    // public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => { //!deprecated: creo que no va aser utilizado
+     public registrarYAsignarSeguroMedico = async(req:Request,res:Response) => { //!deprecated: creo que no va a ser utilizad
+         try{
+            if(!req.session.paciente){
+                    res.render("AdmisionViews/principal.pug",{
+                        warning:"Se cerró la sesión del paciente"
+                    })
+                }
+            if(!req.body){
+                res.redirect("/admision/crear/seguro/medico")
+                return
+            }
+            const objetoParaCrearSeguroMedico = {
+                id_mutual: req.body.id_mutual,
+                numero: req.body.numero,
+                id_categoria_seguro: req.body.id_categoria_seguro,
+                dni_Paciente: req.session.paciente?.dni
+            }
 
-    //     try{
-    //         const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(req.body);
-    //         if(error){
-    //             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
-                
-                
-    //             res.status(404).json(`${error}`)
-    //             return
-    //         }
-    //         const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
-    //         if(errorCrearSeguroMedico && !confirmacion){
-    //             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
-    //             //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
-    //             res.status(500).json({messageError: errorCrearSeguroMedico})
-    //             return;
-    //         }
-    //         if(confirmacion){
-    //             const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente);
-    //             if(errorAsignarSeguroMedico && !confirmacionAsignar){
-    //                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
-    //                 //res.status(500).render("error",{message: "Error al asignar el seguro médico"})//Enviar con render
-    //                 res.status(500).json({messageError: errorAsignarSeguroMedico})
-    //                 return;
-    //             }else{
-    //                 res.status(200).json({message: "Todo ok, se le asigno el seguro medico al paciente"})
-    //             }
-    //         }
-    //     }catch(error){
-    //         HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
-    //         //res.status(500).render("error",{message: "Error al registrar el seguro médico"})//Enviar con render
-    //         res.status(500).json({message: (error instanceof Error) ? error.message : "Unknown error"})
+             const [ error, createSeguroMedicoDto ] = CreateSeguroMedicoDto.create(objetoParaCrearSeguroMedico);
+             if(error){
+                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
+          
+                res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                    error: `${error}`
+                })
+                 
+                 return
+             }
+             const [ errorCrearSeguroMedico, confirmacion ] = await SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto!);
+             if(errorCrearSeguroMedico && !confirmacion){
+                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
+                 
+                 res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                    error: `${errorCrearSeguroMedico}`
+                })
+                 return;
+             }
+             if(confirmacion){
+                const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente!);
+                if(errorAsignarSeguroMedico && !confirmacionAsignar){
+                    HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
+                    res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                    error: `${errorAsignarSeguroMedico}`
+                    })
+                    return;
+                }
+            }
+            res.render("AdmisionViews/vistaPaciente.pug", { 
+                    paciente: req.session.paciente,
+                    success: "Se creo y asigno el seguro al paciente"
+                })
+            console.log("Se creo el seguro y se le asigno al paciente");
             
-    //     }
-    // }
+         }catch(error){
+             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
+            res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                error: `${error}`
+            })
+      
+         }
+     }
     public actualizarSeguroMedico = async(req:Request,res:Response) => { //todo: Deberia funcionar pero hay que adaptarlo y testearlo
 
         try {

@@ -15,7 +15,7 @@ export class AdmisionRoutes{
         
         //vistas
         //!: 1- Vista principal de admision
-
+        
         router.get("/", controller.vistaPrincipal)//*:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//*:Comprobado
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//*Comprobado
@@ -27,7 +27,8 @@ export class AdmisionRoutes{
          router.get("/crear/paciente", controller.vistaCrearPaciente) //*:Comprobado
          //!: 3.2- Vista panel principal de paciente
         router.get("/find/paciente", controller.buscarPacientePorDni); //*: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
-         
+         //!3.3- Vista de crear seguro medico
+         router.get("/crear/seguro/medico", controller.vistaCrearSeguroMedico) //*:Comprobado
         
         
 
@@ -43,9 +44,10 @@ export class AdmisionRoutes{
         router.post("/update/paciente", controller.actualizarPaciente)//*:Comprobado PUT
         
         //SEGUROS MEDICOS
+        router.get("/redirect/seguro", controller.redireccionarAVistaDeSeguros)
         router.get("/get/seguro/medico/:numero", controller.getSeguroMedico); //obtener seguro medico por numero //todo:Deberia funcionar, no testeado
-        router.put("/update/secure", controller.actualizarSeguroMedico)//actualizar Paciente//!Comprobar
-        //router.post("/register/asign/secure", controller.registrarYAsignarSeguroMedico)//Crea el seguro medico y lo asigna al paciente //!Comprobar: Creo que no va a ser utilizado
+        router.post("/actualizar/seguro/medico", controller.actualizarSeguroMedico)//actualizar Paciente//!Comprobar
+        router.post("/registrar/seguro/medico", controller.registrarYAsignarSeguroMedico)//Crea el seguro medico y lo asigna al paciente //!Comprobar: Creo que no va a ser utilizado
        
         //ADMISION
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Deberia funcionar, no testeado

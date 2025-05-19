@@ -10,6 +10,36 @@ import { CategoriaSeguro } from "../../data/models/categoriaSeguro";
 
 export class SeguroMedicoService{
 
+    static getMutualesFromDb = async():Promise<[boolean?,Mutual[]?]> =>{
+        try{
+            const mutuales = await Mutual.findAll();
+            if(mutuales.length === 0){
+                console.log("No se encontraron mutuales");
+                return [false, undefined]
+            }
+            
+            return [true, mutuales]
+        }catch(Error){
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getMutuales","SeguroMedicoService", "Line 15", Error as string);           
+            return [false, undefined]
+        }
+    }
+    static getCategoriasFromDb = async():Promise<[boolean?,CategoriaSeguro[]?]> =>{
+
+        try{
+            const categorias = await CategoriaSeguro.findAll();
+            if(categorias.length === 0){
+                console.log("No se encontraron categorias");
+                return [false, undefined]
+            }
+            
+            return [true, categorias]
+        }catch(Error){
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getCategorias","SeguroMedicoService", "Line 15", Error as string);           
+            return [false, undefined]
+        }
+
+    }
     static buscarSeguroMedicoExistente = async(numero:number,modo:number):Promise<[boolean?,any?]> =>{
 
         try{

@@ -12,7 +12,7 @@ declare module "express-session" {
             id_Paciente: number,
             nombre: string,
             apellido: string,
-            dni: string,
+            dni: number,
             fecha_nac: string,
             edad: number,
             peso: number,

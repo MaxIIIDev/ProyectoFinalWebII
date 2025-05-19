@@ -27,7 +27,7 @@ export class CrearTurnoDto{
             if(!objeto.id_Usuario) return ["Se requiere id_Usuario"]
             if(!objeto.fecha) return ["Se requiere fecha"]
             return [undefined, new CrearTurnoDto(
-                objeto.id_horario_turno,
+                id_horario_turnoParseado,
                 objeto.id_Paciente,
                 objeto.id_Usuario,
                 objeto.fecha)]

@@ -25,5 +25,11 @@ mixin agregarHabitacionSeleccionada(ala,id_Paciente)
             .info-box.p-3
             h4.text-muted ID PACIENTE
                 h2.fw-bold #{id_Paciente}
-
-                
+mixin agregarMutualesDesdeDb(mutuales)
+    for mutual of mutuales
+        option(value=mutual.dataValues.id_mutual
+        ) #{mutual.dataValues.nombre}
+mixin agregarCategoriasDesdeDb(categorias)
+    for categoria of categorias
+        option(value=categoria.dataValues.id_Categoria_Seguro
+        ) #{categoria.dataValues.nombre}           
