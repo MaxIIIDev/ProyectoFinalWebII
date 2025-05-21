@@ -47,6 +47,7 @@ export class AdmisionController{
                 error: `${error}`,
                 
             });
+            return
         }
     }
     public vistaEmergencia = async(req:Request, res:Response)=> {
@@ -60,6 +61,7 @@ export class AdmisionController{
                     alas: alas,
                     motivoDeInternacion:motivosDeInternacion[1] 
                 })
+                return
             }
             
             res.render("AdmisionViews/emergencia.pug", {
@@ -82,10 +84,12 @@ export class AdmisionController{
     public vistaBuscarPorDni = async ( req:Request, res:Response)=> {
         try {
             res.render("AdmisionViews/buscarPaciente.pug")
+            return
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`,
             })
+            return
         }
     }
 
@@ -94,10 +98,12 @@ export class AdmisionController{
             res.render("AdmisionViews/CrearPaciente.pug", {
             warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
             })
+            return
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`,
             })
+            return
         }
     }
     public vistaPrincipalPaciente = async( req:Request, res:Response)=> {//todo: Posiblemente no se use
@@ -130,6 +136,7 @@ export class AdmisionController{
                 error: `${error}`,
                 
             })
+            return
         }
         
 
@@ -141,6 +148,7 @@ export class AdmisionController{
                 res.render("AdmisionViews/principal.pug",{
                     warning: "Se ha cerrado la session"
                 })
+                return
             }
             
             const validado = await PacienteServices.saberSiElPacienteTieneSeguroMedico(req.session.paciente?.dni!);
@@ -155,6 +163,7 @@ export class AdmisionController{
                 paciente: req.session.paciente,
                 error: `${error}`
             })
+            return
         }
 
     }
@@ -162,15 +171,18 @@ export class AdmisionController{
     public vistaActualizarPaciente = async(req:Request, res:Response) => {
         try {
             if(!req.session.paciente){
-            res.render("AdmisionViews/principal.pug",{
-                warning:"Se cerró la sesión del paciente"
-                })
+                res.render("AdmisionViews/principal.pug",{
+                    warning:"Se cerró la sesión del paciente"
+                    })
+                return
             }
             res.render("AdmisionViews/ActualizarPaciente.pug", {paciente: req.session.paciente})
+            return
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`
             })
+            return
         }
         
     }
@@ -182,6 +194,7 @@ export class AdmisionController{
                 res.render("AdmisionViews/principal.pug",{
                     warning:"Se cerró la sesión del paciente"
                 })
+                return
             }
             
             
@@ -190,10 +203,12 @@ export class AdmisionController{
                 mutuales: mutuales[1],
                 categorias: categorias[1]
             })
+            return
         }catch(error){
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`
             })
+            return
         }
         
 
@@ -240,10 +255,12 @@ export class AdmisionController{
                 categorias: categorias[1],
                 seguroMedico: seguroMedico[1].dataValues
             })
+            return
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`
             })
+            return
         }
 
     }
@@ -252,11 +269,13 @@ export class AdmisionController{
         try {
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
+                return
             }
             res.render("AdmisionViews/vistaCrearAdmision.pug")
-
+            return
         } catch (error) {
             res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
+            return
         }
 
 
@@ -278,12 +297,14 @@ export class AdmisionController{
             if(errorCrearPaciente){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController", "Line 31", errorCrearPaciente)      
                 throw new Error(errorCrearPaciente);
+                
             }
             if(!pacienteCreado){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarPaciente","AdmisionController","34","La bd no pudo crear el paciente")
                 
                 res.render("AdmisionViews/principal.pug",{
                     error: "El paciente no se ha creado"})
+                return
             }
             const fechaNueva = new Date(pacienteCreado?.dataValues.fecha_nac)
             pacienteCreado!.dataValues.fecha_nac = fechaNueva.toISOString().split("T")[0]; 
@@ -341,6 +362,7 @@ export class AdmisionController{
             res.status(500).render("AdmisionViews/buscarPaciente.pug",{
                 error: `${error}`
             })
+            return
         }
     }
     public buscarTodaLaInformacionDelPaciente = async(req:Request,res:Response) => {
@@ -352,16 +374,19 @@ export class AdmisionController{
                 
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","141",errorDto)
                 res.status(403).json(errorDto)
+                return
             }
             const [errorBusqueda, pacienteEncontrado] = await PacienteServices.buscarPacienteExistente(getPacienteDto!.dni,1)
             if(!errorBusqueda){
                
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","149","ERROR:No se encontro el paciente")
                 res.status(404).json("ERROR: No se encontro el paciente")
+                return
             }
             if(!pacienteEncontrado?.id_seguro_medico){
                 
                 res.status(404).json("ERROR: El paciente no tiene asignado un seguro medico")
+                return
             }
                         
             const [errorSeguroMedico, seguroMedicoEncontrado] = await SeguroMedicoService.buscarSeguroMedico(pacienteEncontrado?.id_seguro_medico!);
@@ -369,14 +394,17 @@ export class AdmisionController{
             if(errorSeguroMedico){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente","AdmisionController","160","Hubo un error al buscar el seguro medico")
                 res.status(404).json("Hubo un error al buscar el seguro medico")
+                return
             }
             const resultado = {
                 pacienteEncontrado: pacienteEncontrado,
                 seguroMedico: seguroMedicoEncontrado
             }
             res.json(resultado);
+            return
         } catch (error) {
             res.status(500).json(error as string)
+            return
         }
     }
 
@@ -391,10 +419,10 @@ export class AdmisionController{
                 return
             }
             req.body.id_Paciente = req.session.paciente!.id_Paciente;
-            if(!req.body.nombre && req.session.paciente.nombre) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el nombre vacio", paciente: req.session.paciente})
-            if(!req.body.apellido && req.session.paciente.apellido) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente})
-            if(!req.body.direccion && req.session.paciente.direccion) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente})
-            if(!req.body.telefono && req.session.paciente.telefono) res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente})
+            if(!req.body.nombre && req.session.paciente.nombre){ res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el nombre vacio", paciente: req.session.paciente}); return}
+            if(!req.body.apellido && req.session.paciente.apellido) {res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente});return}
+            if(!req.body.direccion && req.session.paciente.direccion) {res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente});return}
+            if(!req.body.telefono && req.session.paciente.telefono){ res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente});return}
             const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body, req.session.paciente);
             
             if(error){
@@ -452,16 +480,20 @@ export class AdmisionController{
             if(errorDto){
                 res.status(400).json(errorDto)
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico","AdmisionController","205",errorDto)
+                return
             }
             const [errorBusqueda, seguroMedicoBuscado] = await SeguroMedicoService.buscarSeguroMedicoExistente(getSeguroMedicoDTO.toObject(numeroDeSeguroMedico!).numero,1)
             if(!errorBusqueda){
                 res.status(404).json("No se encontro el seguro medico")
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico", "AdmisionController","210","No se encontro el seguro medico")
+                return
             }
             res.status(200).json(seguroMedicoBuscado)
+            return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico","AdmisionController", "213", error as string)
             res.status(500).json(error as string)
+            return
         }
 
     }
@@ -471,6 +503,7 @@ export class AdmisionController{
                     res.render("AdmisionViews/principal.pug",{
                         warning:"Se cerró la sesión del paciente"
                     })
+                    return
                 }
             if(!req.body){
                 res.redirect("/admision/crear/seguro/medico")
@@ -526,7 +559,7 @@ export class AdmisionController{
             res.render("AdmisionViews/CrearSeguroMedico.pug",{
                 error: `${error}`
             })
-      
+            return
          }
      }
     public actualizarSeguroMedico = async(req:Request,res:Response) => { //todo: Deberia funcionar pero hay que adaptarlo y testearlo
@@ -573,10 +606,11 @@ export class AdmisionController{
                 return
             }
             res.status(200).json(admisionCreada)
-
+            return
 
         } catch (error) {
             res.status(500).json(error as string)    
+            return
         }
     }
 
@@ -599,10 +633,13 @@ export class AdmisionController{
             if(errorDeBusqueda){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
                 res.status(404).json(`${errorDeBusqueda}`)
+                return
             }
             res.status(200).json(admisiones)
+            return
         } catch (error) {
             res.status(500).json(error as string)
+            return
         }
 
     }
@@ -614,10 +651,13 @@ export class AdmisionController{
             if(errorDeBusqueda){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
                 res.status(404).json(`${errorDeBusqueda}`)
+                return
             }
             res.status(200).json(admisionesActivas)
+            return
         } catch (error) {
             res.status(500).json(error as string)
+            return
         }
 
     }
@@ -645,9 +685,11 @@ export class AdmisionController{
                 return
             }
             res.status(200).json(admisionEncontrada)
+            return
         }catch(error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionPorPaciente","AdmisionController","310",error as string)
             res.status(500).json(`${error}`)
+            return
         }
 
     }
@@ -749,6 +791,7 @@ export class AdmisionController{
                 nro_habitacion: cama!.dataValues.habitacion.dataValues.nro_Habitacion,
                 id_Paciente: pacienteCreado?.dataValues.id_Paciente
             });
+            return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController","107",error as string)
             const alas = await AlaService.getAlaFromDb();
@@ -758,6 +801,7 @@ export class AdmisionController{
                 alas: alas,
                 motivoDeInternacion: motivosDeInternacion[1]
             });
+            return
         }
 
     };
@@ -787,6 +831,7 @@ export class AdmisionController{
         } catch (error) {
             res.status(500).json(error as string);
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("bajaLogicaAdmision","AdmisionController","Line 584",error as string)
+            return
         }
     }
     public altaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
@@ -803,9 +848,11 @@ export class AdmisionController{
                 return;
             }
             res.status(200).json(confirmacion);
+            return
         } catch (error) {
             res.status(500).json(error as string);
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("altaLogicaAdmision","AdmisionController","Line 584",error as string)
+            return
         }
     }
     ///////////////////////////////////////////////
@@ -867,8 +914,10 @@ export class AdmisionController{
             }
             
             res.status(200).json({camas: habitacionesParseadas})
+            return
         } catch (error) {
             res.status(500).json({error: error})
+            return
         }
     }
 
@@ -880,8 +929,10 @@ export class AdmisionController{
             console.log(a[1]?.dataValues.habitacion.dataValues);
             
             res.json(a)   
+            return
         } catch (error) {
             res.json(error)
+            return
         }
 
     }
