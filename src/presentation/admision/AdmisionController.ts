@@ -19,6 +19,7 @@ import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteN
 import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
 import { Mutual } from "../../data/models/mutual";
 import { CamaService } from "../services/Hospital/CamaService";
+import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
 
 
 
@@ -267,11 +268,22 @@ export class AdmisionController{
     public vistaCrearAdmision = async(req:Request,res:Response)=> {
 
         try {
+            const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+            const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            const alas = await AlaService.getAlaFromDb();
+
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
                 return
             }
-            res.render("AdmisionViews/vistaCrearAdmision.pug")
+            res.render("AdmisionViews/vistaCrearAdmision.pug", {
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente
+            })
             return
         } catch (error) {
             res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
@@ -876,7 +888,7 @@ export class AdmisionController{
         try {
             
             if(!req.query.ala || !req.query.genero){
-                res.redirect(`/admision/emergencia?error=${encodeURIComponent("Se requiere el genero y la unidad")}`)
+                res.redirect(`/admision/emergencia?error=${encodeURIComponent("Se requiere el genero y ala")}`)
                 return
             }
             
@@ -925,10 +937,19 @@ export class AdmisionController{
 
         try {
             
-            const a = await CamaService.buscarCama(req.body.id);
-            console.log(a[1]?.dataValues.habitacion.dataValues);
+            const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+            const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            const alas = await AlaService.getAlaFromDb();
             
-            res.json(a)   
+            
+            
+            for(let a of alas!){
+                console.log(a);
+                
+            }
+            
+            res.json(tiposDeAdmision[1])   
             return
         } catch (error) {
             res.json(error)

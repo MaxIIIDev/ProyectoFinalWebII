@@ -63,6 +63,7 @@ html(lang="es")
         }
   body
     include ../layout/alerts.pug
+    input(type="hidden", id="pacienteData", value=JSON.stringify(paciente))
     .container
       a.home-btn(href="/admision/principal/paciente") 
         i.bi.bi-house-door-fill
@@ -82,6 +83,7 @@ html(lang="es")
                     | Motivo de Internacion
                   select.form-select.py-2(name="id_motivo_de_Internacion", required)
                     option(value="", disabled, selected) Seleccione un motivo
+                    +agregarMotivosDesdeDb(motivosDeInternacion)
                     
 
                 .mb-4
@@ -90,27 +92,28 @@ html(lang="es")
                     | Prioridad de Atencion
                   select.form-select.py-2#numero(name="id_prioridad_de_atencion", required)
                     option(value="", disabled, selected) Seleccione Prioridad de Atencion
-                    
+                    +cargarPrioridadDeAtencion(prioridadesDeAtencion)
 
                 .mb-4
-                  label.form-label.fw-bold(for="id_tipo_De_Admision")
+                  label.form-label.fw-bold(for="id_tipo_De_admision")
                     i.bi.bi-card-checklist.me-2
                     | Tipo de Admision
-                  select.form-select.py-2#id_categoria_seguro(name="id_tipo_De_Admision", required)
+                  select.form-select.py-2#id_categoria_seguro(name="id_tipo_De_admision", required)
                     option(value="", disabled, selected) Selecciona un Tipo de Admision
-                    
+                    +cargarTiposDeAdmision(tiposDeAdmision)
 
                 .mb-4
                   label.form-label.fw-bold(for="id_Ala")
                     i.bi.bi-card-checklist.me-2
                     | Unidad
-                  select.form-select.py-2#id_Ala(name="id_Ala",required)
+                  select.form-select.py-2(name="id_Ala", id="id_Ala",required)
                     option(value="", disabled, selected) Selecciona una Unidad
+                    +cargarUnidad(alas)
                 .mb-4
-                  label.form-label.fw-bold(for="id_Ala")
+                  label.form-label.fw-bold(for="id_Cama")
                     i.bi.bi-card-checklist.me-2
                     | Camas
-                  select.form-select.py-2(name="id_Cama",required)
+                  select.form-select.py-2(name="id_Cama",id="selectCama",required)
                     option(value="", disabled, selected) Selecciona una Cama 
                     
                 .d-grid.gap-2.d-md-flex.justify-content-md-end.mt-4
@@ -119,5 +122,50 @@ html(lang="es")
                     | Guardar
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
-    script 
+    script.
+        
+
+        async function actualizarCamas() {
+          const ala = document.getElementById("id_Ala").value;
+          const paciente = JSON.parse(document.getElementById("pacienteData").value)
+          const genero = paciente.genero;
+          const selectCama = document.getElementById("selectCama");
+          
+          
+          selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
+          
+          if (ala && genero) {
+            try {
+              const response = await fetch(`/admision/get/habitacion?ala=${encodeURIComponent(ala)}&genero=${encodeURIComponent(genero)}`);
+              
+              if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+              }
+              
+              const data = await response.json();
+
+              
+              
+              if (data.camas && Array.isArray(data.camas)) {
+                data.camas.forEach(cama => {
+                  const option = document.createElement("option");
+                  option.value = cama.id_cama;
+                  option.textContent = `Habitación ${cama.nro_habitacion} - Cama ${cama.id_cama}`;
+                  selectCama.appendChild(option);
+                });
+              }
+            } catch (error) {
+              console.error("Error al obtener las camas:", error);
+              
+            }
+          }
+      }
+      document.addEventListener("DOMContentLoaded", function(){
+        document.getElementById("id_Ala").addEventListener("change", actualizarCamas);
+        if(document.getElementById("id_Ala").value){
+          actualizarCamas()
+        }
+      })
+      
+      
       

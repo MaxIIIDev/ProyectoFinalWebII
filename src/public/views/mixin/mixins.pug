@@ -43,3 +43,17 @@ mixin agregarCategoriasYSeleccionar(categorias,seguroMedico)
     for categoria of categorias
         option(value=categoria.dataValues.id_Categoria_Seguro, selected=(seguroMedico.categoria_seguro.dataValues.id_Categoria_Seguro === categoria.dataValues.id_Categoria_Seguro)
         ) #{categoria.dataValues.nombre}           
+
+
+mixin cargarPrioridadDeAtencion(prioridades)
+    for prioridad of prioridades 
+        option(value= prioridad.dataValues.id_prioridad_de_atencion)  #{prioridad.dataValues.prioridad}
+
+mixin cargarTiposDeAdmision(tiposDeAdmision)
+    for tipoDeAdmision of tiposDeAdmision
+        option(value= tipoDeAdmision.dataValues.id_tipo_de_admision) #{tipoDeAdmision.dataValues.tipo}
+
+mixin cargarUnidad(alas)
+    for ala of alas 
+        option(value= ala.nombre) #{ala.unidad}
+
