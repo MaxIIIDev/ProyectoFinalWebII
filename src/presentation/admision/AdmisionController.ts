@@ -177,6 +177,10 @@ export class AdmisionController{
                     })
                 return
             }
+            console.log("VISTA ACTUALIZAR PACIENTE");
+            
+            console.log(req.session.paciente);
+            
             res.render("AdmisionViews/ActualizarPaciente.pug", {paciente: req.session.paciente})
             return
         } catch (error) {
@@ -321,6 +325,9 @@ export class AdmisionController{
             const fechaNueva = new Date(pacienteCreado?.dataValues.fecha_nac)
             pacienteCreado!.dataValues.fecha_nac = fechaNueva.toISOString().split("T")[0]; 
             req.session.paciente = pacienteCreado?.dataValues;
+            console.log("METODO REGISTRAR PACIENTE");
+            
+            console.log(req.session.paciente);
             
             res.redirect("/admision/principal/paciente")
             return

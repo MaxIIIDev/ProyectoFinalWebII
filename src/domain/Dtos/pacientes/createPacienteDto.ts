@@ -16,7 +16,7 @@ export class CreatePacienteDto{
         public peso?: number,
         public telefono?: bigint,
         public telefono_De_Emergencia?: bigint,
-        public id_tipo_sanguineo?: string,
+        public id_tipo_sanguineo?: number,
         public id_seguro_medico?: number
 
     ){}
@@ -64,6 +64,7 @@ export class CreatePacienteDto{
         }else{
             id_tipo_sanguineoCambio = id_tipo_sanguineo
         }
+        const id_tipo_sanguineoParse = parseInt(id_tipo_sanguineo)
         return [undefined, new CreatePacienteDto(
             nombre,
             apellido,
@@ -75,7 +76,7 @@ export class CreatePacienteDto{
             peso,
             telefono,
             telefono_De_Emergencia,
-            id_tipo_sanguineoCambio,
+            id_tipo_sanguineoParse,
             id_seguro_medico
          )]
         

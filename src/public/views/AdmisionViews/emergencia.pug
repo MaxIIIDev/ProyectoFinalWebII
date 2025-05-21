@@ -132,7 +132,7 @@ html(lang="es")
                 .mb-3 
                   label.form-label(for="id_Cama") Cama 
                   select.form-control(id="id_Cama" name="id_Cama" required)
-                    option(value="" selected disabled) Seleccione una cama
+                    //- option(value="" selected disabled) Seleccione una cama
                   .invalid-feedback Por favor seleccione una cama
 
                 button.btn.emergency-btn.text-white.w-100(type="submit")
@@ -175,11 +175,12 @@ html(lang="es")
             const response = await fetch(`/admision/get/habitacion?ala=${encodeURIComponent(ala)}&genero=${encodeURIComponent(genero)}`);
             
             if (!response.ok) {
+              selectCama.innerHTML = '<option value="" selected disabled>No hay camas disponibles</option>';
               throw new Error(`Error HTTP: ${response.status}`);
             }
-            
+            selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
             const data = await response.json();
-            
+           
             if (data.camas && Array.isArray(data.camas)) {
               data.camas.forEach(cama => {
                 const option = document.createElement("option");
