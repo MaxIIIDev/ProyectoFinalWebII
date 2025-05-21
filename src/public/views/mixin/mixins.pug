@@ -8,18 +8,18 @@ mixin agregarMotivosDesdeDb(motivos)
             value=motivo.dataValues.id_motivo_de_Internacion
         ) #{motivo.dataValues.motivo}
 
-mixin agregarHabitacionSeleccionada(ala,id_Paciente)
+mixin agregarHabitacionSeleccionada(nombre_ala,nro_habitacion,id_Paciente)
     .d-flex.flex-column.gap-3.mb-4
           .info-box.p-3
             h4.text-muted Ala
-            if(ala && ala.nombre_ala != undefined)
-                h2.fw-bold #{ala.nombre_ala}
+            if(nombre_ala != undefined)
+                h2.fw-bold #{nombre_ala}
             else 
                 h2.fw-bold 
           .info-box.p-3
             h4.text-muted Habitación
-            if(ala && ala.nro_habitacion != undefined)
-                h2.fw-bold #{ala.nro_habitacion}
+            if(nro_habitacion != undefined)
+                h2.fw-bold #{nro_habitacion}
             else 
                 h2.fw-bold
             .info-box.p-3

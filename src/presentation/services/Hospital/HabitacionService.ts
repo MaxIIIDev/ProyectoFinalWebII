@@ -94,17 +94,10 @@ export class HabitacionService {
 
             if (habitacionesConDosHabitaciones) {
                 for (let habitacion of habitacionesConDosHabitaciones) {
-                    let camaDisponible = habitacion.dataValues.camas.find((cama: any) => cama.dataValues.disponible === true);
-                    let camaOcupada = habitacion.dataValues.camas.find((cama: any) => cama.dataValues.disponible === false);
-
-                    if (camaDisponible) {
-                        if (camaOcupada) {
-                            const generoOcupado = camaOcupada.dataValues.admision.dataValues.pacientes.dataValues.genero;
-                            if (generoOcupado !== genero) {
-                                continue; // Si el género no coincide, no se agrega esta habitación
-                            }
-                        }
-
+                    let camaDisponible = habitacion.dataValues.camas.filter((cama: any) => cama.dataValues.disponible === true);
+                    let camaOcupada = habitacion.dataValues.camas.filter((cama: any) => cama.dataValues.disponible === false);
+                          
+                    if(camaDisponible.length === 2 ){
                         const objeto: datosNecesarios = {
                             id_habitacion: habitacion.dataValues.id_Habitacion,
                             nro_habitacion: habitacion.dataValues.nro_Habitacion,
@@ -112,10 +105,44 @@ export class HabitacionService {
                             nombre_ala: habitacion.dataValues.ala.dataValues.nombre,
                             unidad_ala: habitacion.dataValues.ala.dataValues.unidad,
                             camas: {
-                                id_cama_1: camaDisponible.dataValues.id_Cama,
+                                id_cama_1: camaDisponible[0].dataValues.id_Cama,
                                 disponible_cama1: true,
-                                id_cama_2: camaOcupada ? camaOcupada.dataValues.id_Cama : undefined,
-                                genero_cama_2: camaOcupada ? camaOcupada.dataValues.admision.dataValues.pacientes.dataValues.genero : undefined
+                                id_cama_2: camaDisponible[1].dataValues.id_Cama,
+                                disponible_cama2: true
+                            }
+                        };
+                        elementosListos.push(objeto);
+                        continue;
+                    }
+                    if (camaDisponible.length === 1 && camaOcupada.length === 1) {
+                        const camaAva = camaDisponible[0];
+                        const camaUna = camaOcupada[0]
+                        
+                        const generoOcupado = camaUna.dataValues.admision.dataValues.pacientes.dataValues.genero
+                        
+                        
+                        // if (camaOcupada) {
+                        //     const generoOcupado = camaOcupada.dataValues.admision.dataValues.pacientes.dataValues.genero;
+                        //     if (generoOcupado !== genero) {
+                        //         continue; // Si el género no coincide, no se agrega esta habitación
+                        //     }
+                        // }
+                        if(generoOcupado !== genero){
+                            continue;
+                        }
+                        
+                        const objeto: datosNecesarios = {
+                            id_habitacion: habitacion.dataValues.id_Habitacion,
+                            nro_habitacion: habitacion.dataValues.nro_Habitacion,
+                            id_ala: habitacion.dataValues.ala.dataValues.id_Ala,
+                            nombre_ala: habitacion.dataValues.ala.dataValues.nombre,
+                            unidad_ala: habitacion.dataValues.ala.dataValues.unidad,
+                            camas: {
+                                id_cama_1: camaAva.dataValues.id_Cama,
+                                disponible_cama1: true,
+                                //id_cama_2: camaUna ? camaUna.dataValues.id_Cama : undefined,
+                                //genero_cama_2: camaUna ? generoOcupado : undefined,
+                                //disponible_cama2: false
                             }
                         };
                         elementosListos.push(objeto);
@@ -126,7 +153,9 @@ export class HabitacionService {
             if (elementosListos.length === 0) {
                 return ["No hay habitaciones disponibles"];
             }
-
+            
+            
+            
             return [undefined, elementosListos];
         } catch (error) {
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesDisponibles", "Habitacion Service", "11", error as string));

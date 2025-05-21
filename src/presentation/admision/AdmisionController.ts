@@ -18,6 +18,7 @@ import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
 import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
 import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
 import { Mutual } from "../../data/models/mutual";
+import { CamaService } from "../services/Hospital/CamaService";
 
 
 
@@ -30,7 +31,15 @@ export class AdmisionController{
     ////////////////////!VISTAS////////////////////////
     ////////////////////////////////////////////////////
     public vistaPrincipal = async(req: Request, res:Response)=> {
+        const error = req.query.error as string || undefined;
         try {
+            if(error){
+                res.render("AdmisionViews/principal.pug",{
+                    error: `${error}`
+                })
+                return
+            }
+
             res.render("AdmisionViews/principal.pug");
 
         } catch (error) {
@@ -41,9 +50,18 @@ export class AdmisionController{
         }
     }
     public vistaEmergencia = async(req:Request, res:Response)=> {
+        const error = req.query.error as string | undefined;
         try {
             const alas = await AlaService.getAlaFromDb()
             const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            if(error){
+                res.render("AdmisionViews/emergencia.pug", {
+                    error: `${error}`,
+                    alas: alas,
+                    motivoDeInternacion:motivosDeInternacion[1] 
+                })
+            }
+            
             res.render("AdmisionViews/emergencia.pug", {
                 //error: "errorPersonalizado",
                 //success: "funciono bien",
@@ -229,7 +247,20 @@ export class AdmisionController{
         }
 
     }
+    public vistaCrearAdmision = async(req:Request,res:Response)=> {
 
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
+            }
+            res.render("AdmisionViews/vistaCrearAdmision.pug")
+
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
+        }
+
+
+    }
     
     ////////////////////////////////////////////////////
     ////////////////////!PACIENTES//////////////////////
@@ -624,23 +655,23 @@ export class AdmisionController{
         try {
             console.log(req.body);
             
-            const { ala, unidad, genero, id_motivo_de_Internacion } = req.body;
+            const { ala, unidad, genero, id_motivo_de_Internacion, id_Cama } = req.body;
             
 
-            const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
+            //const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
             let pacienteAnonimo;
-            if (habitaciones[0]) {
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
+            // if (habitaciones[0]) {
+            //     HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","56","No hay habitaciones disponibles")
 
-                const alas = await AlaService.getAlaFromDb();
-                const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
-                res.render("AdmisionViews/emergencia.pug", {
-                    error: `${habitaciones[0]}`,
-                    alas: alas,
-                    motivoDeInternacion: motivosDeInternacion[1]
-                });
-                return;
-            }
+            //     const alas = await AlaService.getAlaFromDb();
+            //     const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            //     res.render("AdmisionViews/emergencia.pug", {
+            //         error: `${habitaciones[0]}`,
+            //         alas: alas,
+            //         motivoDeInternacion: motivosDeInternacion[1]
+            //     });
+            //     return;
+            // }
             if(genero =="Masculino"){
                 pacienteAnonimo = PacienteAnonimo.getPacienteMasculina()
             }else{
@@ -674,13 +705,13 @@ export class AdmisionController{
                 return
             }
            
-            const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({
+            const [errorDto, crearAdmisionDTO] = CrearAdmisionDto.create({//! Cambiar id_Cama por la que se envia
                 
                 id_motivo_de_Internacion: id_motivo_de_Internacion, 
                 id_tipo_de_admision: 3,
                 id_prioridad_de_atencion: 1,
                 id_Paciente: pacienteCreado?.dataValues.id_Paciente,
-                id_Cama: habitaciones[1][0].camas.id_cama_1
+                id_Cama: id_Cama
             })
             if(errorDto){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia","AdmisionController","468",errorDto)
@@ -706,9 +737,16 @@ export class AdmisionController{
                 });
                 return;
             }
+            const [errorCama, cama ] = await CamaService.buscarCama(id_Cama);
+            if(errorCama) throw Error(errorCama)
+            console.log(cama!.dataValues.habitacion.dataValues.ala.dataValues.nombre);
+            console.log(cama!.dataValues.habitacion.dataValues.nro_Habitacion);
+        
+            
             res.render("AdmisionViews/habitacion.pug", {
                 success: "Paciente Admitido",
-                habitacion: habitaciones[1][0],
+                nombre_ala: cama!.dataValues.habitacion.dataValues.ala.dataValues.nombre,
+                nro_habitacion: cama!.dataValues.habitacion.dataValues.nro_Habitacion,
                 id_Paciente: pacienteCreado?.dataValues.id_Paciente
             });
         } catch (error) {
@@ -780,6 +818,72 @@ export class AdmisionController{
         } catch (error) {
             
         }
+    }
+
+    /////////////////////////////////////////////////
+    ////////////!Habitaciones/////////////////////////
+    ////////////////////////////////////////////////
+
+    public getHabitacionesDisponiblesPorGenero = async(req:Request, res:Response) => {
+
+        try {
+            
+            if(!req.query.ala || !req.query.genero){
+                res.redirect(`/admision/emergencia?error=${encodeURIComponent("Se requiere el genero y la unidad")}`)
+                return
+            }
+            
+            
+            const habitacionesDisponibles = await HabitacionService.getHabitacionesDisponibles(req.query.genero as string,req.query.ala as string);
+            if(habitacionesDisponibles[0]){
+                //res.redirect(`/admision/emergencia?error=${encodeURIComponent(`${habitacionesDisponibles[0]}`)}`)
+                res.status(404).json({error: habitacionesDisponibles[0].toString()})
+                console.log(habitacionesDisponibles[1]);
+                
+                return
+            }
+            type enviar= {
+                nro_habitacion: number,
+                id_cama: number
+            }
+            const habitacionesParseadas: enviar[] = []
+            for(let a of habitacionesDisponibles[1]){
+                if(a.camas){
+                   
+                    const objectoCreado:enviar = {
+                        nro_habitacion: a.nro_habitacion,
+                        id_cama: a.camas.id_cama_1
+                    }
+                    habitacionesParseadas.push(objectoCreado)
+                    if(a.camas.id_cama_2){
+                        const objectoCreado:enviar = {
+                        nro_habitacion: a.nro_habitacion,
+                        id_cama: a.camas.id_cama_2
+                        }
+                        habitacionesParseadas.push(objectoCreado)
+                    }
+                }
+                
+            }
+            
+            res.status(200).json({camas: habitacionesParseadas})
+        } catch (error) {
+            res.status(500).json({error: error})
+        }
+    }
+
+    public test = async(req:Request,res:Response)=> {
+
+        try {
+            
+            const a = await CamaService.buscarCama(req.body.id);
+            console.log(a[1]?.dataValues.habitacion.dataValues);
+            
+            res.json(a)   
+        } catch (error) {
+            res.json(error)
+        }
+
     }
 
 }
