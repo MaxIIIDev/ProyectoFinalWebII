@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { Request, response, Response, urlencoded } from "express";
 import { Conexion } from "../../data/conexion";
 import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto";
 import { PacienteServices } from "../services/PacientesService";
@@ -270,7 +270,8 @@ export class AdmisionController{
 
     }
     public vistaCrearAdmision = async(req:Request,res:Response)=> {
-
+        const error = req.query.error as string | undefined;
+        const confirmacion = req.query.confirmacion as string | undefined
         try {
             const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
             const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
@@ -281,6 +282,29 @@ export class AdmisionController{
                 res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`)
                 return
             }
+            if(error){
+                res.render("AdmisionViews/vistaCrearAdmision.pug", {
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente,
+                error: `${error}`
+                })
+                return
+            }
+            if(confirmacion){
+                res.render("AdmisionViews/vistaCrearAdmision.pug", {
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente,
+                success: `${confirmacion}`
+                })
+                return
+            }
+
             res.render("AdmisionViews/vistaCrearAdmision.pug", {
                 motivosDeInternacion: motivosDeInternacion[1],
                 prioridadesDeAtencion: prioridadesDeAtencion[1],
@@ -612,19 +636,33 @@ export class AdmisionController{
     public crearAdmision = async(req:Request,res:Response) => { //!FALTA TESTEAR 
 
         try {
-            const [ error, crearAdmisionDto ] = CrearAdmisionDto.create(req.body);
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion")}`)
+                return
+            }
+
+            const [ error, crearAdmisionDto ] = CrearAdmisionDto.create({
+                id_motivo_de_Internacion: req.body.id_motivo_de_Internacion,
+                id_prioridad_de_atencion: req.body.id_prioridad_de_atencion,
+                id_tipo_de_admision: req.body.id_tipo_de_admision,
+                id_Paciente: req.session.paciente.id_Paciente,
+                id_Cama: req.body.id_Cama
+            });
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision","AdmisionController", "Line 140", error);
-                res.status(404).json(`${error}`)
+                res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error as string)}`)
                 return
             }
             const [errorCrearAdmision, admisionCreada] = await AdmisionService.crearAdmision(crearAdmisionDto!);
             if(errorCrearAdmision){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision","AdmisionController", "Line 145", errorCrearAdmision);
-                res.status(404).json(`${errorCrearAdmision}`)
+                res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
                 return
             }
-            res.status(200).json(admisionCreada)
+            
+            
+            res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha creado la admision")}`)
+
             return
 
         } catch (error) {

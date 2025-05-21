@@ -76,7 +76,7 @@ html(lang="es")
                 | Crear Admision
 
             .card-body.p-4
-              form(action="/admision", method="POST")
+              form(action="/admision/create/admision", method="POST")
                 .mb-4
                   label.form-label.fw-bold(for="id_motivo_de_Internacion")
                     i.bi.bi-building.me-2
@@ -95,10 +95,10 @@ html(lang="es")
                     +cargarPrioridadDeAtencion(prioridadesDeAtencion)
 
                 .mb-4
-                  label.form-label.fw-bold(for="id_tipo_De_admision")
+                  label.form-label.fw-bold(for="id_tipo_de_admision")
                     i.bi.bi-card-checklist.me-2
                     | Tipo de Admision
-                  select.form-select.py-2#id_categoria_seguro(name="id_tipo_De_admision", required)
+                  select.form-select.py-2#id_categoria_seguro(name="id_tipo_de_admision", required)
                     option(value="", disabled, selected) Selecciona un Tipo de Admision
                     +cargarTiposDeAdmision(tiposDeAdmision)
 
@@ -132,17 +132,19 @@ html(lang="es")
           const selectCama = document.getElementById("selectCama");
           
           
-          selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
           
           if (ala && genero) {
             try {
               const response = await fetch(`/admision/get/habitacion?ala=${encodeURIComponent(ala)}&genero=${encodeURIComponent(genero)}`);
               
               if (!response.ok) {
+                selectCama.innerHTML = '<option value="" selected disabled>No hay camas disponibles</option>';
+
                 throw new Error(`Error HTTP: ${response.status}`);
               }
               
               const data = await response.json();
+              selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
 
               
               
