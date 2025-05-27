@@ -1,13 +1,13 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-import { Medicos } from "./medicos";
-import { Pacientes } from "./pacientes";
+import { Medicos } from "./Medicos";
+import { Pacientes } from "./Pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
-import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
-import { Sintomas } from "./sintomas";
-import { Tipo_De_Diagnostico } from "./tipoDeDiagnostico";
+import { Paciente_pruebas_diagnosticas } from "./Paciente_pruebas_diagnosticas";
+import { Sintomas } from "./Sintomas";
+import { Tipo_De_Diagnostico } from "./Tipo_De_Diagnostico";
 
 
-@Table
+@Table({ tableName: "paciente_diagnosticos" })
 export class Paciente_Diagnosticos extends Model{
 
     @PrimaryKey

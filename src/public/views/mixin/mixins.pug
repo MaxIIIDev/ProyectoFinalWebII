@@ -7,6 +7,11 @@ mixin agregarMotivosDesdeDb(motivos)
         option(
             value=motivo.dataValues.id_motivo_de_Internacion
         ) #{motivo.dataValues.motivo}
+mixin agregarMotivosDesdeDbActualizarAdmision(motivos,admision)
+    for motivo of motivos
+        option(
+            value=motivo.dataValues.id_motivo_de_Internacion selected=(motivo.dataValues.id_motivo_de_Internacion === admision.id_motivo_de_Internacion)
+        ) #{motivo.dataValues.motivo}
 
 mixin agregarHabitacionSeleccionada(nombre_ala,nro_habitacion,id_Paciente)
     .d-flex.flex-column.gap-3.mb-4
@@ -48,12 +53,26 @@ mixin agregarCategoriasYSeleccionar(categorias,seguroMedico)
 mixin cargarPrioridadDeAtencion(prioridades)
     for prioridad of prioridades 
         option(value= prioridad.dataValues.id_prioridad_de_atencion)  #{prioridad.dataValues.prioridad}
+mixin cargarPrioridadDeAtencionActualizarAdmision(prioridades,admision)
+    for prioridad of prioridades 
+        option(value= prioridad.dataValues.id_prioridad_de_atencion selected=(prioridad.dataValues.id_prioridad_de_atencion === admision.id_prioridad_de_atencion))  #{prioridad.dataValues.prioridad}
+
 
 mixin cargarTiposDeAdmision(tiposDeAdmision)
     for tipoDeAdmision of tiposDeAdmision
         option(value= tipoDeAdmision.dataValues.id_tipo_de_admision) #{tipoDeAdmision.dataValues.tipo}
 
+mixin cargarTiposDeAdmisionActualizar(tiposDeAdmision,admision)
+    for tipoDeAdmision of tiposDeAdmision
+        option(value= tipoDeAdmision.dataValues.id_tipo_de_admision selected=(tipoDeAdmision.dataValues.id_tipo_de_admision === admision.id_tipo_de_admision)) #{tipoDeAdmision.dataValues.tipo}
+
+
 mixin cargarUnidad(alas)
     for ala of alas 
         option(value= ala.nombre) #{ala.unidad}
-
+mixin cargarUnidadVistaActualizarAdmision(alas, restosAdmision)
+    
+    for ala of alas 
+        option(value= ala.nombre selected=(ala.nombre == restosAdmision)) #{ala.unidad}
+       
+       

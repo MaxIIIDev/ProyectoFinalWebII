@@ -1,7 +1,7 @@
 import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { Turnos } from "./turnos";
+import { Turnos } from "./Turnos";
 
-@Table
+@Table({ tableName: "horarios_turnos" })
 export class horarios_Turnos extends Model{
 
     @AutoIncrement

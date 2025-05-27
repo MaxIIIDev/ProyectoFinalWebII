@@ -1,9 +1,12 @@
-import { Admision } from "../../data/models/admision"
-import { Hospital_camas } from "../../data/models/hospital_camas";
+import { Admision } from "../../data/models/Admision"
+import { Hospital_alas } from "../../data/models/Hospital_alas";
+import { Hospital_camas } from "../../data/models/Hospital_camas";
+import { Hospital_habitaciones } from "../../data/models/Hospital_habitaciones";
 import { motivo_De_Internacion } from "../../data/models/motivo_De_Internacion";
-import { Pacientes } from "../../data/models/pacientes";
-import { Prioridad_De_Atencion } from "../../data/models/prioridadDeAtencion";
-import { tipo_De_Admision } from "../../data/models/tipo_de_admision";
+import { Pacientes } from "../../data/models/Pacientes";
+import { Prioridad_De_Atencion } from "../../data/models/Prioridad_De_Atencion";
+import { tipo_De_Admision } from "../../data/models/tipo_De_Admision";
+import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmisionDTO";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"
 import { CamaService } from "./Hospital/CamaService";
@@ -22,7 +25,30 @@ export class AdmisionService {
             return [error as string]
         }
     }
+    public static actualizarAdmision = async(updateAdmisionDto: ActualizarAdmisionDto)=> {
 
+        try {
+            const admisionEncontrada = await this.buscarAdmisionVigentePorPaciente(updateAdmisionDto.id_Paciente!);
+            if(admisionEncontrada[0]){
+                return admisionEncontrada[0]
+            }
+            const [filasActualizadas] = await Admision.update(ActualizarAdmisionDto.toObject(updateAdmisionDto), {where: {
+                id_Paciente: updateAdmisionDto.id_Paciente
+                }}
+            );
+            if(filasActualizadas === 0){
+                return ["No se actualizo la admision", false]
+            }
+            const confirmacionDeActualizacionDeCama = await CamaService.marcarCamaComoOcupada(updateAdmisionDto.id_Cama!)
+            if(!confirmacionDeActualizacionDeCama[1]){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizar Admision", "Admision Service", "31", confirmacionDeActualizacionDeCama[0] as string)
+            }
+            return [ undefined, true];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizar Admision", "Admision Service", "31", error as string)
+            return [undefined]
+        }
+    }
     public static crearAdmision = async(crearAdmisionDto: CrearAdmisionDto):Promise<[(string | undefined)?, (boolean | undefined)?, (Admision | undefined)?]> => {
         try {
 
@@ -112,10 +138,16 @@ export class AdmisionService {
     }
     public static  buscarAdmisionVigentePorPaciente = async(id_Paciente:number):Promise<[string?,Admision?]> => {//*Deberia funcionar
         try {
-            const admisionEncontrada = await Admision.findOne({where:{
-                estado: "Activo",
-                id_Paciente: id_Paciente
-            }})
+            const admisionEncontrada = await Admision.findOne(
+                    {
+                        
+                        
+                        where: { 
+                            estado: "Activo",
+                            id_Paciente: id_Paciente
+                        }
+                    }
+                )
             if(!admisionEncontrada) return ["No hay admiciones activas para dicho paciente"]
             return [undefined, admisionEncontrada]
         } catch (error) {

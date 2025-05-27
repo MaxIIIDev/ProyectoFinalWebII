@@ -1,9 +1,9 @@
 import { AllowNull, AutoIncrement, Column, DataType, HasOne, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-import { Usuarios } from "./usuarios";
+import { Usuarios } from "./Usuarios";
 
 
 
-@Table
+@Table({ tableName: "roles" })
 export class Roles extends Model{
 
     @PrimaryKey 

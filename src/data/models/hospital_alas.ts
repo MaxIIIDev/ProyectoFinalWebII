@@ -1,7 +1,7 @@
 import { AllowNull, AutoIncrement, Column, DataType, HasMany, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-import { Hospital_habitaciones } from "./hospital_habitaciones";
+import { Hospital_habitaciones } from "./Hospital_habitaciones";
 
-@Table
+@Table({ tableName: "hospital_alas" })
 export class Hospital_alas extends Model{
 
     @PrimaryKey

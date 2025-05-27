@@ -30,9 +30,12 @@ export class AdmisionRoutes{
          //!3.3- Vista de crear seguro medico
         router.get("/crear/seguro/medico", controller.vistaCrearSeguroMedico) //*:Comprobado
         router.get("/actualizar/seguro/medico", controller.vistaActualizarSeguroMedico)
+        //?VISTA ADMISION
+        router.get("/redireccion/admision", controller.redireccionadorDeVistasDeAdmision)
         router.get("/crear/admision", controller.vistaCrearAdmision)
-
+        router.get("/actualizar/admision", controller.vistaActualizarAdmision);
         //!: 4- Vista de actualizar paciente
+        
         router.get("/actualizar/paciente", controller.vistaActualizarPaciente) //*:Comprobado
 
         //GETTERS PACIENTES
@@ -53,9 +56,9 @@ export class AdmisionRoutes{
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Deberia funcionar, no testeado
         router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Deberia funcionar, no testeado
         router.get("/get/habitacion", controller.getHabitacionesDisponiblesPorGenero)
-        
+        router.get("/get/habitacion/ocupada", controller.getHabitacionByCamaId) 
         router.post("/create/admision", controller.crearAdmision)//todo: FALTA TESTEAR
-        // router.put("/update/admision")
+        router.post("/update/admision", controller.updateAdmision);
         router.post("/baja", controller.bajaLogicaAdmision)//*Testeado
         router.post("/alta", controller.altaLogicaAdmision)//*Testeado 
 

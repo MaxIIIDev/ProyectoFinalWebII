@@ -1,4 +1,4 @@
-import { Prioridad_De_Atencion } from "../../data/models/prioridadDeAtencion";
+import { Prioridad_De_Atencion } from "../../data/models/Prioridad_De_Atencion";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 
 

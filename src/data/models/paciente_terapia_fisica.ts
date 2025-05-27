@@ -1,10 +1,10 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-import { Pacientes } from "./pacientes";
+import { Pacientes } from "./Pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 
 
 
-@Table
+@Table({ tableName: "paciente_terapia_fisica" })
 export class paciente_terapia_fisica extends Model{
 
     @PrimaryKey

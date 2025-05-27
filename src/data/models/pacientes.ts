@@ -1,23 +1,21 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-
-import { Paciente_seguro_medico } from "./paciente_seguro_medico";
-import { Paciente_Alergias } from "./paciente_alergias";
-import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
-import { paciente_cirugias } from "./paciente_cirugias";
-import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
-
-import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
-import { Paciente_recetas } from "./paciente_recetas";
-import { paciente_terapia_fisica } from "./paciente_terapia_fisica";
+import { Tipo_Sanguineo } from "./Tipo_Sanguineo";
+import { Admision } from "./Admision";
+import { Paciente_Alergias } from "./Paciente_Alergias";
+import { Paciente_antecedentes_familiares } from "./Paciente_antecedentes_familiares";
+import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
+import { Paciente_Evaluacion_Fisica } from "./Paciente_Evaluacion_Fisica";
+import { Paciente_pruebas_diagnosticas } from "./Paciente_pruebas_diagnosticas";
+import { Paciente_recetas } from "./Paciente_recetas";
+import { Paciente_seguro_medico } from "./Paciente_seguro_medico";
 import { paciente_tratamientos } from "./paciente_tratamientos";
-
-import { Turnos } from "./turnos";
-import { Admision } from "./admision";
-import { TipoSanguineo } from "./tipoSanguineo";
-import { Paciente_Evaluacion_Fisica } from "./paciente_evaluacion_fisica";
+import { Turnos } from "./Turnos";
+import { Paciente_Cirugias } from "./Paciente_Cirugias";
 
 
-@Table
+
+
+@Table({ tableName: "pacientes" })
 export class Pacientes extends Model{
 
     @PrimaryKey
@@ -75,12 +73,12 @@ export class Pacientes extends Model{
     declare direccion:string;
 
     
-    @ForeignKey(()=> TipoSanguineo)
+    @ForeignKey(()=> Tipo_Sanguineo)
     @Column(DataType.INTEGER)
     declare id_tipo_sanguineo:number;
     
-    @BelongsTo(()=> TipoSanguineo)
-    declare tipo_sanguineo: TipoSanguineo
+    @BelongsTo(()=> Tipo_Sanguineo)
+    declare tipo_sanguineo: Tipo_Sanguineo
 
     @HasMany( () => Admision)
     declare admisiones: Admision[]
@@ -99,8 +97,8 @@ export class Pacientes extends Model{
     @HasMany(()=> Paciente_antecedentes_familiares)
     declare antecedentes: Paciente_antecedentes_familiares[]
 
-    @HasMany(() => paciente_cirugias)
-    declare cirugias: paciente_cirugias[]
+    @HasMany(() => Paciente_Cirugias)
+    declare cirugias: Paciente_Cirugias[]
 
     @HasOne(()=> Paciente_Diagnosticos)
     declare diagnostico: Paciente_Diagnosticos

@@ -1,51 +1,51 @@
-import { Admision } from "./admision";
-import { CategoriaSeguro } from "./categoriaSeguro";
-import { Enfermero } from "./enfermeros";
-import { Especialidad } from "./Especialidad";
+import { Admision } from "./Admision";
+import { CategoriaSeguro } from "./CategoriaSeguro";
+import { Enfermero } from "./Enfermero";
+import { Especialidades } from "./Especialidades";
 import { horarios_Turnos } from "./horarios_Turnos";
-import { Hospital_alas } from "./hospital_alas";
-import { Hospital_camas } from "./hospital_camas";
-import { Hospital_habitaciones } from "./hospital_habitaciones";
-import { Lazo_Familiar } from "./lazo_familiar";
-import { Medicamentos } from "./medicamentos";
-import { Medicos } from "./medicos";
+import { Hospital_alas } from "./Hospital_alas";
+import { Hospital_camas } from "./Hospital_camas";
+import { Hospital_habitaciones } from "./Hospital_habitaciones";
+import { Lazo_Familiar } from "./Lazo_familiar";
+import { Medicamentos } from "./Medicamentos";
+import { Medicos } from "./Medicos";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
-import { Mutual } from "./mutual";
-import { nombre_Alergia } from "./nombre_de_alergias";
-import { nombre_Cirugia } from "./nombre_de_cirugias";
-import { nombre_Prueba_Diagnostica } from "./nombrePruebaDiagnostica";
-import { Paciente_Alergias } from "./paciente_alergias";
-import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
-import { paciente_cirugias } from "./paciente_cirugias";
-import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
-import { Paciente_Evaluacion_Fisica } from "./paciente_evaluacion_fisica";
+import { Mutuales } from "./Mutuales";
+import { nombre_Alergia } from "./nombre_Alergia";
+import { nombre_Cirugia } from "./nombre_Cirugia";
+import { nombre_Prueba_Diagnostica } from "./nombre_Prueba_Diagnostica";
+import { Paciente_Alergias } from "./Paciente_Alergias";
+import { Paciente_antecedentes_familiares } from "./Paciente_antecedentes_familiares";
+import { Paciente_Cirugias } from "./Paciente_Cirugias";
+import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
+import { Paciente_Evaluacion_Fisica } from "./Paciente_Evaluacion_Fisica";
 
-import { Paciente_pruebas_diagnosticas } from "./paciente_pruebas_diagnosticas";
-import { Paciente_recetas } from "./paciente_recetas";
-import { Paciente_seguro_medico } from "./paciente_seguro_medico";
+import { Paciente_pruebas_diagnosticas } from "./Paciente_pruebas_diagnosticas";
+import { Paciente_recetas } from "./Paciente_recetas";
+import { Paciente_seguro_medico } from "./Paciente_seguro_medico";
 
 import { paciente_tratamientos } from "./paciente_tratamientos";
-import { Pacientes } from "./pacientes";
-import { Personal_de_admision } from "./personal_de_admision";
-import { Prioridad_De_Atencion } from "./prioridadDeAtencion";
+import { Pacientes } from "./Pacientes";
+import { Personal_de_admision } from "./Personal_de_admision";
+import { Prioridad_De_Atencion } from "./Prioridad_De_Atencion";
 
-import { Roles } from "./roles";
-import { Sintomas } from "./sintomas";
-import { tipo_De_Admision } from "./tipo_de_admision";
-import { Tipo_De_Medicamento } from "./tipo_de_medicamento";
-import { Tipo_De_Diagnostico } from "./tipoDeDiagnostico";
-import { Tipo_De_tratamiento } from "./tipoDeTratamiento";
-import { TipoSanguineo } from "./tipoSanguineo";
-import { Turnos } from "./turnos";
-import { Usuarios } from "./usuarios";
+import { Roles } from "./Roles";
+import { Sintomas } from "./Sintomas";
+import { tipo_De_Admision } from "./tipo_De_Admision";
+import { Tipo_De_Medicamento } from "./Tipo_De_Medicamento";
+import { Tipo_De_Diagnostico } from "./Tipo_De_Diagnostico";
+import { Tipo_De_tratamiento } from "./Tipo_De_tratamiento";
+import { Tipo_Sanguineo } from "./Tipo_Sanguineo";
+import { Turnos } from "./Turnos";
+import { Usuarios } from "./Usuarios";
 
 export const importaciones = [
     horarios_Turnos,
-    Mutual,
+    Mutuales,
     nombre_Alergia,
     nombre_Prueba_Diagnostica,
     Tipo_De_Diagnostico,
-    CategoriaSeguro,Especialidad,
+    CategoriaSeguro,Especialidades,
     Lazo_Familiar,
     Prioridad_De_Atencion,
     motivo_De_Internacion,
@@ -53,7 +53,7 @@ export const importaciones = [
     tipo_De_Admision,
     Tipo_De_Medicamento,
     Tipo_De_tratamiento,
-    TipoSanguineo,Admision,
+    Tipo_Sanguineo,Admision,
     Enfermero,
     Hospital_alas,
     Hospital_camas,
@@ -62,7 +62,7 @@ export const importaciones = [
     Medicos,
     Paciente_Alergias,
     Paciente_antecedentes_familiares,
-    paciente_cirugias,Paciente_Diagnosticos,
+    Paciente_Cirugias,Paciente_Diagnosticos,
     Paciente_pruebas_diagnosticas,
     Paciente_recetas,
     Paciente_Evaluacion_Fisica,

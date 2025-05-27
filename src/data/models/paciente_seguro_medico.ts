@@ -1,10 +1,10 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Pacientes } from "./pacientes";
-import { CategoriaSeguro } from "./categoriaSeguro";
-import { Mutual } from "./mutual";
+import { Pacientes } from "./Pacientes";
+import { CategoriaSeguro } from "./CategoriaSeguro";
+import { Mutuales } from "./Mutuales";
 
 
-@Table
+@Table({ tableName: "paciente_seguro_medico" })
 export class Paciente_seguro_medico extends Model{
 
     @PrimaryKey
@@ -12,12 +12,12 @@ export class Paciente_seguro_medico extends Model{
     @Column(DataType.INTEGER)
     declare id_seguro_medico: number;
 
-    @ForeignKey(()=> Mutual)
+    @ForeignKey(()=> Mutuales)
     @Column(DataType.INTEGER)
     declare id_mutual: number;
 
-    @BelongsTo(()=> Mutual)
-    declare mutual: Mutual
+    @BelongsTo(()=> Mutuales)
+    declare mutual: Mutuales
     
     @AllowNull(false)
     @Unique

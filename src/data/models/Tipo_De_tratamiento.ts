@@ -2,7 +2,7 @@ import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } fr
 import { paciente_tratamientos } from "./paciente_tratamientos";
 
 
-@Table
+@Table({ tableName: "tipo_de_tratamiento" })
 export class Tipo_De_tratamiento extends Model{
 
     @PrimaryKey

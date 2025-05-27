@@ -1,24 +1,24 @@
 import model from "sequelize/types/model";
-import { Paciente_seguro_medico } from "../../data/models/paciente_seguro_medico";
-import { Pacientes } from "../../data/models/pacientes";
+import { Paciente_seguro_medico } from "../../data/models/Paciente_seguro_medico";
+import { Pacientes } from "../../data/models/Pacientes";
 import { CreateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/createSeguroMedicoDto";
 import { UpdateSeguroMedicoDto } from "../../domain/Dtos/SeguroMedico/updateSeguroMedicoDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
-import { Mutual } from "../../data/models/mutual";
-import { CategoriaSeguro } from "../../data/models/categoriaSeguro";
+import { Mutuales } from "../../data/models/Mutuales";
+import { CategoriaSeguro } from "../../data/models/CategoriaSeguro";
 
 
 export class SeguroMedicoService{
 
-    static getMutualesFromDb = async():Promise<[boolean?,Mutual[]?]> =>{
+    static getMutualesFromDb = async():Promise<[boolean?,Mutuales[]?]> =>{
         try{
-            const mutuales = await Mutual.findAll();
-            if(mutuales.length === 0){
+            const mutualesBuscadas = await Mutuales.findAll();
+            if(mutualesBuscadas.length === 0){
                 console.log("No se encontraron mutuales");
                 return [false, undefined]
             }
             
-            return [true, mutuales]
+            return [true, mutualesBuscadas]
         }catch(Error){
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getMutuales","SeguroMedicoService", "Line 15", Error as string);           
             return [false, undefined]
@@ -51,7 +51,7 @@ export class SeguroMedicoService{
 
                     },
                     {
-                        model: Mutual,
+                        model: Mutuales,
                         as: "mutual",
                     },
                     {
@@ -89,7 +89,7 @@ export class SeguroMedicoService{
                     as: "paciente"
                     },
                     {
-                        model: Mutual,
+                        model: Mutuales,
                         as: "mutual"
                     },
                     {

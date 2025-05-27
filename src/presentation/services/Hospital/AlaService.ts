@@ -1,4 +1,4 @@
-import { Hospital_alas } from "../../../data/models/hospital_alas"
+import { Hospital_alas } from "../../../data/models/Hospital_alas"
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 
 

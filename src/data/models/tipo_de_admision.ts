@@ -1,8 +1,8 @@
 import { AllowNull, AutoIncrement, Column, DataType, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Admision } from "./admision";
+import { Admision } from "./Admision";
 
 
-@Table
+@Table({ tableName: "tipo_de_admision" })
 export class tipo_De_Admision extends Model{
 
     @PrimaryKey

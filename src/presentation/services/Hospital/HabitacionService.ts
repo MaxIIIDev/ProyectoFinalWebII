@@ -1,8 +1,8 @@
-import { Admision } from "../../../data/models/admision";
-import { Hospital_alas } from "../../../data/models/hospital_alas";
-import { Hospital_camas } from "../../../data/models/hospital_camas";
-import { Hospital_habitaciones } from "../../../data/models/hospital_habitaciones";
-import { Pacientes } from "../../../data/models/pacientes";
+import { Admision } from "../../../data/models/Admision";
+import { Hospital_alas } from "../../../data/models/Hospital_alas";
+import { Hospital_camas } from "../../../data/models/Hospital_camas";
+import { Hospital_habitaciones } from "../../../data/models/Hospital_habitaciones";
+import { Pacientes } from "../../../data/models/Pacientes";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 import { CamaService } from "./CamaService";
 

@@ -4,7 +4,7 @@ import { AppRoutes } from "./routes";
 
 import "dotenv/config"
 import { Conexion } from "../data/conexion";
-import { Pacientes } from "../data/models/pacientes";
+import { Pacientes } from "../data/models/Pacientes";
 
 declare module "express-session" {
     interface SessionData {
@@ -29,9 +29,12 @@ declare module "express-session" {
             id_motivo_de_Internacion: number,
             id_prioridad_de_atencion: number,
             id_tipo_de_admision: number,
-            fecha_de_Admision: Date,
+            fecha_De_Admision: Date,
             id_Paciente: number,
             id_Cama: number
+        },
+        restosAdmision: {
+            nombre_ala: string
         }
     }
 }

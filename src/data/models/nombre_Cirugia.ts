@@ -1,9 +1,9 @@
 import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { paciente_cirugias } from "./paciente_cirugias";
+import { Paciente_Cirugias } from "./Paciente_Cirugias";
 
 
 
-@Table
+@Table({ tableName: "nombre_cirugia" })
 export class nombre_Cirugia extends Model{
 
     @PrimaryKey
@@ -14,7 +14,7 @@ export class nombre_Cirugia extends Model{
     @Column(DataType.STRING)
     declare nombre: string;
 
-    @HasMany(()=> paciente_cirugias)
-    declare paciente_cirugias: paciente_cirugias[]
+    @HasMany(()=> Paciente_Cirugias)
+    declare paciente_cirugias: Paciente_Cirugias[]
 
 }

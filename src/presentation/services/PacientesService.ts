@@ -1,5 +1,5 @@
 import { log } from "console";
-import { Pacientes } from "../../data/models/pacientes";
+import { Pacientes } from "../../data/models/Pacientes";
 import { CreatePacienteDto } from "../../domain/Dtos/pacientes/createPacienteDto";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";

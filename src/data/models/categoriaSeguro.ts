@@ -1,7 +1,7 @@
 import { AutoIncrement, Column, DataType, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { Paciente_seguro_medico } from "./paciente_seguro_medico";
+import { Paciente_seguro_medico } from "./Paciente_seguro_medico";
 
-@Table
+@Table({ tableName: "categoriasseguros" })
 export class CategoriaSeguro extends Model{
 
     @PrimaryKey

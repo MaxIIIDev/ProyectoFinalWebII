@@ -17,9 +17,10 @@ import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { PacienteAnonimo } from "../../Helpers/PacienteAnonimo";
 import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
 import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
-import { Mutual } from "../../data/models/mutual";
 import { CamaService } from "../services/Hospital/CamaService";
 import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
+import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmisionDTO";
+
 
 
 
@@ -269,6 +270,29 @@ export class AdmisionController{
         }
 
     }
+    public redireccionadorDeVistasDeAdmision = async(req:Request, res: Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`)
+            }
+            const admisionEncontrada = await AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente?.id_Paciente!)
+            if(!admisionEncontrada[1]){
+                res.redirect(`/admision/crear/admision`)
+            }
+            
+            req.session.admision = admisionEncontrada[1]?.dataValues!
+            const alaOcupada = await CamaService.buscarCama(req.session.admision!.id_Cama);
+            req.session.restosAdmision= alaOcupada[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre;
+
+            
+            
+            res.redirect("/admision/actualizar/admision")
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURI(error as string)}`)
+            return
+        }
+     }
+
     public vistaCrearAdmision = async(req:Request,res:Response)=> {
         const error = req.query.error as string | undefined;
         const confirmacion = req.query.confirmacion as string | undefined
@@ -318,6 +342,63 @@ export class AdmisionController{
             return
         }
 
+
+    }
+    public vistaActualizarAdmision = async(req:Request, res:Response) => {
+        const error = req.query.error as string || undefined;
+        const confirmacion = req.query.confirmacion as string || undefined;
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURI("Se ha cerrado la sesion del paciente")}`)
+            }
+            if(!req.session.admision){
+                res.redirect(`/admision/principal/paciente?error=${encodeURI("Error en el redireccionamiento de admision")}`)
+            }
+             const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+            const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            const alas = await AlaService.getAlaFromDb();
+            console.log("PROBANDOO: " + req.session.restosAdmision);
+            
+            if(error){
+                res.render("AdmisionViews/vistaActualizarAdmision.pug", {
+                error: error,
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente,
+                admision: req.session.admision,
+                restosAdmision: req.session.restosAdmision
+                })
+            return
+            } 
+            if(confirmacion){
+                res.render("AdmisionViews/vistaActualizarAdmision.pug", {
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente,
+                success: confirmacion,
+                admision: req.session.admision,
+                restosAdmision: req.session.restosAdmision
+                })
+            return
+            }
+            res.render("AdmisionViews/vistaActualizarAdmision.pug", {
+                motivosDeInternacion: motivosDeInternacion[1],
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                tiposDeAdmision: tiposDeAdmision[1],
+                alas: alas,
+                paciente: req.session.paciente,
+                admision: req.session.admision,
+                restosAdmision: req.session.restosAdmision
+            })
+            
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURI(error as string)}`)
+        }
 
     }
     
@@ -688,7 +769,7 @@ export class AdmisionController{
             
             const [ errorDeBusqueda, admisiones ] = await AdmisionService.buscarTodasLasAdmisiones(1);
             if(errorDeBusqueda){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","299",errorDeBusqueda)
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones","AdmisionController","690",errorDeBusqueda)
                 res.status(404).json(`${errorDeBusqueda}`)
                 return
             }
@@ -749,6 +830,60 @@ export class AdmisionController{
             return
         }
 
+    }
+    public updateAdmision = async(req:Request, res:Response) => {
+
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURI("Se ha cerrado la sesion")}`)
+                return
+            }
+            if(!req.session.admision){
+                res.redirect(`/admision/principal/paciente?error=${encodeURI("No hay una admision activa")}`)
+                return
+            }
+            const [errorDto, dtoAdmision ] = ActualizarAdmisionDto.create({
+                estado: req.body.estado,
+                id_motivo_de_Internacion: req.body.id_motivo_de_Internacion,
+                id_prioridad_de_atencion: req.body.id_prioridad_de_atencion,
+                id_tipo_de_admision: req.body.id_tipo_de_admision,
+                id_Paciente:req.session.paciente?.id_Paciente,
+                id_Cama: req.body.id_Cama
+            })
+            if(errorDto){
+                res.redirect(`/admision/principal/paciente?error=${encodeURI(errorDto)}`)
+                return
+            }
+            const [errorAdmision, admision] = await AdmisionService.actualizarAdmision(dtoAdmision!);
+            if(errorAdmision){
+                res.redirect(`/admision/principal/paciente?error=${encodeURIComponent("No hay admisiones activas")}`)
+                return
+            }
+            if((req.body.id_Cama != null && req.body.id_Cama != req.session.admision.id_Cama)|| req.body.estado == "Baja") {
+                CamaService.marcarCamaComoLibre(req.session.admision.id_Cama);
+                if(req.body.estado == "Baja"){
+                    res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha dado de baja la admision")}`)
+                    req.session.admision = undefined;
+                    req.session.restosAdmision = undefined;
+                    return
+                }
+            }
+            const [ error, admisionActualizada ] = await AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente.id_Paciente);
+            if(error){
+                res.redirect(`/admision/actualizar/admision?error=${encodeURIComponent(error)}`)
+                return
+            }
+            req.session.admision = admisionActualizada
+            const alaOcupada = await CamaService.buscarCama(req.session.admision!.id_Cama);
+            req.session.restosAdmision= alaOcupada[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre;
+            
+            res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha actualizado el registro")}`)
+            return
+
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURI(error as string)}`)
+            return
+        }
     }
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
         try {
@@ -927,7 +1062,7 @@ export class AdmisionController{
     /////////////////////////////////////////////////
     ////////////!Habitaciones/////////////////////////
     ////////////////////////////////////////////////
-
+    
     public getHabitacionesDisponiblesPorGenero = async(req:Request, res:Response) => {
 
         try {
@@ -977,24 +1112,60 @@ export class AdmisionController{
             return
         }
     }
-
+    ////////////////////////////////////
+    ////////////////!Camas//////////////
+    public getHabitacionByCamaId = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.admision){
+                res.status(400).json("No hay una admision activa")
+                return
+            }
+            const [ error, camaActual] = await CamaService.buscarCama(req.session.admision!.id_Cama);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionByCamaId","AdmisionController","Line 660",error as string)
+                res.status(404).json(error as string);
+                return
+            }
+            console.log(camaActual?.dataValues);
+            
+            res.status(200).json({
+                id_Cama: camaActual?.dataValues.id_Cama,
+                nro_Habitacion: camaActual?.dataValues.habitacion.dataValues.nro_Habitacion,
+            });
+            
+        } catch (error) {
+            
+            res.status(500).json(error as string);
+        }
+    }
     public test = async(req:Request,res:Response)=> {
 
         try {
             
-            const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
-            const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
-            const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+            // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+            // const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            // const alas = await AlaService.getAlaFromDb();
+            const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
+            req.session.admision = admision[1]?.dataValues;
+            const ddd = await CamaService.buscarCama(3);
+            const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
             const alas = await AlaService.getAlaFromDb();
             
+            const [ error, camaActual] = await CamaService.buscarCama(9);
+            
+            //console.log(camaActual?.dataValues.habitacion.dataValues);
+            res.json(camaActual)
             
             
-            for(let a of alas!){
-                console.log(a);
+            
+            
+            // for(let a of alas!){
+            //     console.log(a);
                 
-            }
+            // }
             
-            res.json(tiposDeAdmision[1])   
+           // res.json(admision[1])   
             return
         } catch (error) {
             res.json(error)

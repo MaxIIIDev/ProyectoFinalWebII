@@ -1,12 +1,12 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Usuarios } from "./usuarios";
-import { paciente_cirugias } from "./paciente_cirugias";
-import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
-import { Paciente_recetas } from "./paciente_recetas";
-import { Turnos } from "./turnos";
-import { Especialidad } from "./Especialidad";
+import { Usuarios } from "./Usuarios";
+import { Paciente_Cirugias } from "./Paciente_Cirugias";
+import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
+import { Paciente_recetas } from "./Paciente_recetas";
+import { Turnos } from "./Turnos";
+import { Especialidades } from "./Especialidades";
 
-@Table
+@Table({ tableName: "medicos" })
 export class Medicos extends Model{
 
     @PrimaryKey
@@ -64,15 +64,15 @@ export class Medicos extends Model{
     @Column(DataType.STRING)
     declare direccion:string;
 
-    @ForeignKey(()=> Especialidad)
+    @ForeignKey(()=> Especialidades)
     @Column(DataType.INTEGER)
     declare id_Especialidad:number;
     
-    @BelongsTo(()=> Especialidad)
-    declare especialidad: Especialidad
+    @BelongsTo(()=> Especialidades)
+    declare especialidad: Especialidades
 
-    @HasOne(()=> paciente_cirugias)
-    declare cirugia: paciente_cirugias
+    @HasOne(()=> Paciente_Cirugias)
+    declare cirugia: Paciente_Cirugias
 
     @ForeignKey( () => Usuarios)
     @Column(DataType.INTEGER)

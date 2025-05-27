@@ -1,10 +1,10 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasOne, IsEmail, Model, NotNull, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Enfermero } from "./enfermeros";
-import { Medicos } from "./medicos";
-import { Roles } from "./roles";
+import { Enfermero } from "./Enfermero";
+import { Medicos } from "./Medicos";
+import { Roles } from "./Roles";
 
 
-@Table
+@Table({ tableName: "usuarios" })
 
 export class Usuarios extends Model{
 

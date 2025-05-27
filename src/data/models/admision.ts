@@ -1,14 +1,15 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
-import { Hospital_camas } from "./hospital_camas";
-import { Pacientes } from "./pacientes";
-import { tipo_De_Admision } from "./tipo_de_admision";
-import { Prioridad_De_Atencion } from "./prioridadDeAtencion";
 import { motivo_De_Internacion } from "./motivo_De_Internacion";
-import { Sintomas } from "./sintomas";
+import { Hospital_camas } from "./Hospital_camas";
+import { Pacientes } from "./Pacientes";
+import { Prioridad_De_Atencion } from "./Prioridad_De_Atencion";
+import { Sintomas } from "./Sintomas";
+import { tipo_De_Admision } from "./tipo_De_Admision";
+ 
 
 
 
-@Table
+@Table({ tableName: "admisiones" })
 export class Admision extends Model{
 
     @PrimaryKey
@@ -71,5 +72,5 @@ export class Admision extends Model{
     declare camas: Hospital_camas;
 
 
-} 
+}
 

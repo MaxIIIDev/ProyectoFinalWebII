@@ -1,9 +1,9 @@
 import { AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table, Unique } from "sequelize-typescript";
-import { Admision } from "./admision";
-import { Paciente_Diagnosticos } from "./paciente_diagnosticos";
+import { Admision } from "./Admision";
+import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
 
 
-@Table
+@Table({ tableName: "sintomas" })
 export class Sintomas extends Model{
 
     @AutoIncrement

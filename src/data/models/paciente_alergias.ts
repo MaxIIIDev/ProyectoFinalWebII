@@ -1,9 +1,9 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
-import { Pacientes } from "./pacientes";
+import { Pacientes } from "./Pacientes";
 import { paciente_tratamientos } from "./paciente_tratamientos";
-import { nombre_Alergia } from "./nombre_de_alergias";
+import { nombre_Alergia } from "./nombre_Alergia";
 
-@Table
+@Table({ tableName: "paciente_alergias" })
 export class Paciente_Alergias extends Model{
 
     @PrimaryKey

@@ -1,9 +1,8 @@
-
 import { PrimaryKey, AutoIncrement, Column, DataType, Model, ForeignKey, BelongsTo, Table } from "sequelize-typescript";
-import { Paciente_antecedentes_familiares } from "./paciente_antecedentes_familiares";
+import { Paciente_antecedentes_familiares } from "./Paciente_antecedentes_familiares";
 
 
-@Table
+@Table({ tableName: "lazo_familiar" })
 export class Lazo_Familiar extends Model{
 
     @PrimaryKey

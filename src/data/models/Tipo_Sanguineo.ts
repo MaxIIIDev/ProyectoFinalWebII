@@ -1,10 +1,10 @@
 import { AutoIncrement, Column, DataType, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { Pacientes } from "./pacientes";
+import { Pacientes } from "./Pacientes";
 
 
 
-@Table
-export class TipoSanguineo extends Model{
+@Table({ tableName: "tipo_sanguineo" })
+export class Tipo_Sanguineo extends Model{
 
     @PrimaryKey
     @AutoIncrement

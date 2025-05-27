@@ -3,13 +3,13 @@ html(lang="es")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Crear Admision
+    title Actualizar Admision
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
     include ../mixin/mixins
     style.
       body {
-        background-color:rgb(0, 49, 5);
+        background-color:rgb(18, 0, 49);
       }
       .card-form {
         margin-top: 2rem;
@@ -19,7 +19,7 @@ html(lang="es")
         border: none;
       }
       .card-header {
-        background-color:rgb(0, 166, 28);
+        background-color:rgb(19, 3, 118);
         color: white;
         border-radius: 10px 10px 0 0 !important;
         padding: 1.5rem;
@@ -28,12 +28,12 @@ html(lang="es")
         font-weight: 600;
       }
       .btn-primary {
-        background-color:rgb(19, 166, 0);
+        background-color:rgb(25, 0, 166);
         border: none;
         padding: 10px 20px;
       }
       .btn-primary:hover {
-        background-color:rgb(30, 197, 0);
+        background-color:rgb(0, 53, 197);
       }
       .form-control:focus, .form-select:focus {
         border-color: #86b7fe;
@@ -59,11 +59,12 @@ html(lang="es")
       .home-btn:hover {
             transform: scale(1.1);
             background-color:rgb(0, 0, 0);
-            color:rgb(0, 166, 8);
+            color:rgb(0, 255, 255);
         }
   body
     include ../layout/alerts.pug
     input(type="hidden", id="pacienteData", value=JSON.stringify(paciente))
+    input(type="hidden", id="admisionData", value=JSON.stringify(admision))
     .container
       a.home-btn(href="/admision/principal/paciente") 
         i.bi.bi-house-door-fill
@@ -73,17 +74,17 @@ html(lang="es")
             .card-header.text-center
               h2.card-title.mb-0
                 i.bi.bi-clipboard2-pulse.me-2
-                | Crear Admision
+                | Actualizar Admision
 
             .card-body.p-4
-              form(action="/admision/create/admision", method="POST")
+              form(action="/admision/update/admision", method="POST")
                 .mb-4
                   label.form-label.fw-bold(for="id_motivo_de_Internacion")
                     i.bi.bi-building.me-2
                     | Motivo de Internacion
                   select.form-select.py-2(name="id_motivo_de_Internacion", required)
-                    option(value="", disabled, selected) Seleccione un motivo
-                    +agregarMotivosDesdeDb(motivosDeInternacion)
+                    
+                    +agregarMotivosDesdeDbActualizarAdmision(motivosDeInternacion,admision)
                     
 
                 .mb-4
@@ -91,16 +92,16 @@ html(lang="es")
                     i.bi.bi-123.me-2
                     | Prioridad de Atencion
                   select.form-select.py-2#numero(name="id_prioridad_de_atencion", required)
-                    option(value="", disabled, selected) Seleccione Prioridad de Atencion
-                    +cargarPrioridadDeAtencion(prioridadesDeAtencion)
+                    
+                    +cargarPrioridadDeAtencionActualizarAdmision(prioridadesDeAtencion,admision)
 
                 .mb-4
                   label.form-label.fw-bold(for="id_tipo_de_admision")
                     i.bi.bi-card-checklist.me-2
                     | Tipo de Admision
-                  select.form-select.py-2#id_categoria_seguro(name="id_tipo_de_admision", required)
-                    option(value="", disabled, selected) Selecciona un Tipo de Admision
-                    +cargarTiposDeAdmision(tiposDeAdmision)
+                  select.form-select.py-2#id_tipo_de_admision(name="id_tipo_de_admision", required)
+                    
+                    +cargarTiposDeAdmisionActualizar(tiposDeAdmision,admision)
 
                 .mb-4
                   label.form-label.fw-bold(for="id_Ala")
@@ -108,13 +109,20 @@ html(lang="es")
                     | Unidad
                   select.form-select.py-2(name="id_Ala", id="id_Ala",required)
                     option(value="", disabled, selected) Selecciona una Unidad
-                    +cargarUnidad(alas)
+                    +cargarUnidadVistaActualizarAdmision(alas,restosAdmision)
                 .mb-4
                   label.form-label.fw-bold(for="id_Cama")
                     i.bi.bi-card-checklist.me-2
                     | Camas
                   select.form-select.py-2(name="id_Cama",id="selectCama",required)
                     option(value="", disabled, selected) Selecciona una Cama 
+                .mb-4
+                  label.form-label.fw-bold(for="estado")
+                    i.bi.bi-card-checklist.me-2
+                    | Estado
+                  select.form-select.py-2(name="estado",id="estado",required)
+                    option(value="Activo", selected) Activo 
+                    option(value="Baja")  Baja
                     
                 .d-grid.gap-2.d-md-flex.justify-content-md-end.mt-4
                   button.btn.btn-primary(type="submit")
@@ -136,17 +144,23 @@ html(lang="es")
           if (ala && genero) {
             try {
               const response = await fetch(`/admision/get/habitacion?ala=${encodeURIComponent(ala)}&genero=${encodeURIComponent(genero)}`);
-              
-              if (!response.ok) {
+              const response2 = await fetch("/admision/get/habitacion/ocupada");
+
+              if (!response.ok && !response2.ok) {
                 selectCama.innerHTML = '<option value="" selected disabled>No hay camas disponibles</option>';
 
                 throw new Error(`Error HTTP: ${response.status}`);
               }
               
               const data = await response.json();
+              const data2 = await response2.json();
+              console.log(data2);
               selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
-
-              
+              const optionActual = document.createElement("option");
+              optionActual.value = data2.id_Cama;
+              optionActual.textContent = `Habitación ${data2.nro_Habitacion} - Cama ${data2.id_Cama} (Actual)`;
+              optionActual.selected = true;
+              selectCama.appendChild(optionActual);
               
               if (data.camas && Array.isArray(data.camas)) {
                 data.camas.forEach(cama => {
@@ -155,6 +169,14 @@ html(lang="es")
                   option.textContent = `Habitación ${cama.nro_habitacion} - Cama ${cama.id_cama}`;
                   selectCama.appendChild(option);
                 });
+              const admision = JSON.parse(document.getElementById("admisionData").value);
+              const idCama = admision.id_Cama;
+              if (idCama) {
+                const optionToSelect = Array.from(selectCama.options).find(option => option.value == idCama);
+                if (optionToSelect) {
+                  optionToSelect.selected = true;
+                }
+              }
               }
             } catch (error) {
               console.error("Error al obtener las camas:", error);
@@ -164,9 +186,12 @@ html(lang="es")
       }
       document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("id_Ala").addEventListener("change", actualizarCamas);
+        
+
         if(document.getElementById("id_Ala").value){
           actualizarCamas()
         }
+        
       })
       
       
