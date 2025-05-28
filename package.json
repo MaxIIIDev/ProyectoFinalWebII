@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "tsnd --respawn --clear --watch \"**/*.pug\" src/app.ts",
     "dev:debug": "tsnd --respawn --clear --watch \"src/**/*.pug\" --inspect=9229 src/app.ts",
-    "build": "rimraf ./dist && tsc",
+    "build": "tsc",
     "start": "npm run build && node dist/app.js",
     "start:dev": "nodemon --watch \"**/*.ts\" --watch \"**/*.pug\" --exec \"ts-node src/app.ts\""
+  
   },
   "repository": {
     "type": "git",
