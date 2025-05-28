@@ -41,10 +41,10 @@ export class UpdatePacienteDto{
             const { id_Paciente, nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo } = object;
     
             if(!id_Paciente) return ["Se requiere el id del paciente"]
-            const dniParseada = parseInt(dni)
+            const dniParseada = (dni)? parseInt(dni):dni;
             let edadCalculada = edad
             console.log(fecha_nac);
-            
+            const id_tipo_sanguineoParseado = (id_tipo_sanguineo)?parseInt(id_tipo_sanguineo): id_tipo_sanguineo
             if(fecha_nac){
                 edadCalculada = calcularEdad(fecha_nac)
             }
@@ -63,7 +63,7 @@ export class UpdatePacienteDto{
                 peso,
                 telefono,               
                 telefono_De_Emergencia,
-                id_tipo_sanguineo
+                id_tipo_sanguineoParseado
                 
             )]
         }

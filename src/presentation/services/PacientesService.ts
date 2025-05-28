@@ -32,6 +32,23 @@ export class PacienteServices{
         console.log("Paciente no encontrado");
         return [false, undefined]
     }
+    static buscarPacienteDesconocido = async(id_Paciente: number):Promise<[boolean?,Pacientes?]>=>{
+
+        try {
+            const pacienteDesconocidoBuscado = await Pacientes.findOne({
+                where: {
+                    id_Paciente : id_Paciente,
+                    dni: null
+                }
+            })
+            if(!pacienteDesconocidoBuscado){
+                return[false];
+            }
+            return [true, pacienteDesconocidoBuscado]
+        } catch (error) {
+            return [false]
+        }
+    }
     static saberSiElPacienteTieneSeguroMedico = async(dni:number): Promise<[(string | undefined)?, (boolean | undefined)?]> => {
 
         try {
@@ -82,24 +99,43 @@ export class PacienteServices{
             return ["Error al crear el paciente NN"]
         }
     }
-    static actualizarPaciente = async(_updatePacienteDto: UpdatePacienteDto):Promise<[string?,boolean?]> => {
+    static actualizarPaciente = async(_updatePacienteDto: UpdatePacienteDto,modo:number):Promise<[string?,boolean?]> => {
 
         try {
-            const pacienteEncontrado = await this.buscarPacienteExistente(_updatePacienteDto.dni!,1);
-            if(!pacienteEncontrado[0]){
-                throw Error("no se encontro al paciente");
+            let pacienteEncontrado;
+            if(modo == 1){//BUSCAR PACIENTE NORMAL
+                pacienteEncontrado = await this.buscarPacienteExistente(_updatePacienteDto.dni!,1);
+                if(!pacienteEncontrado[0]){
+                    throw Error("no se encontro al paciente");
+                }
+                const object = UpdatePacienteDto.toObject(_updatePacienteDto);
+                const [filasActualizadas] = await Pacientes.update(object,{where:{
+                    dni: pacienteEncontrado[1]!.dni
+                }})
+                if(filasActualizadas === 0){
+                    return ["No se actualizo ningun registro", false]
+                }
+            }else{//ACTUALIZAR PACIENTE ANONIMO
+                pacienteEncontrado = await this.buscarPacienteDesconocido(_updatePacienteDto.id_Paciente!);
+                if(!pacienteEncontrado[0]){
+                    throw Error("no se encontro al paciente");
+                }
+                const object = UpdatePacienteDto.toObject(_updatePacienteDto);
+                const [confirmacion] = await this.buscarPacienteExistente(_updatePacienteDto.dni!,0);
+                if(confirmacion) return ["Ya existe un dni asociado a otro paciente"]
+                const [filasActualizadas] = await Pacientes.update(object,{where:{
+                    id_Paciente: pacienteEncontrado[1]!.id_Paciente
+                }})
+                if(filasActualizadas === 0){
+                    return ["No se actualizo ningun registro", false]
+                }
             }
-            const object = UpdatePacienteDto.toObject(_updatePacienteDto);
-            const [filasActualizadas] = await Pacientes.update(object,{where:{
-                dni: pacienteEncontrado[1]!.dni
-            }})
-            if(filasActualizadas === 0){
-                return ["No se actualizo ningun registro", false]
-            }
+           
+            
         } catch (error) {
             
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizar Paciente","PacienteService","68", error as string));
-            
+            return["no se actualizo el paciente", false]
         }
         return [undefined, true]
     }

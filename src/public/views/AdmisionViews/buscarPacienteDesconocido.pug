@@ -8,7 +8,7 @@ html(lang="es")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
         style.
             body {
-                background: linear-gradient(135deg, rgb(0, 9, 18) 0%, rgba(26, 26, 26, 0.73) 100%);
+                background: linear-gradient(135deg, rgb(60, 15, 1) 0%, rgba(152, 0, 0, 0.73) 100%);
                 min-height: 100vh;
             }
             .search-container {
@@ -27,7 +27,7 @@ html(lang="es")
             }
             .search-icon {
                 font-size: 3rem;
-                color: rgb(0, 0, 0);
+                color: rgb(255, 0, 0);
             }
             .form-control {
                 padding: 1rem 1.5rem;
@@ -36,11 +36,11 @@ html(lang="es")
                 border: 2px solid #e0e0e0;
             }
             .form-control:focus {
-                border-color: #3498db;
+                border-color:rgb(185, 99, 1);
                 box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
             }
             .btn-search {
-                background:rgb(0, 5, 8);
+                background:rgb(8, 0, 0);
                 color: white;
                 border: none;
                 border-radius: 50px;
@@ -49,7 +49,7 @@ html(lang="es")
                 transition: all 0.3s;
             }
             .btn-search:hover {
-                background: rgba(3, 129, 255, 0.94);
+                background: rgba(255, 3, 3, 0.73);
                 transform: translateY(-2px);
             }
             .input-group-text {
@@ -88,7 +88,8 @@ html(lang="es")
             }
             .home-btn:hover {
                 transform: scale(1.1);
-                background-color: #f8f9fa;
+                color: rgb(206, 0, 0);
+                background-color:rgb(0, 0, 0);
             }
         include ../mixin/mixins
     
@@ -100,31 +101,29 @@ html(lang="es")
             .search-container
                 h1.search-title.mb-4
                     i.bi.bi-search-heart.search-icon.me-2
-                    | Buscar Paciente
+                    | Buscar Paciente Desconocido
                 
-                form(action="/admision/find/paciente", method="GET" id="searchForm" novalidate)
+                form(action="/admision/find/paciente/desconocido", method="GET" id="searchForm" novalidate)
                     .input-group.mb-3
                         span.input-group-text.bg-white
                             i.bi.bi-person-badge
                         input#dni.form-control(
                             type="text" 
-                            name="dni" 
-                            placeholder="Ingrese el DNI del paciente" 
-                            aria-label="DNI" 
-                            pattern="[0-9]{7,8}" 
-                            title="El DNI debe contener 7 u 8 dígitos numéricos"
+                            name="id_Paciente" 
+                            placeholder="Ingrese el Id otorgado" 
+                            aria-label="ID" 
+                            pattern="[0-9]{1,1000000000000}" 
+                            title="El ID debe contener al menos un dígito numéricos"
                             required
                         )
                     .mb-4
-                        .invalid-feedback#dniError Por favor ingrese un DNI válido (8 dígitos)
+                        .invalid-feedback#dniError Por favor ingrese un ID válido (Al menos 1 dígito)
                     
                     .d-grid
                         button.btn.btn-search.btn-lg(type="submit")
                             i.bi.bi-search.me-2
                             | Buscar
-                    .mt-3.text-center
-                        i.bi.bi-search-heart
-                        a.ms-1(href="/admision/find/desconocido"  class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover") Buscar Desconocido
+
     script.
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('searchForm');

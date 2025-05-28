@@ -160,16 +160,16 @@ html(lang="es")
                   type="tel", 
                   id="telefono_emergencia", 
                   name="telefono_De_Emergencia", 
-                  value=paciente.telefono_De_Emergencia, 
+                  value=paciente.telefono_De_Emergencia || "", 
                   maxlength="10",
                   pattern="[0-9]{6,10}",
                   title="Ingrese entre 6 y 10 dígitos numéricos"
                 )
-                .invalid-feedback Ingrese entre 6 y 15 dígitos numéricos
+                .invalid-feedback Ingrese entre 6 y 15 dígitos numéricos || O borre el valor
               .col-md-6
                 label.form-label(for="tipo_sanguineo") Tipo Sanguíneo
                 select.form-select(id="tipo_sanguineo", name="id_tipo_sanguineo")
-                  option(value="") No especificado
+                  option(value="9" selected=(paciente.id_tipo_sanguineo === 9)) No especificado
                   option(value="1" selected=(paciente.id_tipo_sanguineo === 1)) A+
                   option(value="2" selected=(paciente.id_tipo_sanguineo === 2)) A-
                   option(value="3" selected=(paciente.id_tipo_sanguineo === 3)) B+

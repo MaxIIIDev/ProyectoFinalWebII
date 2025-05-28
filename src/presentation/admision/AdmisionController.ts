@@ -94,6 +94,24 @@ export class AdmisionController{
             return
         }
     }
+    public vistaBuscarPacienteDesconocido = async (req:Request, res:Response)=> {
+        const error = req.params.error as string || undefined;
+        try {
+            if(error){
+                res.render("AdmisionViews/buscarPacienteDesconocido.pug",{
+                    error: error
+                })
+                return
+            }
+            res.render("AdmisionViews/buscarPacienteDesconocido.pug")
+            return
+        } catch (error) {
+            res.render("AdmisionViews/buscarPacienteDesconocido.pug", {
+                error: error as string
+            })
+            return
+        }
+    }
 
     public vistaCrearPaciente = async ( req:Request, res:Response)=>{
         try {
@@ -489,6 +507,28 @@ export class AdmisionController{
             return
         }
     }
+    public buscarPacienteDesconocido =  async(req:Request,res:Response) =>{
+        try {
+            console.log(req.query.id_Paciente);
+            const idEnviado = req.query.id_Paciente
+            if(!idEnviado){
+                res.redirect(`/admision/find/desconocido?error=${encodeURIComponent("Se requiere el id_Paciente")}`)
+                return
+            }
+            const id_Paciente = (idEnviado)?parseInt(idEnviado as string):NaN
+            const [errorMetodo, pacienteEncontrado] = await PacienteServices.buscarPacienteDesconocido(id_Paciente);
+            if(!errorMetodo){
+                res.redirect(`/admision/find/desconocido?error=${encodeURIComponent("No se actualizo al paciente desconocido")}`)
+                return
+            }
+            req.session.paciente = pacienteEncontrado?.dataValues
+            res.redirect("/admision/principal/paciente")
+            return
+        } catch (error) {
+            res.redirect(`/admision/find/desconocido?error=${encodeURIComponent(error as string)}`)
+            return
+        }
+    }
     public buscarTodaLaInformacionDelPaciente = async(req:Request,res:Response) => {
 
         try {
@@ -535,7 +575,7 @@ export class AdmisionController{
     public actualizarPaciente = async(req:Request,res:Response) =>  {
 
         try {
-            let alerta = false;
+            
             if(!req.session.paciente){
                 res.render("AdmisionViews/principal.pug",{
                     warning:"Se cerró la sesión del paciente"
@@ -553,15 +593,16 @@ export class AdmisionController{
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPaciente","AdmisionController", "Line 53", error)
                 throw new Error(error);               
             }
-            
-            if(String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)){
+            let modo = 1;
+            if((String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)) && req.session.paciente.dni != null){
                 res.render("AdmisionViews/ActualizarPaciente.pug",{
                     error: "No se puede cambiar el dni del paciente, notifique al administrador",
                     paciente: req.session.paciente
                 })
                 return
             }
-            const [errorInService, confirmacion] = await PacienteServices.actualizarPaciente(updatePacienteDto!); 
+            if(req.session.paciente.dni == null) modo = 2
+            const [errorInService, confirmacion] = await PacienteServices.actualizarPaciente(updatePacienteDto!,modo); 
             if(errorInService){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarPaciente","AdmisionController","57",errorInService);    
                 res.render("AdmisionViews/ActualizarPaciente.pug",{
@@ -1145,20 +1186,22 @@ export class AdmisionController{
             // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
             // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
             // const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+            // // const alas = await AlaService.getAlaFromDb();
+            // const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
+            // req.session.admision = admision[1]?.dataValues;
+            // const ddd = await CamaService.buscarCama(3);
+            // const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
             // const alas = await AlaService.getAlaFromDb();
-            const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
-            req.session.admision = admision[1]?.dataValues;
-            const ddd = await CamaService.buscarCama(3);
-            const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
-            const alas = await AlaService.getAlaFromDb();
             
-            const [ error, camaActual] = await CamaService.buscarCama(9);
+            // const [ error, camaActual] = await CamaService.buscarCama(9);
             
-            //console.log(camaActual?.dataValues.habitacion.dataValues);
-            res.json(camaActual)
+            // //console.log(camaActual?.dataValues.habitacion.dataValues);
+            // res.json(camaActual)
             
-            
-            
+            const [error, paciente] = await PacienteServices.buscarPacienteDesconocido(7);
+            console.log(paciente?.dataValues);
+            req.session.paciente = paciente?.dataValues
+            res.json(req.session.paciente)
             
             // for(let a of alas!){
             //     console.log(a);

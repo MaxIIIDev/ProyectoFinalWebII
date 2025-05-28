@@ -22,12 +22,13 @@ export class AdmisionRoutes{
         router.get("/principal/paciente", controller.vistaPrincipalPaciente) //*:Comprobado
         //!: 2- Vista de buscar Paciente
         router.get("/find" , controller.vistaBuscarPorDni) //*:Comprobado
-        
+        router.get("/find/desconocido", controller.vistaBuscarPacienteDesconocido)
         //!: 3.1 - Vista panel de crear paciente    
          router.get("/crear/paciente", controller.vistaCrearPaciente) //*:Comprobado
          //!: 3.2- Vista panel principal de paciente
         router.get("/find/paciente", controller.buscarPacientePorDni); //*: YA ESTA TRABAJANDO CON LA VISTA DE BUSQUEDA DE DNI
-         //!3.3- Vista de crear seguro medico
+        router.get("/find/paciente/desconocido", controller.buscarPacienteDesconocido)
+        //!3.3- Vista de crear seguro medico
         router.get("/crear/seguro/medico", controller.vistaCrearSeguroMedico) //*:Comprobado
         router.get("/actualizar/seguro/medico", controller.vistaActualizarSeguroMedico)
         //?VISTA ADMISION
