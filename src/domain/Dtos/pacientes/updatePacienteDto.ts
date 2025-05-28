@@ -48,6 +48,7 @@ export class UpdatePacienteDto{
             if(fecha_nac){
                 edadCalculada = calcularEdad(fecha_nac)
             }
+            const telefonoEmergenciaParseado = (telefono_De_Emergencia)?telefono_De_Emergencia:null
             let fechaNacimientoModificada = new Date(fecha_nac)
             const fechaActual = new Date()
             if(fechaNacimientoModificada > fechaActual) return ["La fecha de nacimiento no puede ser mayor a la fecha actual"]
@@ -62,7 +63,7 @@ export class UpdatePacienteDto{
                 edadCalculada,
                 peso,
                 telefono,               
-                telefono_De_Emergencia,
+                telefonoEmergenciaParseado,
                 id_tipo_sanguineoParseado
                 
             )]

@@ -95,11 +95,11 @@ export class AdmisionController{
         }
     }
     public vistaBuscarPacienteDesconocido = async (req:Request, res:Response)=> {
-        const error = req.params.error as string || undefined;
+        const warning = req.query.warning as string || undefined;
         try {
-            if(error){
+            if(warning){
                 res.render("AdmisionViews/buscarPacienteDesconocido.pug",{
-                    error: error
+                    warning: warning
                 })
                 return
             }
@@ -518,7 +518,7 @@ export class AdmisionController{
             const id_Paciente = (idEnviado)?parseInt(idEnviado as string):NaN
             const [errorMetodo, pacienteEncontrado] = await PacienteServices.buscarPacienteDesconocido(id_Paciente);
             if(!errorMetodo){
-                res.redirect(`/admision/find/desconocido?error=${encodeURIComponent("No se actualizo al paciente desconocido")}`)
+                res.redirect(`/admision/find/desconocido?warning=${encodeURIComponent("No se encontro al paciente desconocido")}`)
                 return
             }
             req.session.paciente = pacienteEncontrado?.dataValues
@@ -587,6 +587,7 @@ export class AdmisionController{
             if(!req.body.apellido && req.session.paciente.apellido) {res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el apellido vacio", paciente: req.session.paciente});return}
             if(!req.body.direccion && req.session.paciente.direccion) {res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar la direccion vacia", paciente: req.session.paciente});return}
             if(!req.body.telefono && req.session.paciente.telefono){ res.render("AdmisionViews/ActualizarPaciente.pug",{error: "No se puede dejar el telefono vacio", paciente: req.session.paciente});return}
+           
             const [ error, updatePacienteDto] = UpdatePacienteDto.create(req.body, req.session.paciente);
             
             if(error){
