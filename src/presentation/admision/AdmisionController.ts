@@ -929,7 +929,7 @@ export class AdmisionController{
     }
     public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
         try {
-            console.log(req.body);
+            
             
             const { ala, unidad, genero, id_motivo_de_Internacion, id_Cama } = req.body;
             
