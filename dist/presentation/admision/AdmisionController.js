@@ -877,7 +877,6 @@ class AdmisionController {
         });
         this.admitirPacienteDeEmergencia = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.body);
                 const { ala, unidad, genero, id_motivo_de_Internacion, id_Cama } = req.body;
                 //const habitaciones = await HabitacionService.getHabitacionesDisponibles(genero, ala);
                 let pacienteAnonimo;

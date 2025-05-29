@@ -39,6 +39,7 @@ class CreatePacienteDto {
         }
         let fechaNacimientoModificada = fecha_nac.split("T")[0];
         let id_tipo_sanguineoCambio;
+        const telefono_De_EmergenciaParse = (telefono_De_Emergencia) ? BigInt(telefono_De_Emergencia) : BigInt(0);
         if (id_tipo_sanguineo == 0) {
             id_tipo_sanguineoCambio = undefined;
         }
@@ -46,7 +47,7 @@ class CreatePacienteDto {
             id_tipo_sanguineoCambio = id_tipo_sanguineo;
         }
         const id_tipo_sanguineoParse = parseInt(id_tipo_sanguineo);
-        return [undefined, new CreatePacienteDto(nombre, apellido, dni, fechaNacimientoModificada, genero, direccion, edadCalculada, peso, telefono, telefono_De_Emergencia, id_tipo_sanguineoParse, id_seguro_medico)];
+        return [undefined, new CreatePacienteDto(nombre, apellido, dni, fechaNacimientoModificada, genero, direccion, edadCalculada, peso, telefono, telefono_De_EmergenciaParse, id_tipo_sanguineoParse, id_seguro_medico)];
     }
 }
 exports.CreatePacienteDto = CreatePacienteDto;
