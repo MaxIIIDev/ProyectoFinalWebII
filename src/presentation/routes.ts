@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { AdmisionRoutes } from "./admision/AdmisionRoutes";
 import { EnfermeriaRoutes } from "./Enfermeria/EnfermeriaRoutes";
 import { Conexion } from "../data/conexion";
@@ -12,7 +12,11 @@ export class AppRoutes{
 
         const router = Router();
         const conexionBd = Conexion.getConexion;
-        router.use("/", AdmisionRoutes.admisionRoutes(conexionBd))
+        router.get("/", function(req:Request,res:Response){
+            res.redirect("/admision");
+            return;
+        })
+        router.use("/admision", AdmisionRoutes.admisionRoutes(conexionBd))
         router.use("/enfermeria", EnfermeriaRoutes.enfermeriaRoutes(conexionBd))
         // router.use("/medicos",MedicoRoutes.medicoRoutes(conexionBd));
         router.use("/auth", AuthRoutes.authRoutes());
