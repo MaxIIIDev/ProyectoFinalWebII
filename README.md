@@ -10,7 +10,7 @@
     - DB_HOST="Debe proporcionar el host de su base de datos(Si la ejecucion es local: 'localhost')
     - DB_PORT="Debe proporcionar el puerto de la base de datos, si es en produccion, debe colocar el puerto proporcionado por su host.
     Si es local debe colocar el puerto que usted quiere asignarle(Recomendado: 3306)
-# 2- Ejecutar npm install
+# 2- Ejecutar el comando npm install.
 # 3- Ir a la carpeta "Src->data->conexion.ts" dentro de este archivo si quiere cargar los modelos de la base de datos debe descomentar la linea 98 ("await this.sync()").
 # 4- Ejecutar el comando npm run dev.
     4.1- Este comando ejecutara el programa y comenzara la sincronizacion de modelos con la base de datos.
