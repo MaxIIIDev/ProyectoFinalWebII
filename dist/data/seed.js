@@ -1,4 +1,3 @@
-"use strict";
 // import { Admision } from "./models/Admision";
 // import { Pacientes } from "./models/Pacientes";
 // import { Hospital_camas } from "./models/Hospital_camas";
@@ -1013,4 +1012,3 @@
 //         console.error('Error al realizar el seed:', error);
 //     }
 // }
-//# sourceMappingURL=seed.js.map

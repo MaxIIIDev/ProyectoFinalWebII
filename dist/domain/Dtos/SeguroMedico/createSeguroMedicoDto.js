@@ -45,4 +45,3 @@ CreateSeguroMedicoDto.toObject = (createSeguroMedicoDto) => {
         dni_Paciente: createSeguroMedicoDto.dni_Paciente
     };
 };
-//# sourceMappingURL=createSeguroMedicoDto.js.map

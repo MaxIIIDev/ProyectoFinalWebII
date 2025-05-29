@@ -60,4 +60,3 @@ class AdmisionRoutes {
     }
 }
 exports.AdmisionRoutes = AdmisionRoutes;
-//# sourceMappingURL=AdmisionRoutes.js.map

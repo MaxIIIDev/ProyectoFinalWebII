@@ -74,4 +74,3 @@ exports.importaciones = [
     Usuarios_1.Usuarios,
     nombre_Cirugia_1.nombre_Cirugia
 ];
-//# sourceMappingURL=init.js.map

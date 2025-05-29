@@ -67,4 +67,3 @@ ActualizarAdmisionDto.create = (objeto) => {
         return [error];
     }
 };
-//# sourceMappingURL=ActualizarAdmisionDTO.js.map

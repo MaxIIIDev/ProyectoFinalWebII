@@ -53,4 +53,3 @@ UpdatePacienteDto.toObject = (updatePacienteDto) => {
         id_tipo_sanguineo: updatePacienteDto.id_tipo_sanguineo
     };
 };
-//# sourceMappingURL=updatePacienteDto.js.map

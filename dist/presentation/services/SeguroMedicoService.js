@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SeguroMedicoService = void 0;
@@ -13,9 +22,9 @@ class SeguroMedicoService {
 }
 exports.SeguroMedicoService = SeguroMedicoService;
 _a = SeguroMedicoService;
-SeguroMedicoService.getMutualesFromDb = async () => {
+SeguroMedicoService.getMutualesFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const mutualesBuscadas = await Mutuales_1.Mutuales.findAll();
+        const mutualesBuscadas = yield Mutuales_1.Mutuales.findAll();
         if (mutualesBuscadas.length === 0) {
             console.log("No se encontraron mutuales");
             return [false, undefined];
@@ -26,10 +35,10 @@ SeguroMedicoService.getMutualesFromDb = async () => {
         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getMutuales", "SeguroMedicoService", "Line 15", Error);
         return [false, undefined];
     }
-};
-SeguroMedicoService.getCategoriasFromDb = async () => {
+});
+SeguroMedicoService.getCategoriasFromDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const categorias = await CategoriaSeguro_1.CategoriaSeguro.findAll();
+        const categorias = yield CategoriaSeguro_1.CategoriaSeguro.findAll();
         if (categorias.length === 0) {
             console.log("No se encontraron categorias");
             return [false, undefined];
@@ -40,10 +49,10 @@ SeguroMedicoService.getCategoriasFromDb = async () => {
         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getCategorias", "SeguroMedicoService", "Line 15", Error);
         return [false, undefined];
     }
-};
-SeguroMedicoService.buscarSeguroMedicoExistente = async (numero, modo) => {
+});
+SeguroMedicoService.buscarSeguroMedicoExistente = (numero, modo) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoBuscado = await Paciente_seguro_medico_1.Paciente_seguro_medico.findOne({
+        const seguroMedicoBuscado = yield Paciente_seguro_medico_1.Paciente_seguro_medico.findOne({
             include: [
                 {
                     model: Pacientes_1.Pacientes,
@@ -75,10 +84,10 @@ SeguroMedicoService.buscarSeguroMedicoExistente = async (numero, modo) => {
         return [false, undefined];
     }
     return [false, undefined];
-};
-SeguroMedicoService.buscarSeguroMedico = async (id) => {
+});
+SeguroMedicoService.buscarSeguroMedico = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoBuscado = await Paciente_seguro_medico_1.Paciente_seguro_medico.findOne({
+        const seguroMedicoBuscado = yield Paciente_seguro_medico_1.Paciente_seguro_medico.findOne({
             include: [
                 {
                     model: Pacientes_1.Pacientes,
@@ -106,14 +115,14 @@ SeguroMedicoService.buscarSeguroMedico = async (id) => {
     }
     console.log("No se encontro el seguro medico");
     return [false, undefined];
-};
-SeguroMedicoService.createSeguroMedico = async (createSeguroMedicoDto) => {
+});
+SeguroMedicoService.createSeguroMedico = (createSeguroMedicoDto) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoEncontrado = await _a.buscarSeguroMedicoExistente(createSeguroMedicoDto.numero, 0);
+        const seguroMedicoEncontrado = yield _a.buscarSeguroMedicoExistente(createSeguroMedicoDto.numero, 0);
         if (seguroMedicoEncontrado[0])
             return ["El seguro médico ya existe", undefined];
         const object = createSeguroMedicoDto_1.CreateSeguroMedicoDto.toObject(createSeguroMedicoDto);
-        const seguroMedicoCreado = await Paciente_seguro_medico_1.Paciente_seguro_medico.create(object);
+        const seguroMedicoCreado = yield Paciente_seguro_medico_1.Paciente_seguro_medico.create(object);
         if (seguroMedicoCreado)
             console.log("Seguro médico creado: ");
         return [undefined, seguroMedicoCreado];
@@ -122,19 +131,19 @@ SeguroMedicoService.createSeguroMedico = async (createSeguroMedicoDto) => {
         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("createSeguroMedico", "SeguroMedicoService", "Line 99", Error);
         return ["Error al crear el seguro médico", undefined];
     }
-};
-SeguroMedicoService.updateSeguroMedico = async (updateSeguroMedicoDto, id_seguro_medico, id_Paciente) => {
+});
+SeguroMedicoService.updateSeguroMedico = (updateSeguroMedicoDto, id_seguro_medico, id_Paciente) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoEncontrado = await _a.buscarSeguroMedico(id_seguro_medico);
+        const seguroMedicoEncontrado = yield _a.buscarSeguroMedico(id_seguro_medico);
         if (!seguroMedicoEncontrado[0]) {
             return ["No se encontro al seguro médico"];
         }
-        const [error, confirmacion] = await _a.validarQueElSeguroMedicoNoEsteAsignadoComparando(updateSeguroMedicoDto.numero, id_Paciente);
+        const [error, confirmacion] = yield _a.validarQueElSeguroMedicoNoEsteAsignadoComparando(updateSeguroMedicoDto.numero, id_Paciente);
         if (!confirmacion) {
             return [error];
         }
         const updateSeguroMedicoToObject = updateSeguroMedicoDto_1.UpdateSeguroMedicoDto.toObject(updateSeguroMedicoDto);
-        const [filasActualizadas] = await Paciente_seguro_medico_1.Paciente_seguro_medico.update(updateSeguroMedicoToObject, { where: {
+        const [filasActualizadas] = yield Paciente_seguro_medico_1.Paciente_seguro_medico.update(updateSeguroMedicoToObject, { where: {
                 numero: seguroMedicoEncontrado[1].dataValues.numero
             } });
         if (filasActualizadas === 0) {
@@ -147,14 +156,14 @@ SeguroMedicoService.updateSeguroMedico = async (updateSeguroMedicoDto, id_seguro
         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("updateSeguroMedico", "SeguroMedicoService", "Line 78", error);
         return ["Error al actualizar el seguro médico", false];
     }
-};
-SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignado = async (numeroSeguroMedico) => {
+});
+SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignado = (numeroSeguroMedico) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoBuscado = await _a.buscarSeguroMedicoExistente(numeroSeguroMedico, 1);
+        const seguroMedicoBuscado = yield _a.buscarSeguroMedicoExistente(numeroSeguroMedico, 1);
         if (!seguroMedicoBuscado[0]) {
             throw Error("No se encontro el seguro medico");
         }
-        const validarSiEstaAsignado = await Pacientes_1.Pacientes.findOne({ where: { id_seguro_medico: seguroMedicoBuscado[1].dataValues.id_seguro_medico } });
+        const validarSiEstaAsignado = yield Pacientes_1.Pacientes.findOne({ where: { id_seguro_medico: seguroMedicoBuscado[1].dataValues.id_seguro_medico } });
         if (validarSiEstaAsignado) {
             console.log("El seguro médico ya está asignado a otro usuario");
             throw Error("El seguro médico ya está asignado a otro usuario");
@@ -166,16 +175,16 @@ SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignado = async (numeroSeguro
         return [Error, false];
     }
     return [undefined, true];
-};
-SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignadoComparando = async (numeroSeguroMedico, id_Paciente) => {
+});
+SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignadoComparando = (numeroSeguroMedico, id_Paciente) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const seguroMedicoBuscado = await _a.buscarSeguroMedicoExistente(numeroSeguroMedico, 1);
+        const seguroMedicoBuscado = yield _a.buscarSeguroMedicoExistente(numeroSeguroMedico, 1);
         if (!seguroMedicoBuscado[1]) {
             return [undefined, true];
         }
-        const validarSiEstaAsignado = await Pacientes_1.Pacientes.findOne({ where: { id_seguro_medico: seguroMedicoBuscado[1].dataValues.id_seguro_medico } });
-        console.log("Numero de paciente buscado: " + validarSiEstaAsignado?.dataValues.id_Paciente + "\nNumero de paciente Enviado: " + id_Paciente);
-        if (validarSiEstaAsignado?.dataValues.id_Paciente != id_Paciente) {
+        const validarSiEstaAsignado = yield Pacientes_1.Pacientes.findOne({ where: { id_seguro_medico: seguroMedicoBuscado[1].dataValues.id_seguro_medico } });
+        console.log("Numero de paciente buscado: " + (validarSiEstaAsignado === null || validarSiEstaAsignado === void 0 ? void 0 : validarSiEstaAsignado.dataValues.id_Paciente) + "\nNumero de paciente Enviado: " + id_Paciente);
+        if ((validarSiEstaAsignado === null || validarSiEstaAsignado === void 0 ? void 0 : validarSiEstaAsignado.dataValues.id_Paciente) != id_Paciente) {
             console.log("El seguro médico ya está asignado a otro usuario");
             return [undefined, false];
         }
@@ -186,5 +195,4 @@ SeguroMedicoService.validarQueElSeguroMedicoNoEsteAsignadoComparando = async (nu
         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("validarQueElSeguroMedicoNoEsteAsignado", "SeguroMedicoService", "Line 99", Error);
         return [Error, false];
     }
-};
-//# sourceMappingURL=SeguroMedicoService.js.map
+});

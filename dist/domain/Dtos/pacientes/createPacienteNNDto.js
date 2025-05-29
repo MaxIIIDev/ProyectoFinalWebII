@@ -30,4 +30,3 @@ CreatePacienteNNDto.toObject = (createPacienteDto) => {
         direccion: createPacienteDto.direccion,
     };
 };
-//# sourceMappingURL=createPacienteNNDto.js.map

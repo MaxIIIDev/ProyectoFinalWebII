@@ -19,4 +19,3 @@ function calcularEdad(fechaNacimiento) {
     }
     return edad >= 0 ? edad : 0;
 }
-//# sourceMappingURL=CalcularEdadPorFecha.js.map

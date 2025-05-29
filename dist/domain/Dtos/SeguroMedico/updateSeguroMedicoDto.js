@@ -41,4 +41,3 @@ UpdateSeguroMedicoDto.toObject = (updateSeguroMedicoDto) => {
         id_categoria_seguro: updateSeguroMedicoDto.id_categoria_seguro
     };
 };
-//# sourceMappingURL=updateSeguroMedicoDto.js.map

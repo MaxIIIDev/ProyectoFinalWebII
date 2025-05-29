@@ -23,4 +23,3 @@ getSeguroMedicoDTO.create = (numero) => {
         return [error, undefined];
     }
 };
-//# sourceMappingURL=getSeguroMedico.js.map

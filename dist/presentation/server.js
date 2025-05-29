@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,31 +24,32 @@ class Server {
         this.PORT = process.env.PORT;
         this.session = require("express-session");
     }
-    async start() {
-        const routeStatic = __dirname.replace("presentation", "public");
-        const conexion = conexion_1.Conexion.getConexion;
-        conexion.arrancarLaBd();
-        this.app.use(this.session({
-            secret: "122",
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: false,
-                maxAge: 1000 * 60 * 60 * 24 // 1 day
-            }
-        }));
-        this.app.use(express_1.default.urlencoded({ extended: true }));
-        this.app.use(express_1.default.json());
-        this.app.use(express_1.default.static(routeStatic));
-        this.app.use("/icons", express_1.default.static(`${__dirname}/../../node_modules/bootstrap-icons/font`));
-        this.app.use(this.morgan("dev"));
-        this.app.set("views", "./src/public/views");
-        this.app.set("view engine", "pug");
-        this.app.use(routes_1.AppRoutes.routes);
-        this.app.listen(this.PORT, () => {
-            console.log("Server on! PORT: " + process.env.PORT);
+    start() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const routeStatic = __dirname.replace("presentation", "public");
+            const conexion = conexion_1.Conexion.getConexion;
+            conexion.arrancarLaBd();
+            this.app.use(this.session({
+                secret: "122",
+                resave: false,
+                saveUninitialized: false,
+                cookie: {
+                    secure: false,
+                    maxAge: 1000 * 60 * 60 * 24 // 1 day
+                }
+            }));
+            this.app.use(express_1.default.urlencoded({ extended: true }));
+            this.app.use(express_1.default.json());
+            this.app.use(express_1.default.static(routeStatic));
+            this.app.use("/icons", express_1.default.static(`${__dirname}/../../node_modules/bootstrap-icons/font`));
+            this.app.use(this.morgan("dev"));
+            this.app.set("views", "./src/public/views");
+            this.app.set("view engine", "pug");
+            this.app.use(routes_1.AppRoutes.routes);
+            this.app.listen(this.PORT, () => {
+                console.log("Server on! PORT: " + process.env.PORT);
+            });
         });
     }
 }
 exports.Server = Server;
-//# sourceMappingURL=server.js.map

@@ -22,4 +22,3 @@ GetAdmisionPorPacienteDTO.create = (dniEnviado) => {
         return [error];
     }
 };
-//# sourceMappingURL=GetAdmisionPorPacienteDTO.js.map

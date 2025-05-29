@@ -37,4 +37,3 @@ CrearTurnoDto.create = (objeto) => {
         return [error];
     }
 };
-//# sourceMappingURL=createTurnoDTO.js.map

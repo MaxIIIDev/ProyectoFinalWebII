@@ -13,4 +13,3 @@ AuthRoutes.authRoutes = () => {
     //router.post("/login")
     return router;
 };
-//# sourceMappingURL=AuthRoutes.js.map

@@ -22,4 +22,3 @@ GetPacienteDto.toObject = (getPacienteDto) => {
         dni: getPacienteDto.dni
     };
 };
-//# sourceMappingURL=getPacienteDto.js.map

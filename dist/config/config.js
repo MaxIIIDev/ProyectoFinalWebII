@@ -19,4 +19,3 @@ exports.config = {
     }
 };
 //models: [path.join(__dirname, '..', 'models', '*.model.ts')]
-//# sourceMappingURL=config.js.map

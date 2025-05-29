@@ -9,4 +9,3 @@ class EnfermerosController {
     }
 }
 exports.EnfermerosController = EnfermerosController;
-//# sourceMappingURL=EnfermerosController.js.map

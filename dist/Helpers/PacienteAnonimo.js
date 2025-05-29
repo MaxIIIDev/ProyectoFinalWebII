@@ -26,4 +26,3 @@ class PacienteAnonimo {
     }
 }
 exports.PacienteAnonimo = PacienteAnonimo;
-//# sourceMappingURL=PacienteAnonimo.js.map

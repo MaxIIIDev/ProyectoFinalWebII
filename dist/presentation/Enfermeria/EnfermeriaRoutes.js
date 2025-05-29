@@ -12,4 +12,3 @@ class EnfermeriaRoutes {
     }
 }
 exports.EnfermeriaRoutes = EnfermeriaRoutes;
-//# sourceMappingURL=EnfermeriaRoutes.js.map
