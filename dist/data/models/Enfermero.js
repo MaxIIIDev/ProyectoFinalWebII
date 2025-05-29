@@ -10,10 +10,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Enfermero = void 0;
-const sequelize_typescript_1 = require("sequelize-typescript");
-const Usuarios_1 = require("./Usuarios");
-const paciente_tratamientos_1 = require("./paciente_tratamientos");
-const Paciente_Evaluacion_Fisica_1 = require("./Paciente_Evaluacion_Fisica");
+const sequelize_typescript_1 = require("sequelize-typescript.js");
+const Usuarios_1 = require("./Usuarios.js");
+const paciente_tratamientos_1 = require("./paciente_tratamientos.js");
+const Paciente_Evaluacion_Fisica_1 = require("./Paciente_Evaluacion_Fisica.js");
 let Enfermero = class Enfermero extends sequelize_typescript_1.Model {
 };
 exports.Enfermero = Enfermero;
