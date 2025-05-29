@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Hospital_camas = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
-const Admision_1 = require("./Admision");
-const Hospital_habitaciones_1 = require("./Hospital_habitaciones");
+const Admision_1 = require("./Admision.js");
+const Hospital_habitaciones_1 = require("./Hospital_habitaciones.js");
 let Hospital_camas = class Hospital_camas extends sequelize_typescript_1.Model {
 };
 exports.Hospital_camas = Hospital_camas;

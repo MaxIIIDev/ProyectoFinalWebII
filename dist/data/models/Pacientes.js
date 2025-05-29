@@ -77,11 +77,11 @@ __decorate([
 ], Pacientes.prototype, "genero", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
-    __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
+    __metadata("design:type", BigInt)
 ], Pacientes.prototype, "telefono", void 0);
 __decorate([
     (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.BIGINT),
-    __metadata("design:type", typeof BigInt === "function" ? BigInt : Object)
+    __metadata("design:type", BigInt)
 ], Pacientes.prototype, "telefono_De_Emergencia", void 0);
 __decorate([
     (0, sequelize_typescript_1.AllowNull)(false),

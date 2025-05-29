@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdmisionController = void 0;
 const createPacienteDto_1 = require("../../domain/Dtos/pacientes/createPacienteDto");
@@ -35,7 +26,7 @@ class AdmisionController {
         ////////////////////////////////////////////////////
         ////////////////////!VISTAS////////////////////////
         ////////////////////////////////////////////////////
-        this.vistaPrincipal = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.vistaPrincipal = async (req, res) => {
             const error = req.query.error || undefined;
             try {
                 if (error) {
@@ -52,12 +43,12 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaEmergencia = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaEmergencia = async (req, res) => {
             const error = req.query.error;
             try {
-                const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                const alas = await AlaService_1.AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                 if (error) {
                     res.render("AdmisionViews/emergencia.pug", {
                         error: `${error}`,
@@ -80,8 +71,8 @@ class AdmisionController {
                     error: `${error}`,
                 });
             }
-        });
-        this.vistaBuscarPorDni = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaBuscarPorDni = async (req, res) => {
             try {
                 res.render("AdmisionViews/buscarPaciente.pug");
                 return;
@@ -92,8 +83,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaBuscarPacienteDesconocido = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaBuscarPacienteDesconocido = async (req, res) => {
             const warning = req.query.warning || undefined;
             try {
                 if (warning) {
@@ -111,8 +102,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaCrearPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaCrearPaciente = async (req, res) => {
             try {
                 res.render("AdmisionViews/CrearPaciente.pug", {
                     warning: "El paciente no se encontró registrado. Va a proceder a crear una cuenta"
@@ -125,8 +116,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaPrincipalPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaPrincipalPaciente = async (req, res) => {
             const error = req.query.error;
             const confirmacion = req.query.confirmacion;
             try {
@@ -159,9 +150,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.redireccionarAVistaDeSeguros = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+        };
+        this.redireccionarAVistaDeSeguros = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.render("AdmisionViews/principal.pug", {
@@ -169,7 +159,7 @@ class AdmisionController {
                     });
                     return;
                 }
-                const validado = yield PacientesService_1.PacienteServices.saberSiElPacienteTieneSeguroMedico((_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.dni);
+                const validado = await PacientesService_1.PacienteServices.saberSiElPacienteTieneSeguroMedico(req.session.paciente?.dni);
                 if (!validado[1]) {
                     res.redirect("/admision/crear/seguro/medico");
                     return;
@@ -184,8 +174,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaActualizarPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaActualizarPaciente = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.render("AdmisionViews/principal.pug", {
@@ -204,11 +194,11 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaCrearSeguroMedico = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaCrearSeguroMedico = async (req, res) => {
             try {
-                const mutuales = yield SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
-                const categorias = yield SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
+                const mutuales = await SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
+                const categorias = await SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
                 if (!req.session.paciente) {
                     res.render("AdmisionViews/principal.pug", {
                         warning: "Se cerró la sesión del paciente"
@@ -228,9 +218,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.vistaActualizarSeguroMedico = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+        };
+        this.vistaActualizarSeguroMedico = async (req, res) => {
             const error = req.query.error;
             const confirmacion = req.query.confirmacion;
             try {
@@ -240,9 +229,9 @@ class AdmisionController {
                     });
                     return;
                 }
-                const mutuales = yield SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
-                const categorias = yield SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
-                const seguroMedico = yield SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedico((_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.id_seguro_medico);
+                const mutuales = await SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
+                const categorias = await SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
+                const seguroMedico = await SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedico(req.session.paciente?.id_seguro_medico);
                 console.log(seguroMedico[1].dataValues.categoria_seguro.dataValues);
                 if (error) {
                     res.render("AdmisionViews/actualizarSeguroMedico", {
@@ -278,35 +267,34 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.redireccionadorDeVistasDeAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c;
+        };
+        this.redireccionadorDeVistasDeAdmision = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`);
                 }
-                const admisionEncontrada = yield AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente((_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.id_Paciente);
+                const admisionEncontrada = await AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente?.id_Paciente);
                 if (!admisionEncontrada[1]) {
                     res.redirect(`/admision/crear/admision`);
                 }
-                req.session.admision = (_b = admisionEncontrada[1]) === null || _b === void 0 ? void 0 : _b.dataValues;
-                const alaOcupada = yield CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
-                req.session.restosAdmision = (_c = alaOcupada[1]) === null || _c === void 0 ? void 0 : _c.dataValues.habitacion.dataValues.ala.dataValues.nombre;
+                req.session.admision = admisionEncontrada[1]?.dataValues;
+                const alaOcupada = await CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
+                req.session.restosAdmision = alaOcupada[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre;
                 res.redirect("/admision/actualizar/admision");
             }
             catch (error) {
                 res.redirect(`/admision/?error=${encodeURI(error)}`);
                 return;
             }
-        });
-        this.vistaCrearAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaCrearAdmision = async (req, res) => {
             const error = req.query.error;
             const confirmacion = req.query.confirmacion;
             try {
-                const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
-                const prioridadesDeAtencion = yield PrioridadDeAtencionService_1.PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
-                const tiposDeAdmision = yield AdmisionService_1.AdmisionService.getTiposDeAdmision();
-                const alas = yield AlaService_1.AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                const prioridadesDeAtencion = await PrioridadDeAtencionService_1.PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+                const tiposDeAdmision = await AdmisionService_1.AdmisionService.getTiposDeAdmision();
+                const alas = await AlaService_1.AlaService.getAlaFromDb();
                 if (!req.session.paciente) {
                     res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`);
                     return;
@@ -346,8 +334,8 @@ class AdmisionController {
                 res.redirect(`/admision/?error=${encodeURIComponent("Se cerró la sesion del paciente")}`);
                 return;
             }
-        });
-        this.vistaActualizarAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.vistaActualizarAdmision = async (req, res) => {
             const error = req.query.error || undefined;
             const confirmacion = req.query.confirmacion || undefined;
             try {
@@ -357,10 +345,10 @@ class AdmisionController {
                 if (!req.session.admision) {
                     res.redirect(`/admision/principal/paciente?error=${encodeURI("Error en el redireccionamiento de admision")}`);
                 }
-                const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
-                const prioridadesDeAtencion = yield PrioridadDeAtencionService_1.PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
-                const tiposDeAdmision = yield AdmisionService_1.AdmisionService.getTiposDeAdmision();
-                const alas = yield AlaService_1.AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                const prioridadesDeAtencion = await PrioridadDeAtencionService_1.PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+                const tiposDeAdmision = await AdmisionService_1.AdmisionService.getTiposDeAdmision();
+                const alas = await AlaService_1.AlaService.getAlaFromDb();
                 console.log("PROBANDOO: " + req.session.restosAdmision);
                 if (error) {
                     res.render("AdmisionViews/vistaActualizarAdmision.pug", {
@@ -401,18 +389,18 @@ class AdmisionController {
             catch (error) {
                 res.redirect(`/admision/?error=${encodeURI(error)}`);
             }
-        });
+        };
         ////////////////////////////////////////////////////
         ////////////////////!PACIENTES//////////////////////
         ////////////////////////////////////////////////////
-        this.registrarPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.registrarPaciente = async (req, res) => {
             try {
                 const [error, createPacienteDto] = createPacienteDto_1.CreatePacienteDto.create(req.body);
                 if (error) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente", "AdmisionController", "Line 24", error);
                     throw new Error();
                 }
-                const [errorCrearPaciente, pacienteCreado] = yield PacientesService_1.PacienteServices.crearPaciente(createPacienteDto);
+                const [errorCrearPaciente, pacienteCreado] = await PacientesService_1.PacienteServices.crearPaciente(createPacienteDto);
                 if (errorCrearPaciente) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente", "AdmisionController", "Line 31", errorCrearPaciente);
                     throw new Error(errorCrearPaciente);
@@ -424,9 +412,9 @@ class AdmisionController {
                     });
                     return;
                 }
-                const fechaNueva = new Date(pacienteCreado === null || pacienteCreado === void 0 ? void 0 : pacienteCreado.dataValues.fecha_nac);
+                const fechaNueva = new Date(pacienteCreado?.dataValues.fecha_nac);
                 pacienteCreado.dataValues.fecha_nac = fechaNueva.toISOString().split("T")[0];
-                req.session.paciente = pacienteCreado === null || pacienteCreado === void 0 ? void 0 : pacienteCreado.dataValues;
+                req.session.paciente = pacienteCreado?.dataValues;
                 console.log("METODO REGISTRAR PACIENTE");
                 console.log(req.session.paciente);
                 res.redirect("/admision/principal/paciente");
@@ -440,8 +428,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.buscarPacientePorDni = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.buscarPacientePorDni = async (req, res) => {
             try {
                 const dniRecibido = req.query.dni;
                 if (!dniRecibido) {
@@ -460,13 +448,13 @@ class AdmisionController {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni", "AdmisionController", "208", errorDto);
                     return;
                 }
-                const [errorBusqueda, pacienteEncontrado] = yield PacientesService_1.PacienteServices.buscarPacienteExistente(getPacienteDto.dni, 1);
+                const [errorBusqueda, pacienteEncontrado] = await PacientesService_1.PacienteServices.buscarPacienteExistente(getPacienteDto.dni, 1);
                 if (!errorBusqueda) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorDni", "AdmisionController", "208", "ERROR: No se encontro el paciente");
                     res.redirect("/admision/crear/paciente");
                     return;
                 }
-                req.session.paciente = pacienteEncontrado === null || pacienteEncontrado === void 0 ? void 0 : pacienteEncontrado.dataValues;
+                req.session.paciente = pacienteEncontrado?.dataValues;
                 res.redirect("/admision/principal/paciente");
                 return;
             }
@@ -478,8 +466,8 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.buscarPacienteDesconocido = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.buscarPacienteDesconocido = async (req, res) => {
             try {
                 console.log(req.query.id_Paciente);
                 const idEnviado = req.query.id_Paciente;
@@ -488,12 +476,12 @@ class AdmisionController {
                     return;
                 }
                 const id_Paciente = (idEnviado) ? parseInt(idEnviado) : NaN;
-                const [errorMetodo, pacienteEncontrado] = yield PacientesService_1.PacienteServices.buscarPacienteDesconocido(id_Paciente);
+                const [errorMetodo, pacienteEncontrado] = await PacientesService_1.PacienteServices.buscarPacienteDesconocido(id_Paciente);
                 if (!errorMetodo) {
                     res.redirect(`/admision/find/desconocido?warning=${encodeURIComponent("No se encontro al paciente desconocido")}`);
                     return;
                 }
-                req.session.paciente = pacienteEncontrado === null || pacienteEncontrado === void 0 ? void 0 : pacienteEncontrado.dataValues;
+                req.session.paciente = pacienteEncontrado?.dataValues;
                 res.redirect("/admision/principal/paciente");
                 return;
             }
@@ -501,8 +489,8 @@ class AdmisionController {
                 res.redirect(`/admision/find/desconocido?error=${encodeURIComponent(error)}`);
                 return;
             }
-        });
-        this.buscarTodaLaInformacionDelPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.buscarTodaLaInformacionDelPaciente = async (req, res) => {
             try {
                 const dniRecibido = req.params.dni;
                 const [errorDto, getPacienteDto] = getPacienteDto_1.GetPacienteDto.create(parseInt(dniRecibido));
@@ -511,17 +499,17 @@ class AdmisionController {
                     res.status(403).json(errorDto);
                     return;
                 }
-                const [errorBusqueda, pacienteEncontrado] = yield PacientesService_1.PacienteServices.buscarPacienteExistente(getPacienteDto.dni, 1);
+                const [errorBusqueda, pacienteEncontrado] = await PacientesService_1.PacienteServices.buscarPacienteExistente(getPacienteDto.dni, 1);
                 if (!errorBusqueda) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente", "AdmisionController", "149", "ERROR:No se encontro el paciente");
                     res.status(404).json("ERROR: No se encontro el paciente");
                     return;
                 }
-                if (!(pacienteEncontrado === null || pacienteEncontrado === void 0 ? void 0 : pacienteEncontrado.id_seguro_medico)) {
+                if (!pacienteEncontrado?.id_seguro_medico) {
                     res.status(404).json("ERROR: El paciente no tiene asignado un seguro medico");
                     return;
                 }
-                const [errorSeguroMedico, seguroMedicoEncontrado] = yield SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedico(pacienteEncontrado === null || pacienteEncontrado === void 0 ? void 0 : pacienteEncontrado.id_seguro_medico);
+                const [errorSeguroMedico, seguroMedicoEncontrado] = await SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedico(pacienteEncontrado?.id_seguro_medico);
                 if (errorSeguroMedico) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaLaInformacionDelPaciente", "AdmisionController", "160", "Hubo un error al buscar el seguro medico");
                     res.status(404).json("Hubo un error al buscar el seguro medico");
@@ -538,9 +526,8 @@ class AdmisionController {
                 res.status(500).json(error);
                 return;
             }
-        });
-        this.actualizarPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+        };
+        this.actualizarPaciente = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.render("AdmisionViews/principal.pug", {
@@ -571,7 +558,7 @@ class AdmisionController {
                     throw new Error(error);
                 }
                 let modo = 1;
-                if ((String(updatePacienteDto === null || updatePacienteDto === void 0 ? void 0 : updatePacienteDto.dni) != String((_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.dni)) && req.session.paciente.dni != null) {
+                if ((String(updatePacienteDto?.dni) != String(req.session.paciente?.dni)) && req.session.paciente.dni != null) {
                     res.render("AdmisionViews/ActualizarPaciente.pug", {
                         error: "No se puede cambiar el dni del paciente, notifique al administrador",
                         paciente: req.session.paciente
@@ -580,7 +567,7 @@ class AdmisionController {
                 }
                 if (req.session.paciente.dni == null)
                     modo = 2;
-                const [errorInService, confirmacion] = yield PacientesService_1.PacienteServices.actualizarPaciente(updatePacienteDto, modo);
+                const [errorInService, confirmacion] = await PacientesService_1.PacienteServices.actualizarPaciente(updatePacienteDto, modo);
                 if (errorInService) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarPaciente", "AdmisionController", "57", errorInService);
                     res.render("AdmisionViews/ActualizarPaciente.pug", {
@@ -590,9 +577,9 @@ class AdmisionController {
                     return;
                 }
                 if (confirmacion) {
-                    const pacienteEncontrado = yield PacientesService_1.PacienteServices.buscarPacienteExistente(updatePacienteDto.dni, 1);
+                    const pacienteEncontrado = await PacientesService_1.PacienteServices.buscarPacienteExistente(updatePacienteDto.dni, 1);
                     if (pacienteEncontrado[0])
-                        req.session.paciente = (_b = pacienteEncontrado[1]) === null || _b === void 0 ? void 0 : _b.dataValues;
+                        req.session.paciente = pacienteEncontrado[1]?.dataValues;
                     res.render("AdmisionViews/ActualizarPaciente.pug", {
                         success: "Paciente actualizado",
                         paciente: req.session.paciente
@@ -608,11 +595,11 @@ class AdmisionController {
                 });
                 return;
             }
-        });
+        };
         ///////////////////////////////////////////////////
         ////////////////////!SEGURO MEDICO/////////////////
         ///////////////////////////////////////////////////
-        this.getSeguroMedico = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getSeguroMedico = async (req, res) => {
             try {
                 const [errorDto, numeroDeSeguroMedico] = getSeguroMedico_1.getSeguroMedicoDTO.create(req.params.numero);
                 if (errorDto) {
@@ -620,7 +607,7 @@ class AdmisionController {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico", "AdmisionController", "205", errorDto);
                     return;
                 }
-                const [errorBusqueda, seguroMedicoBuscado] = yield SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedicoExistente(getSeguroMedico_1.getSeguroMedicoDTO.toObject(numeroDeSeguroMedico).numero, 1);
+                const [errorBusqueda, seguroMedicoBuscado] = await SeguroMedicoService_1.SeguroMedicoService.buscarSeguroMedicoExistente(getSeguroMedico_1.getSeguroMedicoDTO.toObject(numeroDeSeguroMedico).numero, 1);
                 if (!errorBusqueda) {
                     res.status(404).json("No se encontro el seguro medico");
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getSeguroMedico", "AdmisionController", "210", "No se encontro el seguro medico");
@@ -634,9 +621,8 @@ class AdmisionController {
                 res.status(500).json(error);
                 return;
             }
-        });
-        this.registrarYAsignarSeguroMedico = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+        };
+        this.registrarYAsignarSeguroMedico = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.render("AdmisionViews/principal.pug", {
@@ -652,7 +638,7 @@ class AdmisionController {
                     id_mutual: req.body.id_mutual,
                     numero: req.body.numero,
                     id_categoria_seguro: req.body.id_categoria_seguro,
-                    dni_Paciente: (_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.dni
+                    dni_Paciente: req.session.paciente?.dni
                 };
                 const [error, createSeguroMedicoDto] = createSeguroMedicoDto_1.CreateSeguroMedicoDto.create(objetoParaCrearSeguroMedico);
                 if (error) {
@@ -662,11 +648,11 @@ class AdmisionController {
                     });
                     return;
                 }
-                const [errorCrearSeguroMedico, confirmacion] = yield SeguroMedicoService_1.SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto);
+                const [errorCrearSeguroMedico, confirmacion] = await SeguroMedicoService_1.SeguroMedicoService.createSeguroMedico(createSeguroMedicoDto);
                 if (errorCrearSeguroMedico && !confirmacion) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico", "AdmisionController", "Line 87", errorCrearSeguroMedico);
-                    const mutuales = yield SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
-                    const categorias = yield SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
+                    const mutuales = await SeguroMedicoService_1.SeguroMedicoService.getMutualesFromDb();
+                    const categorias = await SeguroMedicoService_1.SeguroMedicoService.getCategoriasFromDb();
                     res.render("AdmisionViews/CrearSeguroMedico.pug", {
                         paciente: req.session.paciente,
                         error: `${errorCrearSeguroMedico}`,
@@ -676,7 +662,7 @@ class AdmisionController {
                     return;
                 }
                 if (confirmacion) {
-                    const [errorAsignarSeguroMedico, confirmacionAsignar] = yield PacientesService_1.PacienteServices.asignarSeguroMedico(createSeguroMedicoDto.numero, createSeguroMedicoDto.dni_Paciente);
+                    const [errorAsignarSeguroMedico, confirmacionAsignar] = await PacientesService_1.PacienteServices.asignarSeguroMedico(createSeguroMedicoDto.numero, createSeguroMedicoDto.dni_Paciente);
                     if (errorAsignarSeguroMedico && !confirmacionAsignar) {
                         HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico", "AdmisionController", "Line 98", errorAsignarSeguroMedico);
                         res.render("AdmisionViews/CrearSeguroMedico.pug", {
@@ -685,7 +671,7 @@ class AdmisionController {
                         return;
                     }
                 }
-                req.session.paciente.id_seguro_medico = confirmacion === null || confirmacion === void 0 ? void 0 : confirmacion.dataValues.id_seguro_medico;
+                req.session.paciente.id_seguro_medico = confirmacion?.dataValues.id_seguro_medico;
                 res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se creo y asigno el seguro al paciente")}`);
                 console.log("Se creo el seguro y se le asigno al paciente");
                 return;
@@ -697,15 +683,15 @@ class AdmisionController {
                 });
                 return;
             }
-        });
-        this.actualizarSeguroMedico = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.actualizarSeguroMedico = async (req, res) => {
             try {
                 const [error, updateSeguroMedicoDto] = updateSeguroMedicoDto_1.UpdateSeguroMedicoDto.create(req.body);
                 if (error) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico", "AdmisionController", "Line 117", error);
                     return res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(error)}`);
                 }
-                const [errorInService, confirmacion] = yield SeguroMedicoService_1.SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto, req.session.paciente.id_seguro_medico, req.session.paciente.id_Paciente);
+                const [errorInService, confirmacion] = await SeguroMedicoService_1.SeguroMedicoService.updateSeguroMedico(updateSeguroMedicoDto, req.session.paciente.id_seguro_medico, req.session.paciente.id_Paciente);
                 if (errorInService && !confirmacion) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarSeguroMedico", "AdmisionController", "Line 123", errorInService);
                     return res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(errorInService)}`);
@@ -719,11 +705,11 @@ class AdmisionController {
                 res.redirect(`/admision/actualizar/seguro/medico?error=${encodeURIComponent(error)}`);
                 return;
             }
-        });
+        };
         ////////////////////////////////////////////////
         //////////////!ADMISIONES///////////////////////
         ////////////////////////////////////////////////
-        this.crearAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.crearAdmision = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion")}`);
@@ -741,7 +727,7 @@ class AdmisionController {
                     res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error)}`);
                     return;
                 }
-                const [errorCrearAdmision, admisionCreada] = yield AdmisionService_1.AdmisionService.crearAdmision(crearAdmisionDto);
+                const [errorCrearAdmision, admisionCreada] = await AdmisionService_1.AdmisionService.crearAdmision(crearAdmisionDto);
                 if (errorCrearAdmision) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmision", "AdmisionController", "Line 145", errorCrearAdmision);
                     res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorCrearAdmision)}`);
@@ -754,15 +740,15 @@ class AdmisionController {
                 res.status(500).json(error);
                 return;
             }
-        });
+        };
         // public actualizarAdmision = async(req:Request,res:Response) => {//!Pensar que si es necesario
         //     try {
         //     } catch (error) {
         //     }
         // }
-        this.getTodasLasAdmisiones = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getTodasLasAdmisiones = async (req, res) => {
             try {
-                const [errorDeBusqueda, admisiones] = yield AdmisionService_1.AdmisionService.buscarTodasLasAdmisiones(1);
+                const [errorDeBusqueda, admisiones] = await AdmisionService_1.AdmisionService.buscarTodasLasAdmisiones(1);
                 if (errorDeBusqueda) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones", "AdmisionController", "690", errorDeBusqueda);
                     res.status(404).json(`${errorDeBusqueda}`);
@@ -775,10 +761,10 @@ class AdmisionController {
                 res.status(500).json(error);
                 return;
             }
-        });
-        this.getTodasLasAdmisionesActivas = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.getTodasLasAdmisionesActivas = async (req, res) => {
             try {
-                const [errorDeBusqueda, admisionesActivas] = yield AdmisionService_1.AdmisionService.buscarTodasLasAdmisiones(0);
+                const [errorDeBusqueda, admisionesActivas] = await AdmisionService_1.AdmisionService.buscarTodasLasAdmisiones(0);
                 if (errorDeBusqueda) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTodasLasAdmisiones", "AdmisionController", "299", errorDeBusqueda);
                     res.status(404).json(`${errorDeBusqueda}`);
@@ -791,8 +777,8 @@ class AdmisionController {
                 res.status(500).json(error);
                 return;
             }
-        });
-        this.buscarAdmisionPorPaciente = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.buscarAdmisionPorPaciente = async (req, res) => {
             try {
                 const [errorDto, getAdmisionPacienteDto] = GetAdmisionPorPacienteDTO_1.GetAdmisionPorPacienteDTO.create(parseInt(req.params.dni));
                 if (errorDto) {
@@ -800,14 +786,14 @@ class AdmisionController {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionPorPaciente", "AdmisionController", "301", errorDto);
                     return;
                 }
-                const [errorBusquedaDePaciente, pacienteEncontrado] = yield PacientesService_1.PacienteServices.buscarPacienteExistente(getAdmisionPacienteDto === null || getAdmisionPacienteDto === void 0 ? void 0 : getAdmisionPacienteDto.dni, 1);
+                const [errorBusquedaDePaciente, pacienteEncontrado] = await PacientesService_1.PacienteServices.buscarPacienteExistente(getAdmisionPacienteDto?.dni, 1);
                 if (!errorBusquedaDePaciente) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("BuscarAdmisionPorPaciente", "AdmisionController", "305", "No se encontro el paciente");
                     res.status(404).json(`No se encontro el paciente`);
                     return;
                 }
                 console.log(pacienteEncontrado);
-                const [errorBusquedaDeAdmisionIndividual, admisionEncontrada] = yield AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente(pacienteEncontrado === null || pacienteEncontrado === void 0 ? void 0 : pacienteEncontrado.dataValues.id_Paciente);
+                const [errorBusquedaDeAdmisionIndividual, admisionEncontrada] = await AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente(pacienteEncontrado?.dataValues.id_Paciente);
                 if (errorBusquedaDeAdmisionIndividual) {
                     res.status(404).json(`${errorBusquedaDeAdmisionIndividual}`);
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("BuscarAdmisionPorPaciente", "AdmisionController", "311", errorBusquedaDeAdmisionIndividual);
@@ -821,9 +807,8 @@ class AdmisionController {
                 res.status(500).json(`${error}`);
                 return;
             }
-        });
-        this.updateAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+        };
+        this.updateAdmision = async (req, res) => {
             try {
                 if (!req.session.paciente) {
                     res.redirect(`/admision/?error=${encodeURI("Se ha cerrado la sesion")}`);
@@ -838,14 +823,14 @@ class AdmisionController {
                     id_motivo_de_Internacion: req.body.id_motivo_de_Internacion,
                     id_prioridad_de_atencion: req.body.id_prioridad_de_atencion,
                     id_tipo_de_admision: req.body.id_tipo_de_admision,
-                    id_Paciente: (_a = req.session.paciente) === null || _a === void 0 ? void 0 : _a.id_Paciente,
+                    id_Paciente: req.session.paciente?.id_Paciente,
                     id_Cama: req.body.id_Cama
                 });
                 if (errorDto) {
                     res.redirect(`/admision/principal/paciente?error=${encodeURI(errorDto)}`);
                     return;
                 }
-                const [errorAdmision, admision] = yield AdmisionService_1.AdmisionService.actualizarAdmision(dtoAdmision);
+                const [errorAdmision, admision] = await AdmisionService_1.AdmisionService.actualizarAdmision(dtoAdmision);
                 if (errorAdmision) {
                     res.redirect(`/admision/principal/paciente?error=${encodeURIComponent("No hay admisiones activas")}`);
                     return;
@@ -859,14 +844,14 @@ class AdmisionController {
                         return;
                     }
                 }
-                const [error, admisionActualizada] = yield AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente.id_Paciente);
+                const [error, admisionActualizada] = await AdmisionService_1.AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente.id_Paciente);
                 if (error) {
                     res.redirect(`/admision/actualizar/admision?error=${encodeURIComponent(error)}`);
                     return;
                 }
                 req.session.admision = admisionActualizada;
-                const alaOcupada = yield CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
-                req.session.restosAdmision = (_b = alaOcupada[1]) === null || _b === void 0 ? void 0 : _b.dataValues.habitacion.dataValues.ala.dataValues.nombre;
+                const alaOcupada = await CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
+                req.session.restosAdmision = alaOcupada[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre;
                 res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha actualizado el registro")}`);
                 return;
             }
@@ -874,8 +859,8 @@ class AdmisionController {
                 res.redirect(`/admision/?error=${encodeURI(error)}`);
                 return;
             }
-        });
-        this.admitirPacienteDeEmergencia = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.admitirPacienteDeEmergencia = async (req, res) => {
             try {
                 console.log(req.body);
                 const { ala, unidad, genero, id_motivo_de_Internacion, id_Cama } = req.body;
@@ -898,11 +883,11 @@ class AdmisionController {
                 else {
                     pacienteAnonimo = PacienteAnonimo_1.PacienteAnonimo.getPacienteFemenina();
                 }
-                const [error, pacienteListoDto] = yield createPacienteNNDto_1.CreatePacienteNNDto.create(pacienteAnonimo);
+                const [error, pacienteListoDto] = await createPacienteNNDto_1.CreatePacienteNNDto.create(pacienteAnonimo);
                 if (error) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController", "439", error);
-                    const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                    const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                    const alas = await AlaService_1.AlaService.getAlaFromDb();
+                    const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                     res.status(500).render("AdmisionViews/emergencia.pug", {
                         error: `${error}`,
                         alas: alas,
@@ -910,11 +895,11 @@ class AdmisionController {
                     });
                     return;
                 }
-                const [errorAlCrear, pacienteCreado] = yield PacientesService_1.PacienteServices.crearPacienteNN(pacienteListoDto);
+                const [errorAlCrear, pacienteCreado] = await PacientesService_1.PacienteServices.crearPacienteNN(pacienteListoDto);
                 if (errorAlCrear) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("AdmitirPacienteDeEmergencia", "AdmisionController", "72", errorAlCrear);
-                    const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                    const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                    const alas = await AlaService_1.AlaService.getAlaFromDb();
+                    const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                     res.status(500).render("AdmisionViews/emergencia.pug", {
                         error: `${errorAlCrear}`,
                         alas: alas,
@@ -926,13 +911,13 @@ class AdmisionController {
                     id_motivo_de_Internacion: id_motivo_de_Internacion,
                     id_tipo_de_admision: 3,
                     id_prioridad_de_atencion: 1,
-                    id_Paciente: pacienteCreado === null || pacienteCreado === void 0 ? void 0 : pacienteCreado.dataValues.id_Paciente,
+                    id_Paciente: pacienteCreado?.dataValues.id_Paciente,
                     id_Cama: id_Cama
                 });
                 if (errorDto) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController", "468", errorDto);
-                    const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                    const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                    const alas = await AlaService_1.AlaService.getAlaFromDb();
+                    const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                     res.render("AdmisionViews/emergencia.pug", {
                         error: `${errorDto}`,
                         alas: alas,
@@ -940,11 +925,11 @@ class AdmisionController {
                     });
                     return;
                 }
-                const [errorAlCrearAdmision, confirmacion, admisionCreada] = yield AdmisionService_1.AdmisionService.crearAdmision(CrearAdmisionDTO_1.CrearAdmisionDto.toObject(crearAdmisionDTO));
+                const [errorAlCrearAdmision, confirmacion, admisionCreada] = await AdmisionService_1.AdmisionService.crearAdmision(CrearAdmisionDTO_1.CrearAdmisionDto.toObject(crearAdmisionDTO));
                 if (!confirmacion) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController", "479", errorAlCrearAdmision);
-                    const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                    const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                    const alas = await AlaService_1.AlaService.getAlaFromDb();
+                    const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                     res.render("AdmisionViews/emergencia.pug", {
                         error: `${errorAlCrearAdmision}`,
                         alas: alas,
@@ -952,7 +937,7 @@ class AdmisionController {
                     });
                     return;
                 }
-                const [errorCama, cama] = yield CamaService_1.CamaService.buscarCama(id_Cama);
+                const [errorCama, cama] = await CamaService_1.CamaService.buscarCama(id_Cama);
                 if (errorCama)
                     throw Error(errorCama);
                 console.log(cama.dataValues.habitacion.dataValues.ala.dataValues.nombre);
@@ -961,14 +946,14 @@ class AdmisionController {
                     success: "Paciente Admitido",
                     nombre_ala: cama.dataValues.habitacion.dataValues.ala.dataValues.nombre,
                     nro_habitacion: cama.dataValues.habitacion.dataValues.nro_Habitacion,
-                    id_Paciente: pacienteCreado === null || pacienteCreado === void 0 ? void 0 : pacienteCreado.dataValues.id_Paciente
+                    id_Paciente: pacienteCreado?.dataValues.id_Paciente
                 });
                 return;
             }
             catch (error) {
                 HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPacienteDeEmergencia", "AdmisionController", "107", error);
-                const alas = yield AlaService_1.AlaService.getAlaFromDb();
-                const motivosDeInternacion = yield MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
+                const alas = await AlaService_1.AlaService.getAlaFromDb();
+                const motivosDeInternacion = await MotivosDeInternacionService_1.MotivosDeInternacionService.buscarMotivosDeInternacion();
                 res.status(500).render("AdmisionViews/emergencia.pug", {
                     error: error instanceof Error ? error.message : "Error desconocido",
                     alas: alas,
@@ -976,7 +961,7 @@ class AdmisionController {
                 });
                 return;
             }
-        });
+        };
         // public getHabitacionesByGender = async(req:Request,res:Response) => {
         //     try{
         //         const {ala,unidad,genero,motivo} = req.body;
@@ -985,13 +970,13 @@ class AdmisionController {
         //         //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
         //     }
         // }
-        this.bajaLogicaAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.bajaLogicaAdmision = async (req, res) => {
             try {
                 if (!req.body.id_Admision) {
                     res.status(400).json("Se requiere el id de la admision");
                     return;
                 }
-                const [error, confirmacion] = yield AdmisionService_1.AdmisionService.bajaLogicaAdmision(req.body.id_Admision);
+                const [error, confirmacion] = await AdmisionService_1.AdmisionService.bajaLogicaAdmision(req.body.id_Admision);
                 if (error) {
                     res.status(500).json(error);
                     return;
@@ -1003,14 +988,14 @@ class AdmisionController {
                 HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("bajaLogicaAdmision", "AdmisionController", "Line 584", error);
                 return;
             }
-        });
-        this.altaLogicaAdmision = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.altaLogicaAdmision = async (req, res) => {
             try {
                 if (!req.body.id_Admision) {
                     res.status(400).json("Se requiere el id de la admision");
                     return;
                 }
-                const [error, confirmacion] = yield AdmisionService_1.AdmisionService.altaLogicaAdmision(req.body.id_Admision);
+                const [error, confirmacion] = await AdmisionService_1.AdmisionService.altaLogicaAdmision(req.body.id_Admision);
                 if (error) {
                     res.status(500).json(error);
                     return;
@@ -1023,26 +1008,26 @@ class AdmisionController {
                 HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("altaLogicaAdmision", "AdmisionController", "Line 584", error);
                 return;
             }
-        });
+        };
         ///////////////////////////////////////////////
         ////////////////!TURNOS///////////////////////
         ///////////////////////////////////////////////
-        this.crearTurno = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.crearTurno = async (req, res) => {
             try {
             }
             catch (error) {
             }
-        });
+        };
         /////////////////////////////////////////////////
         ////////////!Habitaciones/////////////////////////
         ////////////////////////////////////////////////
-        this.getHabitacionesDisponiblesPorGenero = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getHabitacionesDisponiblesPorGenero = async (req, res) => {
             try {
                 if (!req.query.ala || !req.query.genero) {
                     res.redirect(`/admision/emergencia?error=${encodeURIComponent("Se requiere el genero y ala")}`);
                     return;
                 }
-                const habitacionesDisponibles = yield HabitacionService_1.HabitacionService.getHabitacionesDisponibles(req.query.genero, req.query.ala);
+                const habitacionesDisponibles = await HabitacionService_1.HabitacionService.getHabitacionesDisponibles(req.query.genero, req.query.ala);
                 if (habitacionesDisponibles[0]) {
                     //res.redirect(`/admision/emergencia?error=${encodeURIComponent(`${habitacionesDisponibles[0]}`)}`)
                     res.status(404).json({ error: habitacionesDisponibles[0].toString() });
@@ -1073,32 +1058,32 @@ class AdmisionController {
                 res.status(500).json({ error: error });
                 return;
             }
-        });
+        };
         ////////////////////////////////////
         ////////////////!Camas//////////////
-        this.getHabitacionByCamaId = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getHabitacionByCamaId = async (req, res) => {
             try {
                 if (!req.session.admision) {
                     res.status(400).json("No hay una admision activa");
                     return;
                 }
-                const [error, camaActual] = yield CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
+                const [error, camaActual] = await CamaService_1.CamaService.buscarCama(req.session.admision.id_Cama);
                 if (error) {
                     HelperForCreateErrors_1.HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionByCamaId", "AdmisionController", "Line 660", error);
                     res.status(404).json(error);
                     return;
                 }
-                console.log(camaActual === null || camaActual === void 0 ? void 0 : camaActual.dataValues);
+                console.log(camaActual?.dataValues);
                 res.status(200).json({
-                    id_Cama: camaActual === null || camaActual === void 0 ? void 0 : camaActual.dataValues.id_Cama,
-                    nro_Habitacion: camaActual === null || camaActual === void 0 ? void 0 : camaActual.dataValues.habitacion.dataValues.nro_Habitacion,
+                    id_Cama: camaActual?.dataValues.id_Cama,
+                    nro_Habitacion: camaActual?.dataValues.habitacion.dataValues.nro_Habitacion,
                 });
             }
             catch (error) {
                 res.status(500).json(error);
             }
-        });
-        this.test = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        };
+        this.test = async (req, res) => {
             try {
                 // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
                 // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
@@ -1112,9 +1097,9 @@ class AdmisionController {
                 // const [ error, camaActual] = await CamaService.buscarCama(9);
                 // //console.log(camaActual?.dataValues.habitacion.dataValues);
                 // res.json(camaActual)
-                const [error, paciente] = yield PacientesService_1.PacienteServices.buscarPacienteDesconocido(7);
-                console.log(paciente === null || paciente === void 0 ? void 0 : paciente.dataValues);
-                req.session.paciente = paciente === null || paciente === void 0 ? void 0 : paciente.dataValues;
+                const [error, paciente] = await PacientesService_1.PacienteServices.buscarPacienteDesconocido(7);
+                console.log(paciente?.dataValues);
+                req.session.paciente = paciente?.dataValues;
                 res.json(req.session.paciente);
                 // for(let a of alas!){
                 //     console.log(a);
@@ -1126,7 +1111,7 @@ class AdmisionController {
                 res.json(error);
                 return;
             }
-        });
+        };
         this.conexionBd = conexionbd;
     }
 }
