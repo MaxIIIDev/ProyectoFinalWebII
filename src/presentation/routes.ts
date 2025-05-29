@@ -17,9 +17,9 @@ export class AppRoutes{
             return;
         })
         router.use("/admision", AdmisionRoutes.admisionRoutes(conexionBd))
-        router.use("/enfermeria", EnfermeriaRoutes.enfermeriaRoutes(conexionBd))
+        //router.use("/enfermeria", EnfermeriaRoutes.enfermeriaRoutes(conexionBd))
         // router.use("/medicos",MedicoRoutes.medicoRoutes(conexionBd));
-        router.use("/auth", AuthRoutes.authRoutes());
+        //router.use("/auth", AuthRoutes.authRoutes());
         
         return router
     }
