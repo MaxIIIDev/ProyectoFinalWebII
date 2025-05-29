@@ -59,6 +59,7 @@ export class CreatePacienteDto{
         }
         let fechaNacimientoModificada = fecha_nac.split("T")[0]
         let id_tipo_sanguineoCambio ;
+        const telefono_De_EmergenciaParse: bigint = (telefono_De_Emergencia)?BigInt(telefono_De_Emergencia):BigInt(0);
         if(id_tipo_sanguineo == 0){
             id_tipo_sanguineoCambio = undefined
         }else{
@@ -75,7 +76,7 @@ export class CreatePacienteDto{
             edadCalculada!,
             peso,
             telefono,
-            telefono_De_Emergencia,
+            telefono_De_EmergenciaParse,
             id_tipo_sanguineoParse,
             id_seguro_medico
          )]
