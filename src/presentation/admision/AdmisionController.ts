@@ -1093,13 +1093,13 @@ export class AdmisionController{
     ////////////////!TURNOS///////////////////////
     ///////////////////////////////////////////////
 
-    public crearTurno = async(req:Request,res:Response) => {
-        try {
+    // public crearTurno = async(req:Request,res:Response) => {
+    //     try {
             
-        } catch (error) {
+    //     } catch (error) {
             
-        }
-    }
+    //     }
+    // }
 
     /////////////////////////////////////////////////
     ////////////!Habitaciones/////////////////////////
@@ -1180,42 +1180,42 @@ export class AdmisionController{
             res.status(500).json(error as string);
         }
     }
-    public test = async(req:Request,res:Response)=> {
+    // public test = async(req:Request,res:Response)=> {
 
-        try {
+    //     try {
             
-            // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
-            // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
-            // const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
-            // // const alas = await AlaService.getAlaFromDb();
-            // const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
-            // req.session.admision = admision[1]?.dataValues;
-            // const ddd = await CamaService.buscarCama(3);
-            // const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
-            // const alas = await AlaService.getAlaFromDb();
+    //         // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
+    //         // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+    //         // const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
+    //         // // const alas = await AlaService.getAlaFromDb();
+    //         // const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
+    //         // req.session.admision = admision[1]?.dataValues;
+    //         // const ddd = await CamaService.buscarCama(3);
+    //         // const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
+    //         // const alas = await AlaService.getAlaFromDb();
             
-            // const [ error, camaActual] = await CamaService.buscarCama(9);
+    //         // const [ error, camaActual] = await CamaService.buscarCama(9);
             
-            // //console.log(camaActual?.dataValues.habitacion.dataValues);
-            // res.json(camaActual)
+    //         // //console.log(camaActual?.dataValues.habitacion.dataValues);
+    //         // res.json(camaActual)
             
-            const [error, paciente] = await PacienteServices.buscarPacienteDesconocido(7);
-            console.log(paciente?.dataValues);
-            req.session.paciente = paciente?.dataValues
-            res.json(req.session.paciente)
+    //         const [error, paciente] = await PacienteServices.buscarPacienteDesconocido(7);
+    //         console.log(paciente?.dataValues);
+    //         req.session.paciente = paciente?.dataValues
+    //         res.json(req.session.paciente)
             
-            // for(let a of alas!){
-            //     console.log(a);
+    //         // for(let a of alas!){
+    //         //     console.log(a);
                 
-            // }
+    //         // }
             
-           // res.json(admision[1])   
-            return
-        } catch (error) {
-            res.json(error)
-            return
-        }
+    //        // res.json(admision[1])   
+    //         return
+    //     } catch (error) {
+    //         res.json(error)
+    //         return
+    //     }
 
-    }
+    // }
 
 }
