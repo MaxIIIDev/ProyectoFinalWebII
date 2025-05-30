@@ -222,7 +222,7 @@ export class AdmisionController{
             }
             
             
-            res.render("AdmisionViews/CrearSeguroMedico.pug", {
+            res.render("AdmisionViews/crearSeguroMedico.pug", {
                 paciente: req.session.paciente,
                 mutuales: mutuales[1],
                 categorias: categorias[1]
