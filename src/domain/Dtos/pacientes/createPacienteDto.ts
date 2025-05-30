@@ -59,7 +59,7 @@ export class CreatePacienteDto{
         }
         let fechaNacimientoModificada = fecha_nac.split("T")[0]
         let id_tipo_sanguineoCambio ;
-        const telefono_De_EmergenciaParse = (telefono_De_Emergencia)?telefono_De_Emergencia:null;
+        const telefono_De_EmergenciaParse = (object.telefono_De_Emergencia == "")?null: object.telefono_De_Emergencia;
         if(id_tipo_sanguineo == 0){
             id_tipo_sanguineoCambio = undefined
         }else{
