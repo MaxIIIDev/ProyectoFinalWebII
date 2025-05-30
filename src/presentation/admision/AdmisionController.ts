@@ -686,7 +686,7 @@ export class AdmisionController{
              if(error){
                  HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 85", error);
           
-                res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                res.render("AdmisionViews/crearSeguroMedico.pug",{
                     error: `${error}`
                 })
                  
@@ -697,7 +697,7 @@ export class AdmisionController{
                  HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 87", errorCrearSeguroMedico);
                 const mutuales = await SeguroMedicoService.getMutualesFromDb();
                 const categorias = await SeguroMedicoService.getCategoriasFromDb();
-                res.render("AdmisionViews/CrearSeguroMedico.pug", {
+                res.render("AdmisionViews/crearSeguroMedico.pug", {
                     paciente: req.session.paciente,
                     error: `${errorCrearSeguroMedico}`,
                     mutuales: mutuales[1],
@@ -709,7 +709,7 @@ export class AdmisionController{
                 const[errorAsignarSeguroMedico, confirmacionAsignar] = await PacienteServices.asignarSeguroMedico(createSeguroMedicoDto!.numero,createSeguroMedicoDto!.dni_Paciente!);
                 if(errorAsignarSeguroMedico && !confirmacionAsignar){
                     HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController", "Line 98", errorAsignarSeguroMedico);
-                    res.render("AdmisionViews/CrearSeguroMedico.pug",{
+                    res.render("AdmisionViews/crearSeguroMedico.pug",{
                     error: `${errorAsignarSeguroMedico}`
                     })
                     return;
@@ -722,7 +722,7 @@ export class AdmisionController{
             return
          }catch(error){
              HelperForCreateErrors.errorInMethodXClassXLineXErrorX("registrarYAsignarSeguroMedico","AdmisionController" ,"Line 105",(error as string));
-            res.render("AdmisionViews/CrearSeguroMedico.pug",{
+            res.render("AdmisionViews/crearSeguroMedico.pug",{
                 error: `${error}`
             })
             return
