@@ -69,9 +69,9 @@ export class Server{
 
         this.app.use("/icons", express.static(`${__dirname}/../../node_modules/bootstrap-icons/font`))
         this.app.use(this.morgan("dev"))
-        this.configureViews();
-        // this.app.set("views", "./src/public/views");
-        // this.app.set("view engine" , "pug");
+        //this.configureViews();
+         this.app.set("views", "./src/public/views");
+         this.app.set("view engine" , "pug");
        
         this.app.use(AppRoutes.routes);
         
@@ -80,37 +80,37 @@ export class Server{
 
         });
     }
-    private configureViews() {
-        // Posibles ubicaciones de las vistas
-        const possibleViewPaths = [
-            path.join(__dirname, "../public/views"),       // Desarrollo local
-            path.join(__dirname, "../../public/views"),    // Producción en algunos entornos
-            path.join(process.cwd(), "src/public/views"),   // Producción en Render.com
-            path.join(process.cwd(), "public/views")        // Producción alternativa
-        ];
+    // private configureViews() {
+    //     // Posibles ubicaciones de las vistas
+    //     const possibleViewPaths = [
+    //         path.join(__dirname, "../public/views"),       // Desarrollo local
+    //         path.join(__dirname, "../../public/views"),    // Producción en algunos entornos
+    //         path.join(process.cwd(), "src/public/views"),   // Producción en Render.com
+    //         path.join(process.cwd(), "public/views")        // Producción alternativa
+    //     ];
 
-        // Filtrar solo las rutas que existen
-        const validViewPaths = possibleViewPaths.filter(viewPath => {
-            try {
-                return fs.existsSync(viewPath);
-            } catch (error) {
-                return false;
-            }
-        });
+    //     // Filtrar solo las rutas que existen
+    //     const validViewPaths = possibleViewPaths.filter(viewPath => {
+    //         try {
+    //             return fs.existsSync(viewPath);
+    //         } catch (error) {
+    //             return false;
+    //         }
+    //     });
 
-        if (validViewPaths.length === 0) {
-            throw new Error("No se encontró el directorio de vistas en ninguna de las ubicaciones probadas");
-        }
+    //     if (validViewPaths.length === 0) {
+    //         throw new Error("No se encontró el directorio de vistas en ninguna de las ubicaciones probadas");
+    //     }
 
-        console.log("Configurando vistas en:", validViewPaths);
-        this.app.set("views", validViewPaths);
-        this.app.set("view engine", "pug");
+    //     console.log("Configurando vistas en:", validViewPaths);
+    //     this.app.set("views", validViewPaths);
+    //     this.app.set("view engine", "pug");
 
-        // Middleware para verificar rutas de vistas
-        this.app.use((req, res, next) => {
-            res.locals.viewPaths = validViewPaths;
-            next();
-        });
-    }
+    //     // Middleware para verificar rutas de vistas
+    //     this.app.use((req, res, next) => {
+    //         res.locals.viewPaths = validViewPaths;
+    //         next();
+    //     });
+    // }
 
 }
