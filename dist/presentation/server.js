@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
 const routes_1 = require("./routes");
+const fs_1 = __importDefault(require("fs"));
 require("dotenv/config");
 const conexion_1 = require("../data/conexion");
+const path_1 = __importDefault(require("path"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -43,12 +45,42 @@ class Server {
             this.app.use(express_1.default.static(routeStatic));
             this.app.use("/icons", express_1.default.static(`${__dirname}/../../node_modules/bootstrap-icons/font`));
             this.app.use(this.morgan("dev"));
-            this.app.set("views", "./src/public/views");
-            this.app.set("view engine", "pug");
+            this.configureViews();
+            // this.app.set("views", "./src/public/views");
+            // this.app.set("view engine" , "pug");
             this.app.use(routes_1.AppRoutes.routes);
             this.app.listen(this.PORT, () => {
                 console.log("Server on! PORT: " + process.env.PORT);
             });
+        });
+    }
+    configureViews() {
+        // Posibles ubicaciones de las vistas
+        const possibleViewPaths = [
+            path_1.default.join(__dirname, "../public/views"), // Desarrollo local
+            path_1.default.join(__dirname, "../../public/views"), // Producción en algunos entornos
+            path_1.default.join(process.cwd(), "src/public/views"), // Producción en Render.com
+            path_1.default.join(process.cwd(), "public/views") // Producción alternativa
+        ];
+        // Filtrar solo las rutas que existen
+        const validViewPaths = possibleViewPaths.filter(viewPath => {
+            try {
+                return fs_1.default.existsSync(viewPath);
+            }
+            catch (error) {
+                return false;
+            }
+        });
+        if (validViewPaths.length === 0) {
+            throw new Error("No se encontró el directorio de vistas en ninguna de las ubicaciones probadas");
+        }
+        console.log("Configurando vistas en:", validViewPaths);
+        this.app.set("views", validViewPaths);
+        this.app.set("view engine", "pug");
+        // Middleware para verificar rutas de vistas
+        this.app.use((req, res, next) => {
+            res.locals.viewPaths = validViewPaths;
+            next();
         });
     }
 }
