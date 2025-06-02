@@ -144,7 +144,12 @@
     ..METHOD: POST
     ...DESCRIPCION: La ruta recibe por body un atributo id_Admision donde el mismo es utilizado para dar de ALTA un registro en la base de datos. Una vez concluido dicho procesos el controlador envia una confirmacion mediante un archivo JSON.
 
-
+# Descripcion de dependencias
+    .bootstrap: Se utiliza para dar estilos a la pagina web.
+    .bootstrap-icons: Es una biblioteca de iconos para bootstrap, se utiliza para colocar iconos en las vistas pug.
+    .Morgan: Es un middleware de registros de solicitudes HTTP para Nodejs, permite mostrar en el log las peticiones entrantes y salientes por metodo, ruta y status.
+    .reflect-metadata: Le permite a typescript trabajar con decoradores.
+    
 
 
     
