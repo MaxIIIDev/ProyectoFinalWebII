@@ -4,6 +4,7 @@ import { Hospital_camas } from "../../../data/models/Hospital_camas";
 import { Hospital_habitaciones } from "../../../data/models/Hospital_habitaciones";
 import { Pacientes } from "../../../data/models/Pacientes";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
+import { AlaService } from "./AlaService";
 import { CamaService } from "./CamaService";
 
 type datosNecesarios = {
@@ -24,6 +25,8 @@ type datosNecesarios = {
 }
 
 export class HabitacionService {
+
+    
 
     static getHabitacionesDisponibles = async (genero: string, ala: string): Promise<[string?, any?]> => {
         try {
@@ -161,6 +164,118 @@ export class HabitacionService {
             console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesDisponibles", "Habitacion Service", "11", error as string));
             return [error as string, undefined];
         }
+    }
+    static getHabitaciones = async(): Promise<[string?, any?]> => {
+        try{
+            const habitacionesEncontradas = await Hospital_habitaciones.findAll({
+                include: [
+                    {
+                        model: Hospital_alas,
+                        as: "ala"
+                    },
+                    {
+                        model: Hospital_camas,
+                        as: "camas"                        
+                    }
+                ]
+            });
+            if(habitacionesEncontradas.length === 0){
+                return ["No hay habitaciones registradas", undefined];
+            }
+            return [undefined, habitacionesEncontradas];
+        }catch(error){
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones", "Habitacion Service", "165", error as string));
+            return [error as string, undefined];
+        }
+    }
+    static getHabitacionesByAla = async(ala:string, disponible?: boolean): Promise<[string?, any?]> => {
+
+        try {
+            if(disponible === undefined){
+                disponible = null;
+            }
+            
+            const alasRegistradas = await AlaService.getAlaFromDb();
+            let validarAla:boolean = false;
+            for(let alaRegistrada of alasRegistradas){
+                if(alaRegistrada.nombre === ala){
+                    ala = alaRegistrada.nombre;
+                    validarAla = true;
+                    break;
+                }
+            }
+            if(!validarAla){
+                return ["El ala ingresada no existe", undefined];
+            }
+            
+            if(disponible === null){
+                const habitacionesEncontradas = await Hospital_habitaciones.findAll({
+                include: [
+                    {
+                        model: Hospital_alas,
+                        as: "ala",
+                        where: { nombre: ala }
+                    },
+                    {
+                        model: Hospital_camas,
+                        as: "camas"
+                    }
+                ]
+                });
+
+                if (habitacionesEncontradas.length === 0) {
+                    return ["No hay habitaciones registradas en este ala", undefined];
+                }
+
+                return [undefined, habitacionesEncontradas];
+            }else{
+                if(disponible){
+                    const habitacionesActivasPorAla = await Hospital_habitaciones.findAll({
+                        include: [
+                            {
+                                model: Hospital_alas,
+                                as: "ala",
+                                where: { nombre: ala }
+                            },
+                            {
+                                model: Hospital_camas,
+                                as: "camas",
+                                where: { disponible: true }
+                            }
+                        ]
+                    })
+                    if(habitacionesActivasPorAla.length === 0){
+                        return ["No hay habitaciones activas registradas en este ala", undefined];
+                    }
+                    return [ undefined, habitacionesActivasPorAla];
+                }else{
+                    const habitacionesInactivasPorAla = await Hospital_habitaciones.findAll({
+                        include: [
+                            {
+                                model: Hospital_alas,
+                                as: "ala",
+                                where: { nombre: ala }
+                            },
+                            {
+                                model: Hospital_camas,
+                                as: "camas",
+                                where: { disponible: false }
+                            }
+                        ]
+                    })
+                    if(habitacionesInactivasPorAla.length === 0){
+                        return ["No hay habitaciones inactivas registradas en este ala", undefined];
+                    }
+                    return [ undefined, habitacionesInactivasPorAla];
+                }
+            }
+            
+
+        } catch (error) {
+            console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesByAla", "Habitacion Service", "189", error as string));
+            return [error as string, undefined];
+        }
+
     }
 
 }

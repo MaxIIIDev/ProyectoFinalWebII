@@ -25,6 +25,8 @@ import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmi
 
 
 export class AdmisionController{
+   
+
     private conexionBd: Conexion;
     public constructor(conexionbd: Conexion){
         this.conexionBd = conexionbd;
@@ -418,6 +420,16 @@ export class AdmisionController{
             res.redirect(`/admision/?error=${encodeURI(error as string)}`)
         }
 
+    }
+    public vistaCamas = async(req:Request, res:Response) => {
+        try {
+            const alas = await AlaService.getAlaFromDb();
+            res.render("AdmisionViews/listarTodasLasCamas.pug",{
+                alas: alas
+            })
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURI(error as string)}`)
+        }
     }
     
     ////////////////////////////////////////////////////
@@ -1154,6 +1166,48 @@ export class AdmisionController{
             return
         }
     }
+    public getHabitacionesByAla = async(req:Request, res:Response) => { 
+    
+        try {
+            if(!req.query.ala && !req.query.disponible){
+                res.status(400).json("Se requiere el ala y la disponibilidad")
+                return
+            }
+            let queryDisponible = req.query.disponible;
+            if( req.query.disponible && queryDisponible == "todos"){
+                
+                queryDisponible = null;
+            }
+            if(queryDisponible !== null && queryDisponible != "disponible" && queryDisponible != "noDisponible"){
+                res.status(400).json("El parametro disponible debe ser disponible o noDisponible o todos")
+                return
+            }
+            let disponibilidad ;
+            if(queryDisponible == null){
+                disponibilidad = null
+            }
+            if(queryDisponible == "disponible"){
+                disponibilidad = true
+            }
+            if(queryDisponible == "noDisponible"){
+                disponibilidad = false
+            }
+
+            const [error, habitacionesEncontradas] = await HabitacionService.getHabitacionesByAla(req.query.ala as string, disponibilidad);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesByAla","AdmisionController","Line 1150",error as string)
+                res.status(404).json(error as string);
+                return
+            }
+            res.status(200).json(habitacionesEncontradas);
+            return 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesByAla","AdmisionController","Line 1157",error as string)
+            res.status(500).json({error: error})
+            return 
+        }
+
+    }
     ////////////////////////////////////
     ////////////////!Camas//////////////
     public getHabitacionByCamaId = async(req:Request, res:Response) => {
@@ -1180,42 +1234,19 @@ export class AdmisionController{
             res.status(500).json(error as string);
         }
     }
-    // public test = async(req:Request,res:Response)=> {
+    public test = async(req:Request,res:Response)=> {
 
-    //     try {
+         try {
             
-    //         // const motivosDeInternacion = await MotivosDeInternacionService.buscarMotivosDeInternacion();
-    //         // const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
-    //         // const tiposDeAdmision = await AdmisionService.getTiposDeAdmision();
-    //         // // const alas = await AlaService.getAlaFromDb();
-    //         // const admision = await AdmisionService.buscarAdmisionVigentePorPaciente(2);
-    //         // req.session.admision = admision[1]?.dataValues;
-    //         // const ddd = await CamaService.buscarCama(3);
-    //         // const nombreALA = ddd[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre
-    //         // const alas = await AlaService.getAlaFromDb();
+            res.render("AdmisionViews/listarTodasLasCamas.pug",{})
             
-    //         // const [ error, camaActual] = await CamaService.buscarCama(9);
-            
-    //         // //console.log(camaActual?.dataValues.habitacion.dataValues);
-    //         // res.json(camaActual)
-            
-    //         const [error, paciente] = await PacienteServices.buscarPacienteDesconocido(7);
-    //         console.log(paciente?.dataValues);
-    //         req.session.paciente = paciente?.dataValues
-    //         res.json(req.session.paciente)
-            
-    //         // for(let a of alas!){
-    //         //     console.log(a);
-                
-    //         // }
-            
-    //        // res.json(admision[1])   
-    //         return
-    //     } catch (error) {
-    //         res.json(error)
-    //         return
-    //     }
 
-    // }
+            return
+        } catch (error) {
+            res.json(error)
+            return
+        }
+
+    }
 
 }

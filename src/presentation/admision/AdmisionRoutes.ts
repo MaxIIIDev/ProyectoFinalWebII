@@ -15,11 +15,12 @@ export class AdmisionRoutes{
         
         //vistas
         //!: 1- Vista principal de admision
-        //router.get("/test", controller.test)
+        router.get("/test", controller.test)
         router.get("/", controller.vistaPrincipal)//*:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//*:Comprobado
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//*Comprobado
         router.get("/principal/paciente", controller.vistaPrincipalPaciente) //*:Comprobado
+        router.get("/camas", controller.vistaCamas)
         //!: 2- Vista de buscar Paciente
         router.get("/find" , controller.vistaBuscarPorDni) //*:Comprobado
         router.get("/find/desconocido", controller.vistaBuscarPacienteDesconocido)
@@ -57,7 +58,10 @@ export class AdmisionRoutes{
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Deberia funcionar, no testeado
         router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Deberia funcionar, no testeado
         router.get("/get/habitacion", controller.getHabitacionesDisponiblesPorGenero)
+
+        router.get("/get/habitacion/by/ala", controller.getHabitacionesByAla) //!Comprobar, es por query
         router.get("/get/habitacion/ocupada", controller.getHabitacionByCamaId) 
+        
         router.post("/create/admision", controller.crearAdmision)//todo: FALTA TESTEAR
         router.post("/update/admision", controller.updateAdmision);
         router.post("/baja", controller.bajaLogicaAdmision)//*Testeado

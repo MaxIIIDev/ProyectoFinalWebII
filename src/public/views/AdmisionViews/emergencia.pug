@@ -160,14 +160,14 @@ html(lang="es")
         }
       });
 
-      // Función para actualizar las camas disponibles
+      
       async function actualizarCamas() {
         const ala = document.getElementById("ala").value
         const unidad = document.getElementById("unidad").value;
         const genero = document.getElementById("genero").value;
         const selectCama = document.getElementById("id_Cama");
         
-        // Limpiar opciones anteriores
+        
         selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
         
         if (unidad && genero) {
@@ -191,7 +191,7 @@ html(lang="es")
             }
           } catch (error) {
             console.error("Error al obtener las camas:", error);
-            // Mostrar mensaje de error al usuario si es necesario
+            
           }
         }
       }
