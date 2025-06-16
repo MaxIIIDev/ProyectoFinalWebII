@@ -1234,6 +1234,44 @@ export class AdmisionController{
             res.status(500).json(error as string);
         }
     }
+    //////////////////////////////!
+    ////////////! Turnos /////////!
+    //////////////////////////////!
+
+    public getAllTurnosInDay = async(req:Request, res:Response) => { //VER TODOS LOS TURNOS DEL DIA
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
+    public getTurnosByPaciente = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`)
+                return 
+            }
+        } catch (error) {
+            
+        }
+    }
+
+    public crearTurno = async(req:Request,res:Response) => {
+
+    } 
+    public actualizarTurno = async(req:Request,res:Response) => {
+
+    } 
+    public eliminarTurno = async(req:Request,res:Response) => {
+
+    } 
+
+
+    //////////////////////////////!
+    ////////////! TEST ///////////
+    //////////////////////////////!
+
     public test = async(req:Request,res:Response)=> {
 
          try {

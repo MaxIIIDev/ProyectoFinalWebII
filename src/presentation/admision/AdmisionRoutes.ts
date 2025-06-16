@@ -68,10 +68,11 @@ export class AdmisionRoutes{
         router.post("/alta", controller.altaLogicaAdmision)//*Testeado 
 
         //TURNOS
-        //router.post("/crear/turno")
-        //router.get("/get/turno")
-        // router.put("/actualizar/turno")
-        // router.delete("/delete/turno")
+        //!EN DESARROLLO
+        router.get("/get/turno", controller.getTurnosByPaciente) 
+        router.post("/crear/turno", controller.crearTurno)
+        router.post("/actualizar/turno", controller.actualizarTurno)
+        router.delete("/delete/turno", controller.eliminarTurno)
         return router
     }
 
