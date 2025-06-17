@@ -20,6 +20,9 @@ import { MotivosDeInternacionService } from "../services/MotivosDeInternacionSer
 import { CamaService } from "../services/Hospital/CamaService";
 import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
 import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmisionDTO";
+import { TurnosService } from "../services/TurnosService";
+import { CrearTurnoDto } from "../../domain/Dtos/Turnos/createTurnoDTO";
+import { updateTurnoDto } from "../../domain/Dtos/Turnos/updateTurnoDto";
 
 
 
@@ -1238,30 +1241,115 @@ export class AdmisionController{
     ////////////! Turnos /////////!
     //////////////////////////////!
 
-    public getAllTurnosInDay = async(req:Request, res:Response) => { //VER TODOS LOS TURNOS DEL DIA
+    public getAllTurnosInDay = async(req:Request, res:Response) => { //VER TODOS LOS TURNOS DEL DIA //todo: Testear y completar los redireccionamientos y vistas
         try {
-            
+            const [ error, turnosDelDia ] = await TurnosService.getAllTurnosByDate(new Date().toISOString().split("T")[0]);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllTurnosInDay","AdmisionController","Line 1242",error as string)
+                res.redirect(`/admision/?error=${encodeURI(`${error}`)}`)
+                return
+            }
+            //res.render("AdmisionViews/turnos.pug",{turnos:turnosDelDia}) //todo: Implementar renderizado de turnos
+            return
         } catch (error) {
-            
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllTurnosInDay","AdmisionController","Line 1251",error as string)
+            res.redirect(`/admision/?error=${encodeURI(`${error}`)}`)
+            return
         }
     }
 
-    public getTurnosByPaciente = async(req:Request, res:Response) => {
+    public getTurnosByPaciente = async(req:Request, res:Response) => { //todo: Testear y completar los redireccionamientos y vistas
         try {
+            const estado = req.query.estado ? (req.query.estado === "true" ? true : false) : true; //por defecto trae los turnos activos
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`)
                 return 
             }
+            const [error, turnosDelPaciente] = await TurnosService.getTurnosByPacienteId(req.session.paciente.id_Paciente, estado);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnosByPaciente","AdmisionController","Line 1266",error as string)
+                res.redirect(`/admision/principal/paciente?error=${encodeURI(`${error}`)}`)
+                return
+            }
+            //res.render("AdmisionViews/turnos.pug", {turnos: turnosDelPaciente});//todo: Implementar renderizado de turnos
+            return
         } catch (error) {
-            
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnosByPaciente","AdmisionController","Line 1258",error as string)
+            res.redirect(`/admision/principal/paciente?error=${encodeURI(`${error}`)}`)
+            return
         }
     }
 
-    public crearTurno = async(req:Request,res:Response) => {
+    public crearTurno = async(req:Request,res:Response) => { //todo: Testear y completar los redireccionamientos y vistas
 
+        try {
+            const {fecha,id_horario_turno,motivo,id_Medico} = req.body;
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion del paciente")}`)
+                return
+            }
+            const [ errorDto, crearTurnoDto] = CrearTurnoDto.create({
+                fecha: fecha,
+                id_horario_turno: id_horario_turno,
+                id_Paciente: req.session.paciente.id_Paciente,
+                motivo: motivo,
+                id_Medico: id_Medico                
+            })
+            if(errorDto){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearTurno","AdmisionController","Line 1282",errorDto);
+                //res.redirect(`/admision/crear/turno?error=${encodeURIComponent(errorDto)}`)//todo: Crear vista de crear turno y redireccionar a ella, Agregar alerta por query
+                return
+            }
+            const[ errorCrearTurno, turnoCreado] = await TurnosService.createTurno(CrearTurnoDto.toObject(crearTurnoDto));
+            if(errorCrearTurno){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearTurno","AdmisionController","Line 1302",errorCrearTurno);
+                //res.redirect(`/admision/crear/turno?error=${encodeURIComponent(errorCrearTurno)}`)//todo: Crear vista de crear turno y redireccionar a ella Agregar alerta por query
+                return
+            }
+            res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Turno creado correctamente")}`)
+            return
+        
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearTurno","AdmisionController","Line 1302",error as string)
+            res.redirect(`/admision/principal/paciente?error=${encodeURIComponent(`${error}`)}`)
+            return
+        }
     } 
-    public actualizarTurno = async(req:Request,res:Response) => {
+    public actualizarTurno = async(req:Request,res:Response) => {//!No hace falta hacer una sesion para turno, cuando se llame a la vista, hacer que la vista busque el turno por id y lo muestre en los campos del formulario, luego al enviar el formulario se actualiza el turno
+        try{
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion del paciente")}`)
+                return
+            }
+            const {id_turno, fecha, id_horario_turno, motivo, id_Medico,estado} = req.body;
+            const [errorDto, _updateTurnoDto] = updateTurnoDto.create({
+                id_turno: id_turno,
+                fecha: fecha,
+                id_horario_turno: id_horario_turno,
+                motivo: motivo,
+                id_Medico: id_Medico,
+                id_Paciente: req.session.paciente.id_Paciente,
+                estado : estado
+            });
+            if(errorDto){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1334",errorDto);
+                //res.redirect(`/admision/actualizar/turno?error=${encodeURIComponent(`${errorDto}`)}`)//todo: Crear vista de actualizar turno y redireccionar a ella, Agregar alerta por query
+                return
+            }
+            const [errorActualizarTurno, confirmacion] = await TurnosService.updateTurno(_updateTurnoDto!);
+            if(errorActualizarTurno){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1340",errorActualizarTurno);
+                //res.redirect(`/admision/actualizar/turno?error=${encodeURIComponent(`${errorActualizarTurno}`)}`)//todo: Crear vista de actualizar turno y redireccionar a ella, Agregar alerta por query
+                return
+            }
+            //res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Turno actualizado correctamente")}`)//todo: Analizar si se redirecciona a la vista de paciente o a la de turnos
+            return
 
+        }catch(error){
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1317",error as string)
+            res.redirect(`/admision/principal/paciente?error=${encodeURIComponent(`${error}`)}`)
+            return
+        }
     } 
     public eliminarTurno = async(req:Request,res:Response) => {
 
@@ -1276,7 +1364,9 @@ export class AdmisionController{
 
          try {
             
-            res.render("AdmisionViews/listarTodasLasCamas.pug",{})
+            
+            
+            
             
 
             return

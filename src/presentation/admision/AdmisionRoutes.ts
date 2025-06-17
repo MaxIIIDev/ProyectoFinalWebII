@@ -62,17 +62,18 @@ export class AdmisionRoutes{
         router.get("/get/habitacion/by/ala", controller.getHabitacionesByAla) //!Comprobar, es por query
         router.get("/get/habitacion/ocupada", controller.getHabitacionByCamaId) 
         
-        router.post("/create/admision", controller.crearAdmision)//todo: FALTA TESTEAR
-        router.post("/update/admision", controller.updateAdmision);
+        router.post("/create/admision", controller.crearAdmision)//*Testeado
+        router.post("/update/admision", controller.updateAdmision);//*Testeado
         router.post("/baja", controller.bajaLogicaAdmision)//*Testeado
         router.post("/alta", controller.altaLogicaAdmision)//*Testeado 
 
         //TURNOS
         //!EN DESARROLLO
-        router.get("/get/turno", controller.getTurnosByPaciente) 
-        router.post("/crear/turno", controller.crearTurno)
-        router.post("/actualizar/turno", controller.actualizarTurno)
-        router.delete("/delete/turno", controller.eliminarTurno)
+        router.get("/get/all/turnos", controller.getAllTurnosInDay) //todo:Deberia funcionar, no testeado
+        router.get("/get/turno/for/patient", controller.getTurnosByPaciente) //todo:Deberia funcionar, no testeado
+        router.post("/crear/turno", controller.crearTurno)//todo:Deberia funcionar, no testeado
+        router.post("/actualizar/turno", controller.actualizarTurno)//todo:Deberia funcionar, no testeado
+        router.delete("/delete/turno", controller.eliminarTurno)//todo:Deberia funcionar, no testeado
         return router
     }
 
