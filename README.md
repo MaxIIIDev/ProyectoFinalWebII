@@ -2,7 +2,7 @@
 
 # Pasos para Ejecutar el Proyecto.
 
-# 1- Configurar ENVS: Apartir del ejenplo de env proporcionado. Explicare que debe colocar en cada lugar.
+# 1- Configurar ENVS: Apartir del ejemplo de env proporcionado. Explicare que debe colocar en cada lugar.
     - PORT= "Debe proporcionar el puerto de su maquina (Recomendacion: Puerto 3000)"
     - DB_USER="Debe proporcionar el usuario de acceso de su base de datos"
     - DB_PASSWORD="Debe proporcionar la contraseña de acceso a su base de datos"

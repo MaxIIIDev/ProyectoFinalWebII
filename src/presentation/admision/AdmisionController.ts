@@ -23,6 +23,7 @@ import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmi
 import { TurnosService } from "../services/TurnosService";
 import { CrearTurnoDto } from "../../domain/Dtos/Turnos/createTurnoDTO";
 import { updateTurnoDto } from "../../domain/Dtos/Turnos/updateTurnoDto";
+import { HorariosTurnosServices } from "../services/HorariosTurnosServices";
 
 
 
@@ -1353,6 +1354,12 @@ export class AdmisionController{
     } 
     public eliminarTurno = async(req:Request,res:Response) => {
 
+        try {
+            
+        } catch (error) {
+            
+        }
+
     } 
 
 
@@ -1365,9 +1372,15 @@ export class AdmisionController{
          try {
             
             
-            
-            
-            
+            const[ error, confirmacion] = await TurnosService.getAllTurnosByDate("2023-05-39");
+            if(error){
+                res.json({error:error})
+                console.log(error);
+                
+                return
+            }
+            console.log(confirmacion);
+            res.json(confirmacion)
 
             return
         } catch (error) {

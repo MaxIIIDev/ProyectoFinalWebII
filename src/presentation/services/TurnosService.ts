@@ -2,12 +2,13 @@ import { Turnos } from "../../data/models/Turnos"
 import { CrearTurnoDto } from "../../domain/Dtos/Turnos/createTurnoDTO";
 import { updateTurnoDto } from "../../domain/Dtos/Turnos/updateTurnoDto";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
+import { HorariosTurnosServices } from "./HorariosTurnosServices";
 import { MedicoService } from "./MedicoService";
 import { PacienteServices } from "./PacientesService";
 
 export class TurnosService {
 
-    public static getTurnoById = async(id_turno: number): Promise<[string?, Turnos?]> => {//todo: Testear
+    public static getTurnoById = async(id_turno: number): Promise<[string?, Turnos?]> => {//*TESTEADO
 
         try {
             if(!id_turno || id_turno <= 0){
@@ -29,11 +30,12 @@ export class TurnosService {
 
     }
 
-    public static  getAllTurnosByDate = async( fecha: string ): Promise<[string?, Turnos[]?]> => { //Devuelve los turnos por fecha especifica año-mes-dia
+    public static  getAllTurnosByDate = async( fecha: string ): Promise<[string?, Turnos[]?]> => { //*TESTEADO //Devuelve los turnos por fecha especifica año-mes-dia
         try {
-            if(!fecha || fecha.length !== 10){
+            if(!fecha || fecha.length !== 10 || /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
                 return ["Fecha invalida, debe ser en formato año-mes-dia", null]
             }
+           
             const turnosEncontrados = await Turnos.findAll({
                 where:{
                     fecha: fecha
@@ -46,6 +48,35 @@ export class TurnosService {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllTurnosInDay", "TurnosServices", "18", error);
             return ["Error al buscar los turnos", null]
+        }
+    }
+    public static getTurnoByDateAndHour = async(fecha: string, hora: string ): Promise<[string?,Turnos?]>=> {
+
+        try {
+            if(!fecha || fecha.length !== 10 || /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
+                return ["Fecha invalida, debe ser en formato año-mes-dia", null]
+            }
+           
+            if(!/^([01]\d|2[0-3]):([0-5]\d)$/.test(hora)){
+                return ["Formato de hora invalido, debe ser HH:MM", null];
+            }
+            const horarioTurno = await HorariosTurnosServices.getHorarioTurnoByHora(hora).then(res => res[1]);
+            if(!horarioTurno){
+                return ["Horario de turno no encontrado", null]
+            }
+            const turnoEncontrado = await Turnos.findOne({
+                where:{
+                    fecha: fecha,
+                    id_horario_turno: horarioTurno.dataValues.id_horario_turno
+                }
+            })
+            if(!turnoEncontrado){
+                return ["No se encontro un turno para la fecha y hora especificada", null]
+            }
+            return [undefined, turnoEncontrado];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnoByDateAndHour", "TurnosServices", "75", error);
+            return ["Error al buscar el turno por fecha y hora", null]
         }
     }
     public static getTurnosByPacienteId = async(id_Paciente: number, _estado: boolean): Promise<[string?, Turnos[]?]> => {//todo: Testear
@@ -68,6 +99,32 @@ export class TurnosService {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnosByPacienteId", "TurnosServices", "28", error);
             return ["Error al buscar los turnos del paciente", null]
+        }
+    }
+    public static getTurnosByDateAndIdHorario = async(fecha: string, id_horario_turno: number): Promise<[string?, Turnos[]?]> => {
+        try {
+            if(!fecha || fecha.length !== 10){
+                return ["Fecha invalida, debe ser en formato año-mes-dia", null]
+            }
+            if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
+                return ["Fecha invalida, debe ser en formato año-mes-dia", null]
+            }
+            if(!id_horario_turno || id_horario_turno <= 0){
+                return ["ID de horario de turno invalido", null]
+            }
+            const turnosEncontrados = await Turnos.findAll({
+                where:{
+                    fecha: fecha,
+                    id_horario_turno: id_horario_turno
+                }
+            })
+            if(!turnosEncontrados || turnosEncontrados.length === 0){
+                return ["No se encontraron turnos para la fecha y horario especificados", null]
+            }
+            return [undefined, turnosEncontrados];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnosByDateAndIdHorario", "TurnosServices", "102", error);
+            return ["Error al buscar los turnos por fecha y horario", null]
         }
     }
     public static getTurnosByMedicoId = async(id_Medico: number): Promise<[string?, Turnos[]?]> => {//todo: Testear
@@ -97,6 +154,9 @@ export class TurnosService {
             }
             if(await PacienteServices.buscarPacienteDesconocido(crearTurnoDto.id_Paciente).then(res => res[0] == false)){
                 return ["Paciente no encontrado", null]
+            }
+            if(await this.getTurnosByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno).then(res => res[1])){
+                return ["Ya existe un turno para la fecha y horario especificados", null]
             }
             const turnoCreado = await Turnos.create(CrearTurnoDto.toObject(crearTurnoDto));
             if(!turnoCreado){
