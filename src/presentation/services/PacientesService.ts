@@ -9,7 +9,28 @@ import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteN
 
 
 export class PacienteServices{
+    static getPacienteById = async(id_Paciente: number): Promise<[string?, Pacientes?]> =>  { //*TESTEADO, devuelve el paciente por su ID de base de datos
 
+        try {
+            
+            if(!id_Paciente || id_Paciente <= 0){
+                return ["ID de paciente invalido", undefined];
+            }
+            const pacienteEncontrado = await Pacientes.findOne({
+                where: {
+                    id_Paciente: id_Paciente
+                }
+            });
+
+            if(!pacienteEncontrado){
+                return ["Paciente no encontrado", undefined];
+            }
+            return [undefined, pacienteEncontrado];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getPacienteById","PacienteService", "Line 8", error as string);
+            return ["Error al buscar el paciente por ID", undefined];
+        }
+    }
     static  buscarPacienteExistente= async(dni:number,modo:number):Promise<[boolean?,Pacientes?]> =>{
         try{
             const pacienteBuscado =  await Pacientes.findOne({where:{dni: dni}})

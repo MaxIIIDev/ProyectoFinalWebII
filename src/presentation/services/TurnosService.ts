@@ -153,7 +153,7 @@ export class TurnosService {
             if(await MedicoService.getMedicoById(crearTurnoDto.id_Medico).then(res => res[0])){
                 return ["Medico no encontrado", null]
             }
-            if(await PacienteServices.buscarPacienteDesconocido(crearTurnoDto.id_Paciente).then(res => res[0] == false)){
+            if(await PacienteServices.getPacienteById(crearTurnoDto.id_Paciente).then(res => res[0])){ 
                 return ["Paciente no encontrado", null]
             }
             if(await this.getTurnoByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno).then(res => res[1])){
@@ -178,7 +178,7 @@ export class TurnosService {
             if(await MedicoService.getMedicoById(_updateTurnoDto.id_Medico).then(res => res[0])){
                 return ["Medico no encontrado", null]
             }
-            if(await PacienteServices.buscarPacienteDesconocido(_updateTurnoDto.id_Paciente).then(res => res[0] == false)){
+            if(await PacienteServices.getPacienteById(_updateTurnoDto.id_Paciente).then(res => res[0])){
                 return ["Paciente no encontrado", null]
             }
             const [cantidadFilasActualizadas] = await Turnos.update(_updateTurnoDto, {
@@ -193,6 +193,38 @@ export class TurnosService {
         }catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("updateTurno", "TurnosServices", "60", error);
             return ["Error al actualizar el turno", false];
+        }
+    }
+    public static deleteTurno = async(id_turno: number, id_Paciente: number): Promise<[string?, boolean?]> => {
+
+        try {
+            if(!id_turno || id_turno <= 0){
+                return ["ID de turno invalido", false];
+            }
+            if(!id_Paciente || id_Paciente <= 0){
+                return ["ID de paciente invalido", false];
+            }
+            const turnoEncontrado = await this.getTurnoById(id_turno);
+            if(turnoEncontrado[0]){
+                return [turnoEncontrado[0], false];
+            }
+            const pacienteEncontrado = await PacienteServices.getPacienteById(id_Paciente);
+            if(pacienteEncontrado[0]){
+                return [pacienteEncontrado[0], false];
+            }
+            const cantidadFilasEliminadas = await Turnos.destroy({
+                where: {
+                    id_turno: id_turno,
+                    id_Paciente: id_Paciente
+                }
+            });
+            if(cantidadFilasEliminadas === 0){
+                return ["No se pudo eliminar el turno, verifique los datos", false];
+            }
+            return [undefined, true];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("deleteTurno", "TurnosServices", "80", error);
+            return ["Error al eliminar el turno", false];
         }
     }
 

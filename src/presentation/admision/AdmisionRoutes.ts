@@ -15,7 +15,7 @@ export class AdmisionRoutes{
         
         //vistas
         //!: 1- Vista principal de admision
-        router.get("/test", controller.test)
+        router.get("/test", controller.eliminarTurno)
         router.get("/", controller.vistaPrincipal)//*:Comprobado
         router.get("/emergencia", controller.vistaEmergencia)//*:Comprobado
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//*Comprobado

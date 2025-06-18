@@ -34,6 +34,7 @@ export class updateTurnoDto {
             if(!objeto.motivo) return ["Se requiere motivo"];
             if (!objeto.fecha) return ["Se requiere fecha"];
             const fechaParseada = new Date(objeto.fecha).toISOString().split('T')[0]; 
+            if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
 
             return [undefined, new updateTurnoDto(
                 id_turnoParseado,

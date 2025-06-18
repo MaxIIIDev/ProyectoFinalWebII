@@ -36,13 +36,14 @@ export class Turnos extends Model{
 
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
-    declare id_paciente: number
+    declare id_Paciente: number
 
     @BelongsTo(()=> Pacientes)
     declare paciente: Pacientes
 
     @ForeignKey(()=> Medicos)
-    declare id_medico: number;
+    @Column(DataType.INTEGER)
+    declare id_Medico: number;
 
     @BelongsTo(()=> Medicos)
     declare medico: Medicos
