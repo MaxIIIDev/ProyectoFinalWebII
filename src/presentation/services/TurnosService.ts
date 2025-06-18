@@ -195,7 +195,7 @@ export class TurnosService {
             return ["Error al actualizar el turno", false];
         }
     }
-    public static deleteTurno = async(id_turno: number, id_Paciente: number): Promise<[string?, boolean?]> => {
+    public static deleteTurno = async(id_turno: number, id_Paciente: number): Promise<[string?, boolean?]> => {//*TESTEADO
 
         try {
             if(!id_turno || id_turno <= 0){
