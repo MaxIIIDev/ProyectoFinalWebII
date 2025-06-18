@@ -50,7 +50,7 @@ export class TurnosService {
             return ["Error al buscar los turnos", null]
         }
     }
-    public static getTurnoByDateAndHour = async(fecha: string, hora: string ): Promise<[string?,Turnos?]>=> {
+    public static getTurnoByDateAndHour = async(fecha: string, hora: string ): Promise<[string?,Turnos?]>=> { //*TESTEADO //Devuelve un turno por fecha y hora
 
         try {
             if(!fecha || fecha.length !== 10 || /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
@@ -79,7 +79,7 @@ export class TurnosService {
             return ["Error al buscar el turno por fecha y hora", null]
         }
     }
-    public static getTurnosByPacienteId = async(id_Paciente: number, _estado: boolean): Promise<[string?, Turnos[]?]> => {//todo: Testear
+    public static getTurnosByPacienteId = async(id_Paciente: number, _estado: boolean): Promise<[string?, Turnos[]?]> => {//* TESTEADO // Devuelve los turnos por paciente, tiene dos modos, "true" para turnos activos y "false" para turnos inactivos.
         try {
             
             if(!id_Paciente || id_Paciente <= 0){
@@ -101,14 +101,12 @@ export class TurnosService {
             return ["Error al buscar los turnos del paciente", null]
         }
     }
-    public static getTurnosByDateAndIdHorario = async(fecha: string, id_horario_turno: number): Promise<[string?, Turnos[]?]> => {
+    public static getTurnoByDateAndIdHorario = async(fecha: string, id_horario_turno: number): Promise<[string?, Turnos[]?]> => {//* TESTEADO // Devuelve un turno por fecha y por el id_horario_turno registrado en la base de datos
         try {
-            if(!fecha || fecha.length !== 10){
+            if(!fecha || fecha.length !== 10 || /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
                 return ["Fecha invalida, debe ser en formato año-mes-dia", null]
             }
-            if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha) === false){
-                return ["Fecha invalida, debe ser en formato año-mes-dia", null]
-            }
+               
             if(!id_horario_turno || id_horario_turno <= 0){
                 return ["ID de horario de turno invalido", null]
             }
@@ -119,18 +117,21 @@ export class TurnosService {
                 }
             })
             if(!turnosEncontrados || turnosEncontrados.length === 0){
-                return ["No se encontraron turnos para la fecha y horario especificados", null]
+                return ["No se encontró un turno registrado en la fecha y horario especificado", null]
             }
             return [undefined, turnosEncontrados];
         } catch (error) {
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnosByDateAndIdHorario", "TurnosServices", "102", error);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getTurnoByDateAndIdHorario", "TurnosServices", "102", error);
             return ["Error al buscar los turnos por fecha y horario", null]
         }
     }
-    public static getTurnosByMedicoId = async(id_Medico: number): Promise<[string?, Turnos[]?]> => {//todo: Testear
+    public static getTurnosByMedicoId = async(id_Medico: number): Promise<[string?, Turnos[]?]> => {//*TESTEADO // DEVUELVE los turnos por el id del medico
         try {
             if(!id_Medico || id_Medico <= 0){
                 return ["ID de medico invalido", null]
+            }
+            if( await MedicoService.getMedicoById(id_Medico).then(res => res[0])){
+                return ["Medico no encontrado", null]
             }
             const turnosEncontrados = await Turnos.findAll({
                 where:{
@@ -155,7 +156,7 @@ export class TurnosService {
             if(await PacienteServices.buscarPacienteDesconocido(crearTurnoDto.id_Paciente).then(res => res[0] == false)){
                 return ["Paciente no encontrado", null]
             }
-            if(await this.getTurnosByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno).then(res => res[1])){
+            if(await this.getTurnoByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno).then(res => res[1])){
                 return ["Ya existe un turno para la fecha y horario especificados", null]
             }
             const turnoCreado = await Turnos.create(CrearTurnoDto.toObject(crearTurnoDto));

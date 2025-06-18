@@ -1372,7 +1372,7 @@ export class AdmisionController{
          try {
             
             
-            const[ error, confirmacion] = await TurnosService.getAllTurnosByDate("2023-05-39");
+            const[ error, confirmacion] = await HorariosTurnosServices.getHorarioTurnoByHora("09:40");
             if(error){
                 res.json({error:error})
                 console.log(error);
