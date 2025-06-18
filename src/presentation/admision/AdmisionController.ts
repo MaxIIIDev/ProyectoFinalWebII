@@ -771,8 +771,45 @@ export class AdmisionController{
     ////////////////////////////////////////////////
     //////////////!ADMISIONES///////////////////////
     ////////////////////////////////////////////////
+    public crearAdmisionPorTurno = async(req:Request,res:Response) => { //!FALTA TESTEAR
 
-    public crearAdmision = async(req:Request,res:Response) => { //!FALTA TESTEAR 
+        try {
+
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion")}`)
+                return
+            }
+            const [ error, crearAdmisionDto ] = CrearAdmisionDto.create({
+                id_motivo_de_Internacion: 1,
+                id_prioridad_de_atencion: req.body.id_prioridad_de_atencion,
+                id_tipo_de_admision: 1,
+                id_Paciente: req.session.paciente.id_Paciente,
+                id_Cama: req.body.id_Cama
+            });
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 790", error);
+                //res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error as string)}`)
+                return
+            }
+            const [errorCrearAdmision, admisionCreada] = await AdmisionService.crearAdmision(crearAdmisionDto!);
+            if(errorCrearAdmision){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 140", errorCrearAdmision);
+                //res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
+                return
+            }
+            
+            
+            //res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha creado la admision")}`)
+
+            return
+
+        } catch (error) {
+            res.status(500).json(error as string)
+            return
+        }
+
+    }
+    public crearAdmision = async(req:Request,res:Response) => { //*FUNCIONAL
 
         try {
             if(!req.session.paciente){
@@ -809,19 +846,7 @@ export class AdmisionController{
             return
         }
     }
-
-    // public actualizarAdmision = async(req:Request,res:Response) => {//!Pensar que si es necesario
-
-    //     try {
-            
-    //     } catch (error) {
-            
-    //     }
-
-    // }
-
-
-    public getTodasLasAdmisiones = async(req:Request,res:Response) => { //!Deberia traer todas las admisiones
+    public getTodasLasAdmisiones = async(req:Request,res:Response) => { ///*FUNCIONAL
 
         try {
             
@@ -839,7 +864,7 @@ export class AdmisionController{
         }
 
     }
-    public getTodasLasAdmisionesActivas = async(req:Request,res:Response) => { //!Deberia traer todas las admisiones activas
+    public getTodasLasAdmisionesActivas = async(req:Request,res:Response) => { //*FUNCIONAL
 
         try {
             
@@ -857,7 +882,7 @@ export class AdmisionController{
         }
 
     }
-    public buscarAdmisionPorPaciente = async(req:Request,res:Response) => {
+    public buscarAdmisionPorPaciente = async(req:Request,res:Response) => { //*FUNCIONAL
 
         try{
             const [ errorDto, getAdmisionPacienteDto ] = GetAdmisionPorPacienteDTO.create(parseInt(req.params.dni));
@@ -889,7 +914,7 @@ export class AdmisionController{
         }
 
     }
-    public updateAdmision = async(req:Request, res:Response) => {
+    public updateAdmision = async(req:Request, res:Response) => { //*FUNCIONAL
 
         try {
             if(!req.session.paciente){
@@ -943,7 +968,7 @@ export class AdmisionController{
             return
         }
     }
-    public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => {
+    public admitirPacienteDeEmergencia = async (req: Request, res: Response): Promise<void> => { //*FUNCIONAL
         try {
             
             
@@ -1055,17 +1080,9 @@ export class AdmisionController{
         }
 
     };
-    // public getHabitacionesByGender = async(req:Request,res:Response) => {
-    //     try{
-    //         const {ala,unidad,genero,motivo} = req.body;
-
-    //     }catch(error){
-    //         console.log(HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitaciones","AdmisionController","Line 142",error as string));
-    //         //res.status(500).render("error",{message: "Error al obtener las habitaciones"})//Enviar con render
-    //     }
-    // }
+    
     public bajaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
-
+        //*FUNCIONAL
         try {
             if(!req.body.id_Admision ){
                 res.status(400).json("Se requiere el id de la admision")
@@ -1085,7 +1102,7 @@ export class AdmisionController{
         }
     }
     public altaLogicaAdmision = async (req: Request, res: Response) => {//!Me pase de cervezas, deberia funcionar pero no lo testee ;)
-
+        //*FUNCIONAL
         try {
             if(!req.body.id_Admision ){
                 res.status(400).json("Se requiere el id de la admision")
@@ -1105,17 +1122,7 @@ export class AdmisionController{
             return
         }
     }
-    ///////////////////////////////////////////////
-    ////////////////!TURNOS///////////////////////
-    ///////////////////////////////////////////////
-
-    // public crearTurno = async(req:Request,res:Response) => {
-    //     try {
-            
-    //     } catch (error) {
-            
-    //     }
-    // }
+    
 
     /////////////////////////////////////////////////
     ////////////!Habitaciones/////////////////////////
