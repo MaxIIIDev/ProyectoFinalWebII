@@ -11,6 +11,7 @@ import * as bcrypt from "bcrypt"
 export class AuthServices{
     private static  saltRounds = 10;
     static async ChequearEstadoDeCuenta(email:string, modo:boolean):Promise<[string?,boolean?,Usuarios?]>{ //Si el modo es verdadero, devolvera la cuenta
+        //todo: TESTEAR 
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email);
             if(!validateEmail[1]) return [validateEmail[0], undefined]
@@ -28,7 +29,7 @@ export class AuthServices{
             return [error]
         }
     }
-    static async buscarCuenta(email: string): Promise<[string?,Usuarios?]>{
+    static async buscarCuenta(email: string): Promise<[string?,Usuarios?]>{//todo: TESTEAR 
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email);
             if(!validateEmail[1]) return [validateEmail[0], undefined]
@@ -65,6 +66,7 @@ export class AuthServices{
         }
     }
     static async ChequearYBloquearCuenta(email:string):Promise<[string?, boolean?,boolean?]>{//* El segundo boolean representa que la funcion funciono correctamente, y el tercer boolean representa, si se bloqueó o no la cuenta
+        //todo: TESTEAR 
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email)
             if(!validateEmail[1]) return [validateEmail[0], false]
@@ -82,7 +84,7 @@ export class AuthServices{
         }
     }
     static async sumarIntentosErrados(email: string): Promise<[string?,boolean?,boolean?]> { //*El segundo boolean representa que la funcion funciono correctamente, y el tercer boolean representa, si se bloqueó o no la cuenta
-
+        //todo: TESTEAR 
         try{
             const emailValidated = FunctionHelperFor.validateEmail(email);
             if(!emailValidated[1]){
@@ -108,10 +110,10 @@ export class AuthServices{
         }
 
     }
-    static async login(email: string, password: string):Promise<[string?,Usuarios?]>{
+    static async login(email: string, password: string):Promise<[string?,Usuarios?]>{ //todo: TESTEAR 
 
         try {
-            const emailValidated = FunctionHelperFor.validateEmail(email)[0]
+            const emailValidated = FunctionHelperFor.validateEmail(email)
             if(!emailValidated[1]){
                 return [emailValidated[0], undefined]
             }
