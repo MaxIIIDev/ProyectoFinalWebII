@@ -2,6 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, Foreign
 import { Enfermero } from "./Enfermero";
 import { Medicos } from "./Medicos";
 import { Roles } from "./Roles";
+import { Personal_de_admision } from "./Personal_de_admision";
 
 
 @Table({ tableName: "usuarios" })
@@ -39,6 +40,9 @@ export class Usuarios extends Model{
 
     @HasOne(() => Medicos)
     declare medico: Medicos
+
+    @HasOne(() => Personal_de_admision)
+    declare personal_de_admision: Personal_de_admision
 
     @ForeignKey(()=> Roles)
     @Column(DataType.INTEGER)

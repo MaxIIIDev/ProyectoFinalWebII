@@ -10,8 +10,8 @@ export class AuthRoutes{
         const router = Router();
         const controller = new AuthController();
         
-        router.get("/login",controller.Login);
-        //router.post("/login")
+        router.get("/login",controller.viewLogin);
+        router.post("/login", controller.Login)
         
 
         return router

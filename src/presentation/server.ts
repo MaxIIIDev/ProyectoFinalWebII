@@ -36,6 +36,10 @@ declare module "express-session" {
         },
         restosAdmision: {
             nombre_ala: string
+        },
+        usuarioLogueado: {
+            logged: boolean,
+            id_Rol : number
         }
     }
 }
