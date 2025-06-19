@@ -43,8 +43,10 @@ export class AuthController{
                 })
                 return
             }
-
-            
+            //!1- COMPLETAR EL LOGIN
+            //!2- Reqsession
+            //!3- Test login
+            //!4- Navegabilidad en cuanto a roles
         } catch (error) {
             res.render("./home/login", {
                 error : error as string
@@ -61,7 +63,7 @@ export class AuthController{
                 res.status(404).json({error: "Se requiere email, contraseña(>6), id_Rol"})
                 return
             }
-            
+            //!5- COMPLETAR LA INSCRIPCION
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("SignUp","AuthController","80",error as string)
             res.status(500).json({error: error as string})
