@@ -1210,7 +1210,35 @@ export class AdmisionController{
                 res.status(404).json(error as string);
                 return
             }
-            res.status(200).json(habitacionesEncontradas);
+            type HabitacionResponse = {
+                nro_Habitacion: number,
+                nombre_Ala:string,
+                numero_cama: number,
+                disponible: boolean,
+            }
+            console.log(habitacionesEncontradas[0].dataValues.camas[0].dataValues);
+            
+            const habitacionesResponse: HabitacionResponse[] = [];
+            for(let habitacion of habitacionesEncontradas){
+                const response: HabitacionResponse = {
+                    nro_Habitacion: habitacion.dataValues.nro_Habitacion,
+                    nombre_Ala: habitacion.dataValues.ala.dataValues.nombre,
+                    numero_cama: habitacion.dataValues.camas[0].dataValues.id_Cama,
+                    disponible: habitacion.dataValues.camas[0].dataValues.disponible
+                }
+                habitacionesResponse.push(response);
+                if(habitacion.dataValues.camas.length == 2){
+                    const response2: HabitacionResponse = {
+                        nro_Habitacion: habitacion.dataValues.nro_Habitacion,
+                        nombre_Ala: habitacion.dataValues.ala.dataValues.nombre,
+                        numero_cama: habitacion.dataValues.camas[1].dataValues.id_Cama,
+                        disponible: habitacion.dataValues.camas[0].dataValues.disponible
+                    }
+                    habitacionesResponse.push(response2);
+                }
+            }
+
+            res.status(200).json(habitacionesResponse);
             return 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHabitacionesByAla","AdmisionController","Line 1157",error as string)

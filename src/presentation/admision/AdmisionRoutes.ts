@@ -58,8 +58,8 @@ export class AdmisionRoutes{
         router.get("/get/todas/las/admisiones", controller.getTodasLasAdmisiones)//todo:Deberia funcionar, no testeado
         router.get("/get/admision/de/paciente/:dni",controller.buscarAdmisionPorPaciente)//todo:Deberia funcionar, no testeado
         router.get("/get/habitacion", controller.getHabitacionesDisponiblesPorGenero)
-
-        router.get("/get/habitacion/by/ala", controller.getHabitacionesByAla) //!Comprobar, es por query
+        //HABITACIONES
+        router.get("/get/habitacion/by/ala", controller.getHabitacionesByAla) //*Testeado,QueryParams
         router.get("/get/habitacion/ocupada", controller.getHabitacionByCamaId) 
         
         router.post("/create/admision", controller.crearAdmision)//*Testeado

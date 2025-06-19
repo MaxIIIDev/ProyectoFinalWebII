@@ -188,7 +188,7 @@ export class HabitacionService {
             return [error as string, undefined];
         }
     }
-    static getHabitacionesByAla = async(ala:string, disponible?: boolean): Promise<[string?, any?]> => {
+    static getHabitacionesByAla = async(ala:string, disponible?: boolean): Promise<[string?, any?]> => { //*TESTEADO
 
         try {
             if(disponible === undefined){
