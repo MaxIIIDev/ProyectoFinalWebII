@@ -38,8 +38,16 @@ declare module "express-session" {
             nombre_ala: string
         },
         usuarioLogueado: {
+            id_Cuenta: number,
+            id_Personal: number,
+            email:string,
+            nombre: string,
+            apellido: string,
+            dni: number,
             logged: boolean,
-            id_Rol : number
+            id_Rol : number,
+            nombre_Rol: string,
+            id_Especialidad?: number
         }
     }
 }

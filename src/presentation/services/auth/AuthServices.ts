@@ -11,7 +11,7 @@ import * as bcrypt from "bcrypt"
 export class AuthServices{
     private static  saltRounds = 10;
     static async ChequearEstadoDeCuenta(email:string, modo:boolean):Promise<[string?,boolean?,Usuarios?]>{ //Si el modo es verdadero, devolvera la cuenta
-        //todo: TESTEAR 
+        //*TESTEADO 
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email);
             if(!validateEmail[1]) return [validateEmail[0], undefined]
@@ -29,7 +29,7 @@ export class AuthServices{
             return [error]
         }
     }
-    static async buscarCuenta(email: string): Promise<[string?,Usuarios?]>{//todo: TESTEAR 
+    static async buscarCuenta(email: string): Promise<[string?,Usuarios?]>{//*TESTEADO
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email);
             if(!validateEmail[1]) return [validateEmail[0], undefined]
@@ -66,7 +66,7 @@ export class AuthServices{
         }
     }
     static async ChequearYBloquearCuenta(email:string):Promise<[string?, boolean?,boolean?]>{//* El segundo boolean representa que la funcion funciono correctamente, y el tercer boolean representa, si se bloqueó o no la cuenta
-        //todo: TESTEAR 
+        //* TESTEADO
         try {
             const validateEmail = FunctionHelperFor.validateEmail(email)
             if(!validateEmail[1]) return [validateEmail[0], false]
@@ -84,22 +84,23 @@ export class AuthServices{
         }
     }
     static async sumarIntentosErrados(email: string): Promise<[string?,boolean?,boolean?]> { //*El segundo boolean representa que la funcion funciono correctamente, y el tercer boolean representa, si se bloqueó o no la cuenta
-        //todo: TESTEAR 
+        //*TESTEADO
         try{
             const emailValidated = FunctionHelperFor.validateEmail(email);
             if(!emailValidated[1]){
                 return [emailValidated[0], false, false]
             }
-            const filasActualizadas = await Usuarios.increment("intentos_fallidos",{
+            const filasActualizadas : [affectedRows: Usuarios[], affectedCount?: number] = await Usuarios.increment("intentos_fallidos",{
                 where: {
                     email:email
                 },
                 by: 1
             })
+            console.log(typeof Number(filasActualizadas[0][1]) +" "+ typeof 1  );
+            console.log(Number(filasActualizadas[0][1]) >= 1);
             
-
-            if(!(filasActualizadas[1] > 0)){
-                return ["No se incremento el intento", false, false]
+            if(!(Number(filasActualizadas[0][1]) >= 1)) {
+                return ["No se incremento el intento", false, false];
             }
             const revisarBloqueo = await this.ChequearYBloquearCuenta(email);
             if(revisarBloqueo[1] && revisarBloqueo[2]) return [undefined,true,true]
@@ -110,7 +111,27 @@ export class AuthServices{
         }
 
     }
-    static async login(email: string, password: string):Promise<[string?,Usuarios?]>{ //todo: TESTEAR 
+    static async restablecerIntentos(email:string):Promise<[string?,boolean?]> { //*TESTEADO
+
+        try {
+            const emailValidated = FunctionHelperFor.validateEmail(email)
+            if(!emailValidated[1]){
+                return [emailValidated[0], false]
+            }
+            const cuenta = await this.buscarCuenta(email);
+            if(cuenta[0]) return [cuenta[0], false]
+            cuenta[1].intentos_fallidos = 0;
+            await cuenta[1].save();
+            console.log("Se restablecieron los intentos");
+            
+            return [undefined, true ]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("RestablecerIntentos","AuthServices","125",error as string)
+            return [error as string, false]
+        }
+
+    }
+    static async login(email: string, password: string):Promise<[string?,Usuarios?]>{ //*TESTEADO
 
         try {
             const emailValidated = FunctionHelperFor.validateEmail(email)
@@ -127,6 +148,7 @@ export class AuthServices{
                 if(validateIncrement[0] == undefined &&validateIncrement[1]&&validateIncrement[2]) return ["Credenciales incorrectos, cuenta bloqueada", undefined]
                 return ["Credenciales incorrectos", undefined]
             }
+            await this.restablecerIntentos(email);
             return [ undefined, cuentaBuscadaYChequeada[2]]
 
 
@@ -137,5 +159,19 @@ export class AuthServices{
 
     }
     //!Crear SingUp basico
-
+    static async crearContraseña(contraseña: string): Promise<[string?, boolean?, string?]>{ //*TESTEADO
+        try {
+            // Validación de contraseña: mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un carácter especial
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            if (!passwordRegex.test(contraseña)) {
+                return ["La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, un número y un carácter especial.", false, undefined];
+            }
+            const salt = bcrypt.genSaltSync(this.saltRounds);
+            const hashConstraseña = bcrypt.hashSync(contraseña, salt);
+            return [undefined, true, hashConstraseña];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearContraseña","AuthServices","162",error as string)
+            return [error as string, false, undefined];
+        }
+    }
 }

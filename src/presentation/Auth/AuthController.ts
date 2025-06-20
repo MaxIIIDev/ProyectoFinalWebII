@@ -26,13 +26,20 @@ export class AuthController{
 
     }
 
-    public Login = async (req:Request,res:Response) => {
+    public Login = async (req:Request,res:Response) => { //*TESTEADO, funciona, hay que agregar la navegabilidad y las redirecciones
         try {
             
             const {email, password} = req.body;
             if(!email || !password || password.length < 6){
                 res.render("./home/login", {
                 error : "Se requiere email y contraseña( > 6 digitos)"
+                })
+                return
+            }
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                res.render("./home/login",{
+                    error: "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, un número y un carácter especial."
                 })
                 return
             }
@@ -43,9 +50,40 @@ export class AuthController{
                 })
                 return
             }
-            //!1- COMPLETAR EL LOGIN
-            //!2- Reqsession
-            //!3- Test login
+
+            
+            type sesionLogueo = {
+                id_Cuenta: number,
+                id_Personal: number,
+                email:string,
+                nombre: string,
+                apellido: string,
+                dni: number,
+                logged: boolean,
+                id_Rol : number,
+                nombre_Rol: string,
+                id_Especialidad: number
+            }
+    
+            const objSession: sesionLogueo = {
+                id_Cuenta: usuarioAutenticado.dataValues.id_Usuario,
+                id_Personal: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues[`id_${usuarioAutenticado.dataValues.rol.dataValues.nombre}`],
+                email: usuarioAutenticado.dataValues.email,
+                nombre: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.nombre,
+                apellido: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.apellido,
+                dni: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.dni,
+                logged: true,
+                id_Rol: usuarioAutenticado.dataValues.rol.dataValues.id_Rol,
+                nombre_Rol: usuarioAutenticado.dataValues.rol.dataValues.nombre,
+                id_Especialidad: (usuarioAutenticado.dataValues.medico) ? usuarioAutenticado.dataValues.medico.dataValues.id_Especialidad :null
+            }
+            req.session.usuarioLogueado = objSession; //todo: Ver si funciona
+
+            res.json({logueado: "Se logueo joya"})
+          
+            
+            //!Completar navegabilidad, y ver lo de middlewares.
+      
             //!4- Navegabilidad en cuanto a roles
         } catch (error) {
             res.render("./home/login", {
@@ -60,7 +98,7 @@ export class AuthController{
             
             const {email, contraseña, id_Rol} = req.body;
             if(!email || !contraseña || contraseña.length < 6 || !id_Rol){
-                res.status(404).json({error: "Se requiere email, contraseña(>6), id_Rol"})
+                res.status(404).json({error: "Se requiere email, contraseña(>8), id_Rol"})
                 return
             }
             //!5- COMPLETAR LA INSCRIPCION
@@ -72,4 +110,21 @@ export class AuthController{
         }
     }
 
+    public test = async(req:Request, res:Response) => {
+        try {
+            const[ errorCuenta, estadoFuncion, contraseña ] = await AuthServices.crearContraseña("Medico1@");
+            if(errorCuenta) {
+                res.json({errorCuenta: errorCuenta})
+                return
+            }
+            
+            res.json({ constraseña: contraseña})
+            
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("test","authController","81",error as string)
+            res.status(500).json({error: error})
+            return 
+        }
+    }
 }

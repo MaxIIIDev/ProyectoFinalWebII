@@ -67,9 +67,11 @@ html(lang="es")
                             name='password',
                             placeholder='••••••••',
                             required,
-                            minlength="6"
+                            minlength="8"
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$"
+                            title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo"
                         )
-                        .invalid-feedback La contraseña debe tener al menos 6 caracteres
+                        .invalid-feedback La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo
                     
                     .d-grid.gap-3.mt-5
                         button.btn.btn-primary.btn-xxl.rounded-pill(type='submit')
