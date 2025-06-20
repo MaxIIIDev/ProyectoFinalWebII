@@ -112,13 +112,13 @@ export class AuthController{
 
     public test = async(req:Request, res:Response) => {
         try {
-            const[ errorCuenta, estadoFuncion, contraseña ] = await AuthServices.crearContraseña("Medico1@");
+            const[ errorCuenta, cuenta ] = await AuthServices.buscarCuenta("enfermero1@gmail.com");
             if(errorCuenta) {
                 res.json({errorCuenta: errorCuenta})
                 return
             }
             
-            res.json({ constraseña: contraseña})
+            res.json({ cuenta: cuenta})
             
             return
         } catch (error) {

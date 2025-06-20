@@ -96,9 +96,7 @@ export class AuthServices{
                 },
                 by: 1
             })
-            console.log(typeof Number(filasActualizadas[0][1]) +" "+ typeof 1  );
-            console.log(Number(filasActualizadas[0][1]) >= 1);
-            
+        
             if(!(Number(filasActualizadas[0][1]) >= 1)) {
                 return ["No se incremento el intento", false, false];
             }
