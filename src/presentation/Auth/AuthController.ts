@@ -15,7 +15,22 @@ export class AuthController{
     public viewLogin = (req:Request,res:Response) =>{
 
         try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            if(error){
+                res.render("./home/login",{
+                    error: error
+                })
+                return
+            }
+            if(warning){
+                res.render("./home/login", {
+                    warning: warning
+                })
+                return
+            }
             res.render("./home/login");
+            return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("viewLogin","AuthController","18",error as string)
             res.render("./home/login", {

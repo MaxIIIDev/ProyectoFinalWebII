@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { NextFunction, Router } from "express";
 import { AdmisionController } from "./AdmisionController";
 import { Conexion } from "../../data/conexion";
+import { MiddlewareFor } from "../../middlewares/MiddlewareFor";
 
 //TODO: VER BUG DE QUE NO CARGA LOS DATOS DESPUES DE CREAR UN PACIENTE
 
@@ -12,7 +13,8 @@ export class AdmisionRoutes{
         
         const router = Router();
         const controller = new AdmisionController(conexionBd);
-        
+        router.use(MiddlewareFor.AuthSession());
+
         //vistas
         //!: 1- Vista principal de admision
         router.get("/test", controller.test)
