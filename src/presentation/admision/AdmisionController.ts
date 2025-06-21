@@ -35,6 +35,25 @@ export class AdmisionController{
     public constructor(conexionbd: Conexion){
         this.conexionBd = conexionbd;
     }
+
+    public Logout = (req:Request, res:Response)=> {
+        try {
+            req.session.destroy((err)=> {
+                console.log("sesion eliminada");
+                console.log(req.session);
+                res.redirect("/auth/login?warning=Se%20cerro%20la%20sesion")
+                if(err){
+                    res.redirect(`/admision?error=${encodeURIComponent(err)}`)
+                    return
+                }
+                return
+            });
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("Logout","AdmisionController","49", error as string)
+            return
+        }
+    }
+
     ////////////////////////////////////////////////////
     ////////////////////!VISTAS////////////////////////
     ////////////////////////////////////////////////////
@@ -43,17 +62,20 @@ export class AdmisionController{
         try {
             if(error){
                 res.render("AdmisionViews/principal.pug",{
-                    error: `${error}`
+                    error: `${error}`,
+                    usuarioLog: req.session.usuarioLogueado
                 })
                 return
             }
 
-            res.render("AdmisionViews/principal.pug");
+            res.render("AdmisionViews/principal.pug", {
+                usuarioLog: req.session.usuarioLogueado
+            });
 
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`,
-                
+                usuarioLog: req.session.usuarioLogueado
             });
             return
         }

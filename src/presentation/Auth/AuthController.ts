@@ -79,14 +79,28 @@ export class AuthController{
                 nombre_Rol: string,
                 id_Especialidad: number
             }
-    
+            const rol = (usuarioAutenticado.dataValues.rol.dataValues.nombre == "Admision") ? "personal_de_admision" : usuarioAutenticado.dataValues.rol.dataValues.nombre
+            console.log(usuarioAutenticado.dataValues.id_Usuario);
+            console.log(usuarioAutenticado.dataValues[rol.toLowerCase()].dataValues[`id_${rol}`]);
+            console.log(usuarioAutenticado.dataValues.email);
+            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.nombre);
+            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.apellido);
+            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.dni);
+            console.log(usuarioAutenticado.dataValues.rol.dataValues.id_Rol);
+            console.log(usuarioAutenticado.dataValues.rol.dataValues.nombre);
+            console.log(rol);
+            
+            
+            console.log((usuarioAutenticado.dataValues.medico) ? usuarioAutenticado.dataValues.medico.dataValues.id_Especialidad :null);
+            
+            
             const objSession: sesionLogueo = {
                 id_Cuenta: usuarioAutenticado.dataValues.id_Usuario,
-                id_Personal: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues[`id_${usuarioAutenticado.dataValues.rol.dataValues.nombre}`],
+                id_Personal: usuarioAutenticado.dataValues[rol.toLowerCase()].dataValues[`id_${rol}`],
                 email: usuarioAutenticado.dataValues.email,
-                nombre: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.nombre,
-                apellido: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.apellido,
-                dni: usuarioAutenticado.dataValues[(usuarioAutenticado.dataValues.rol.dataValues.nombre).toLowerCase()].dataValues.dni,
+                nombre: usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.nombre,
+                apellido: usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.apellido,
+                dni: usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.dni,
                 logged: true,
                 id_Rol: usuarioAutenticado.dataValues.rol.dataValues.id_Rol,
                 nombre_Rol: usuarioAutenticado.dataValues.rol.dataValues.nombre,
@@ -94,8 +108,10 @@ export class AuthController{
             }
             req.session.usuarioLogueado = objSession; //todo: Ver si funciona
 
-            res.json({logueado: "Se logueo joya"})
-          
+            res.redirect(`/${encodeURIComponent(usuarioAutenticado.dataValues.rol.dataValues.nombre)}`)
+            console.log("Se logueo correctamente");
+            
+            return
             
             //!Completar navegabilidad, y ver lo de middlewares.
       
@@ -127,13 +143,13 @@ export class AuthController{
 
     public test = async(req:Request, res:Response) => {
         try {
-            const[ errorCuenta, cuenta ] = await AuthServices.buscarCuenta("enfermero1@gmail.com");
+            const[ errorCuenta, cuenta, contraseña ] = await AuthServices.crearContraseña("Admision1@");
             if(errorCuenta) {
                 res.json({errorCuenta: errorCuenta})
                 return
             }
             
-            res.json({ cuenta: cuenta})
+            res.json({ contraseña: contraseña})
             
             return
         } catch (error) {

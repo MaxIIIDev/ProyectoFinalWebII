@@ -19,6 +19,7 @@ export class AdmisionRoutes{
         //!: 1- Vista principal de admision
         router.get("/test", controller.test)
         router.get("/", controller.vistaPrincipal)//*:Comprobado
+        router.get("/logout", controller.Logout)
         router.get("/emergencia", controller.vistaEmergencia)//*:Comprobado
         router.post("/emergencia/habitacion", controller.admitirPacienteDeEmergencia)//*Comprobado
         router.get("/principal/paciente", controller.vistaPrincipalPaciente) //*:Comprobado
