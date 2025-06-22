@@ -1,3 +1,6 @@
+import { horarios_Turnos } from "../../data/models/horarios_Turnos";
+import { Medicos } from "../../data/models/Medicos";
+import { Pacientes } from "../../data/models/Pacientes";
 import { Turnos } from "../../data/models/Turnos"
 import { CrearTurnoDto } from "../../domain/Dtos/Turnos/createTurnoDTO";
 import { updateTurnoDto } from "../../domain/Dtos/Turnos/updateTurnoDto";
@@ -37,6 +40,25 @@ export class TurnosService {
             }
            
             const turnosEncontrados = await Turnos.findAll({
+                include: [
+                    {
+                        model: Medicos,
+                        as: "medico",
+                        attributes: ['nombre', 'apellido', 'id_Medico']
+
+                    },
+                    {
+                        model:Pacientes,
+                        as: "paciente",
+                        attributes: ["id_Paciente","nombre","apellido","dni"]
+                    },
+                    {
+                        model:horarios_Turnos,
+                        as: "horario_turno",
+                        attributes: ["hora"]
+                    }
+
+                ],
                 where:{
                     fecha: fecha
                 }

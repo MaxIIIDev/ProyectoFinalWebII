@@ -1298,16 +1298,52 @@ export class AdmisionController{
     //////////////////////////////!
     ////////////! Turnos /////////!
     //////////////////////////////!
-
+    public getTurnosView = async( req:Request,res:Response) => {
+        try {
+            res.render("AdmisionViews/listarTodosLosTurnos.pug")
+        } catch (error) {
+            res.redirect(`/admision/?error=${encodeURI(`${error}`)}`)
+        }
+    }
     public getAllTurnosInDay = async(req:Request, res:Response) => { //VER TODOS LOS TURNOS DEL DIA //todo: Testear y completar los redireccionamientos y vistas
         try {
-            const [ error, turnosDelDia ] = await TurnosService.getAllTurnosByDate(new Date().toISOString().split("T")[0]);
+            //const [ error, turnosDelDia ] = await TurnosService.getAllTurnosByDate(new Date().toISOString().split("T")[0]);
+            const {fecha} = req.query;
+            if(!fecha){
+                res.json({error: "Se requiere la fecha"})
+                return
+            }
+            const [ error, turnosDelDia ] = await TurnosService.getAllTurnosByDate(fecha.toString()!);
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllTurnosInDay","AdmisionController","Line 1242",error as string)
                 res.redirect(`/admision/?error=${encodeURI(`${error}`)}`)
                 return
             }
-            //res.render("AdmisionViews/turnos.pug",{turnos:turnosDelDia}) //todo: Implementar renderizado de turnos
+            type response = {
+                fecha:string,
+                motivo: string,
+                nombre_medico: string,
+                apellido_medico: string,
+                nombre_paciente:string,
+                apellido_paciente: string,
+                dni_paciente:number,
+                hora:string
+            }
+            const arrayResponse = [];
+            for(let turno of turnosDelDia){
+                const responseObject: response = {
+                    fecha: turno.dataValues.fecha,
+                    motivo: turno.dataValues.motivo,
+                    nombre_medico: turno.dataValues.medico.dataValues.nombre,
+                    apellido_medico: turno.dataValues.medico.dataValues.apellido,
+                    nombre_paciente: turno.dataValues.paciente.dataValues.nombre,
+                    apellido_paciente: turno.dataValues.paciente.dataValues.apellido,
+                    dni_paciente: turno.dataValues.paciente.dataValues.dni,
+                    hora: turno.dataValues.horario_turno.dataValues.hora
+                }
+                arrayResponse.push(responseObject);
+            }
+            res.json(arrayResponse)
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllTurnosInDay","AdmisionController","Line 1251",error as string)
@@ -1458,16 +1494,10 @@ export class AdmisionController{
          try {
             
             
-            const[ error, confirmacion] = await PacienteServices.getPacienteById(1211);
-            if(error){
-                res.json({error:error})
-                console.log(error);
-                
-                return
-            }
-            console.log(confirmacion);
-            res.json(confirmacion)
-
+            const [error, turnos] = await TurnosService.getAllTurnosByDate("2023-05-19");
+            console.log(turnos[1].dataValues);
+            
+            res.json({turnos: turnos})
             return
         } catch (error) {
             res.json(error)

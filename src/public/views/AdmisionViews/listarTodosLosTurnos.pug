@@ -1,0 +1,204 @@
+doctype html
+html(lang="es")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Gestión de Turnos
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
+        style.
+            body {
+                background: linear-gradient(135deg, rgba(57, 33, 105, 0.77) 0%, rgb(1, 41, 105) 100%);
+                min-height: 100vh;
+                font-family: 'Segoe UI', system-ui, sans-serif;
+            }
+            .main-container {
+                max-width: 1400px;
+                margin: 2rem auto;
+                padding: 0 1rem;
+            }
+            .card {
+                margin-top: 5rem;
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                background: white;
+            }
+            .card-header {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+                padding: 1.5rem;
+                border-bottom: none;
+            }
+            .card-title {
+                font-weight: 600;
+                margin: 0;
+                font-size: 1.8rem;
+            }
+            .filter-card {
+                background: white;
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            }
+            .table-separated {
+                border-collapse: separate;
+                border-spacing: 0 0.5rem;
+            }
+            .table-separated thead th {
+                background-color: #f8f9fa;
+                color: #495057;
+                font-weight: 500;
+                padding: 1rem 1.5rem;
+                border: none;
+                position: sticky;
+                top: 0;
+            }
+            .table-separated th:not(:last-child),
+            .table-separated td:not(:last-child) {
+                border-right: 1px solid #e9ecef;
+            }
+            .table-separated tbody td {
+                padding: 1rem 1.5rem;
+                background: white;
+                border: none;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                vertical-align: middle;
+            }
+            .table-separated tbody tr:hover td {
+                background-color: #f8f9ff;
+            }
+            .table-separated tbody tr td:first-child {
+                border-radius: 8px 0 0 8px;
+            }
+            .table-separated tbody tr td:last-child {
+                border-radius: 0 8px 8px 0;
+            }
+            .form-control {
+                border-radius: 8px;
+                border: 1px solid #e0e3ff;
+                padding: 0.75rem 1rem;
+                background-color: #f8f9ff;
+                transition: all 0.3s ease;
+                max-width: 300px;
+            }
+            .form-control:focus {
+                box-shadow: 0 0 0 0.25rem rgba(79, 172, 254, 0.25);
+            }
+            .home-btn {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                background-color: white;
+                color: #000;
+                border: none;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+            .home-btn:hover {
+                transform: scale(1.1);
+                background-color: #f8f9fa;
+            }
+
+    body
+        include ../layout/alerts.pug    
+        .main-container
+            a.home-btn(href="/admision") 
+                i.bi.bi-house-door-fill
+            
+            .card
+                .card-header
+                    h1.card-title 
+                        i.bi.bi-calendar2-check.me-2
+                        | Gestión de Turnos
+                
+                .card-body
+                    .filter-card
+                        .row
+                            .col-md-6
+                                label.form-label Filtrar por fecha:
+                                input.form-control(type="date" id="filtroFecha" onchange="filtrarPorFecha()")
+                    
+                    .table-responsive
+                        table.table.table-separated
+                            thead
+                                tr
+                                    th Fecha
+                                    th Horario
+                                    th Paciente
+                                    th DNI
+                                    th Médico
+                                    th Motivo
+                            tbody
+                                tr
+                                    td 15/06/2023
+                                    td 10:00 - 10:30
+                                    td Carlos López
+                                    td 35.678.901
+                                    td Dr. Juan Pérez
+                                    td Consulta general
+                                tr
+                                    td 16/06/2023
+                                    td 11:00 - 11:30
+                                    td Ana Martínez
+                                    td 28.345.678
+                                    td Dra. María Gómez
+                                    td Control postoperatorio
+                                tr
+                                    td 17/06/2023
+                                    td 09:30 - 10:00
+                                    td Luis González
+                                    td 30.456.789
+                                    td Dr. Juan Pérez
+                                    td Estudios de laboratorio
+
+        script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+        script.
+            async function  filtrarPorFecha() {
+                const fechaSeleccionada = document.getElementById('filtroFecha').value;
+                console.log('Filtrando por fecha:', fechaSeleccionada);
+                
+            
+                const response = await fetch(`/admision/get/all/turnos/by/date?fecha=${fechaSeleccionada}`)
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                if(response.ok){
+                    const data = await response.json() 
+                    actualizarTabla(data)
+                }
+            }
+            
+            function actualizarTabla(turnos) {
+               
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = ''; 
+                
+                
+                turnos.forEach(turno => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${formatearFecha(turno.fecha)}</td>
+                        <td>${turno.hora}</td>
+                        <td>${turno.nombre_paciente} ${turno.apellido_paciente}</td>
+                        <td>${turno.dni_paciente}</td>
+                        <td>${turno.nombre_medico} ${turno.apellido_medico}</td>
+                        <td>${turno.motivo}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            function formatearFecha(fecha) {
+              
+                return new Date(fecha).toLocaleDateString('es-ES');
+            }
