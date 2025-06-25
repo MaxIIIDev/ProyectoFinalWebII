@@ -1,3 +1,4 @@
+import { Especialidades } from "../../data/models/Especialidades";
 import { Horarios_Turnos } from "../../data/models/Horarios_Turnos";
 import { Medicos } from "../../data/models/Medicos";
 import { Pacientes } from "../../data/models/Pacientes";
@@ -20,7 +21,19 @@ export class TurnosService {
             const turnoEncontrado = await Turnos.findOne({
                 where: {
                     id_turno: id_turno
-                }
+                },
+                include: [
+                    {
+                        model: Medicos,
+                        as: "medico",
+                        include: [
+                            {
+                                model: Especialidades,
+                                as: "especialidad"
+                            }
+                        ]
+                    },
+                ]
             })
             if(!turnoEncontrado){
                 return ["Turno no encontrado", null]
@@ -179,7 +192,38 @@ export class TurnosService {
             return ["Error al buscar los turnos del medico", null]
         }
     }
-    public static createTurno = async(crearTurnoDto: CrearTurnoDto): Promise<[string?, Turnos?]> => {//todo: Testear
+    private static validateTurno = async(turnos:Turnos[],id_medico:number,id_Paciente: number,modo:number, id_turno?:number): Promise<boolean> => {
+        try {
+            let validado = true;
+            if(modo == 0 && turnos != null){ //PARA CREAR
+                if(turnos.length != 0){
+                    for(let turno of turnos){
+                        if(turno.dataValues.id_Medico == id_medico){
+                            validado = false
+                        }
+                    }
+                
+                }
+            }
+            if(modo == 1 && turnos != null){//PARA ACTUALIZAR
+                if(turnos.length != 0){
+                    for(let turno of turnos){
+                        if( turno.dataValues.id_turno != id_turno || (turno.dataValues.id_Medico == id_medico && turno.dataValues.id_Paciente != id_Paciente) ){
+                            validado = false
+                        }
+                    }
+                
+                }
+            }
+            return validado;
+            
+            
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("validateTurno","TurnosServices","195",error as string)
+            return false
+        }
+    }
+    public static createTurno = async(crearTurnoDto: CrearTurnoDto): Promise<[string?, Turnos?]> => {//*TESTEADO
 
         try {
             if(await MedicoService.getMedicoById(crearTurnoDto.id_Medico).then(res => res[0])){
@@ -188,7 +232,9 @@ export class TurnosService {
             if(await PacienteServices.getPacienteById(crearTurnoDto.id_Paciente).then(res => res[0])){ 
                 return ["Paciente no encontrado", null]
             }
-            if(await this.getTurnoByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno).then(res => res[1])){
+            const turnosEncontrados = await this.getTurnoByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno)
+
+            if(!(await this.validateTurno(turnosEncontrados[1],crearTurnoDto.id_Medico,crearTurnoDto.id_Paciente,0))){
                 return ["Ya existe un turno para la fecha y horario especificados", null]
             }
             const turnoCreado = await Turnos.create(CrearTurnoDto.toObject(crearTurnoDto));
@@ -212,6 +258,14 @@ export class TurnosService {
             }
             if(await PacienteServices.getPacienteById(_updateTurnoDto.id_Paciente).then(res => res[0])){
                 return ["Paciente no encontrado", null]
+            }
+            
+            const turnosEncontrados = await this.getTurnoByDateAndIdHorario(_updateTurnoDto.fecha, _updateTurnoDto.id_horario_turno)
+            
+            if(!(await this.validateTurno(turnosEncontrados[1],_updateTurnoDto.id_Medico,_updateTurnoDto.id_Paciente,1))){
+                console.log("Entro el if");
+                
+                return ["Ya existe un turno para la fecha y horario especificados", null]
             }
             const [cantidadFilasActualizadas] = await Turnos.update(_updateTurnoDto, {
                 where: {
