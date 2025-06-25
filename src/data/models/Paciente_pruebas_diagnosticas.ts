@@ -1,7 +1,7 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Length, Model, NotNull, PrimaryKey, Table } from "sequelize-typescript";
 import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
 import { Pacientes } from "./Pacientes";
-import { nombre_Prueba_Diagnostica } from "./nombre_Prueba_Diagnostica";
+import { nombre_Prueba_Diagnostica } from "./Nombre_Prueba_Diagnostica";
 
 @Table({
     tableName: "paciente_pruebas_diagnosticas"

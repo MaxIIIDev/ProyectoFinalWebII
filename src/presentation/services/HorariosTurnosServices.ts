@@ -1,14 +1,14 @@
-import { horarios_Turnos } from "../../data/models/horarios_Turnos"
+import { Horarios_Turnos } from "../../data/models/Horarios_Turnos"
 import { Turnos } from "../../data/models/Turnos";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { TurnosService } from "./TurnosService";
 
 export class HorariosTurnosServices{
 
-    public static getHorariosTurnos = async(): Promise<[string?, horarios_Turnos[]?]> => {//*TESTEADO, devuelve todos los horarios de turnos registrados
+    public static getHorariosTurnos = async(): Promise<[string?, Horarios_Turnos[]?]> => {//*TESTEADO, devuelve todos los horarios de turnos registrados
         try {
             
-            const horariosEncontrados: horarios_Turnos[] = await horarios_Turnos.findAll();
+            const horariosEncontrados: Horarios_Turnos[] = await Horarios_Turnos.findAll();
             if(!horariosEncontrados || horariosEncontrados.length === 0){
                 return ["No se encontraron horarios de turnos registrados", null];
             }
@@ -18,12 +18,12 @@ export class HorariosTurnosServices{
             return ["Error al obtener los horarios de turnos", null];
         }
     }
-    public static getHorarioTurnoById = async(id: number): Promise<[string?, horarios_Turnos?]> => {//*TESTEADO, devuelve un horario del turno por su ID de la tabla de la base de datos
+    public static getHorarioTurnoById = async(id: number): Promise<[string?, Horarios_Turnos?]> => {//*TESTEADO, devuelve un horario del turno por su ID de la tabla de la base de datos
         try {
             if(!id || id <= 0){
                 return ["ID de horario de turno invalido", null];
             }
-            const horarioEncontrado: horarios_Turnos  = await horarios_Turnos.findByPk(id);
+            const horarioEncontrado: Horarios_Turnos  = await Horarios_Turnos.findByPk(id);
             if(!horarioEncontrado){
                 return ["No se encontro el horario de turno con el ID proporcionado", null];
             }
@@ -33,7 +33,7 @@ export class HorariosTurnosServices{
             return ["Error al obtener el horario de turno", null];
         }
     }
-    public static getHorarioTurnoByHora = async(hora: string): Promise<[string?, horarios_Turnos?]> => { //* TESTEADO, devuelve un horario_turno de la base de datos, simplemente enviando la hora
+    public static getHorarioTurnoByHora = async(hora: string): Promise<[string?, Horarios_Turnos?]> => { //* TESTEADO, devuelve un horario_turno de la base de datos, simplemente enviando la hora
 
         try {
             if(hora === undefined || hora === null || hora.trim() === ""){
@@ -42,7 +42,7 @@ export class HorariosTurnosServices{
             if(!/^([01]\d|2[0-3]):([0-5]\d)$/.test(hora)){
                 return ["Formato de hora invalido, debe ser HH:MM", null];
             }
-            const horarioEncontrado: horarios_Turnos = await horarios_Turnos.findOne({
+            const horarioEncontrado: Horarios_Turnos = await Horarios_Turnos.findOne({
                 where: {
                     hora: hora
                 }

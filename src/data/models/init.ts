@@ -2,18 +2,18 @@ import { Admision } from "./Admision";
 import { CategoriaSeguro } from "./CategoriaSeguro";
 import { Enfermero } from "./Enfermero";
 import { Especialidades } from "./Especialidades";
-import { horarios_Turnos } from "./horarios_Turnos";
+import { Horarios_Turnos } from "./Horarios_Turnos";
 import { Hospital_alas } from "./Hospital_alas";
 import { Hospital_camas } from "./Hospital_camas";
 import { Hospital_habitaciones } from "./Hospital_habitaciones";
 import { Lazo_Familiar } from "./Lazo_familiar";
 import { Medicamentos } from "./Medicamentos";
 import { Medicos } from "./Medicos";
-import { motivo_De_Internacion } from "./motivo_De_Internacion";
+import { motivo_De_Internacion } from "./Motivo_De_Internacion";
 import { Mutuales } from "./Mutuales";
-import { nombre_Alergia } from "./nombre_Alergia";
-import { nombre_Cirugia } from "./nombre_Cirugia";
-import { nombre_Prueba_Diagnostica } from "./nombre_Prueba_Diagnostica";
+import { nombre_Alergia } from "./Nombre_Alergia";
+import { nombre_Cirugia } from "./Nombre_Cirugia";
+import { nombre_Prueba_Diagnostica } from "./Nombre_Prueba_Diagnostica";
 import { Paciente_Alergias } from "./Paciente_Alergias";
 import { Paciente_antecedentes_familiares } from "./Paciente_antecedentes_familiares";
 import { Paciente_Cirugias } from "./Paciente_Cirugias";
@@ -31,7 +31,7 @@ import { Prioridad_De_Atencion } from "./Prioridad_De_Atencion";
 
 import { Roles } from "./Roles";
 import { Sintomas } from "./Sintomas";
-import { tipo_De_Admision } from "./tipo_De_Admision";
+import { tipo_De_Admision } from "./tipo_de_Admision";
 import { Tipo_De_Medicamento } from "./Tipo_De_Medicamento";
 import { Tipo_De_Diagnostico } from "./Tipo_De_Diagnostico";
 import { Tipo_De_tratamiento } from "./Tipo_De_tratamiento";
@@ -40,7 +40,7 @@ import { Turnos } from "./Turnos";
 import { Usuarios } from "./Usuarios";
 
 export const importaciones = [
-    horarios_Turnos,
+    Horarios_Turnos,
     Mutuales,
     nombre_Alergia,
     nombre_Prueba_Diagnostica,

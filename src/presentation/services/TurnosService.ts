@@ -1,4 +1,4 @@
-import { horarios_Turnos } from "../../data/models/horarios_Turnos";
+import { Horarios_Turnos } from "../../data/models/Horarios_Turnos";
 import { Medicos } from "../../data/models/Medicos";
 import { Pacientes } from "../../data/models/Pacientes";
 import { Turnos } from "../../data/models/Turnos"
@@ -53,7 +53,7 @@ export class TurnosService {
                         attributes: ["id_Paciente","nombre","apellido","dni"]
                     },
                     {
-                        model:horarios_Turnos,
+                        model:Horarios_Turnos,
                         as: "horario_turno",
                         attributes: ["hora"]
                     }
@@ -119,7 +119,7 @@ export class TurnosService {
                         attributes: ["id_Medico","nombre","apellido"]
                     },
                     {
-                        model: horarios_Turnos,
+                        model: Horarios_Turnos,
                         as: "horario_turno",
                         attributes: ["id_horario_turno","hora"]
                     }

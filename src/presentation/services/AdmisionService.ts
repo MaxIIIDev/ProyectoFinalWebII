@@ -2,10 +2,10 @@ import { Admision } from "../../data/models/Admision"
 import { Hospital_alas } from "../../data/models/Hospital_alas";
 import { Hospital_camas } from "../../data/models/Hospital_camas";
 import { Hospital_habitaciones } from "../../data/models/Hospital_habitaciones";
-import { motivo_De_Internacion } from "../../data/models/motivo_De_Internacion";
+import { motivo_De_Internacion } from "../../data/models/Motivo_De_Internacion";
 import { Pacientes } from "../../data/models/Pacientes";
 import { Prioridad_De_Atencion } from "../../data/models/Prioridad_De_Atencion";
-import { tipo_De_Admision } from "../../data/models/tipo_De_Admision";
+import { tipo_De_Admision } from "../../data/models/tipo_de_Admision";
 import { ActualizarAdmisionDto } from "../../domain/Dtos/admision/ActualizarAdmisionDTO";
 import { CrearAdmisionDto } from "../../domain/Dtos/admision/CrearAdmisionDTO";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors"

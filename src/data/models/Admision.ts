@@ -1,10 +1,10 @@
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Length, Model, NotNull, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
-import { motivo_De_Internacion } from "./motivo_De_Internacion";
+import { motivo_De_Internacion } from "./Motivo_De_Internacion";
 import { Hospital_camas } from "./Hospital_camas";
 import { Pacientes } from "./Pacientes";
 import { Prioridad_De_Atencion } from "./Prioridad_De_Atencion";
 import { Sintomas } from "./Sintomas";
-import { tipo_De_Admision } from "./tipo_De_Admision";
+import { tipo_De_Admision } from "./tipo_de_Admision";
  
 
 

@@ -2,7 +2,7 @@ import { AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table } fr
 import { Turnos } from "./Turnos";
 
 @Table({ tableName: "horarios_turnos" })
-export class horarios_Turnos extends Model{
+export class Horarios_Turnos extends Model{
 
     @AutoIncrement
     @PrimaryKey

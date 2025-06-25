@@ -1,4 +1,4 @@
-import { motivo_De_Internacion } from "../../data/models/motivo_De_Internacion";
+import { motivo_De_Internacion } from "../../data/models/Motivo_De_Internacion";
 
 
 
