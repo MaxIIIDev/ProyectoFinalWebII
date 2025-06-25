@@ -1,5 +1,7 @@
 import { horarios_Turnos } from "../../data/models/horarios_Turnos"
+import { Turnos } from "../../data/models/Turnos";
 import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
+import { TurnosService } from "./TurnosService";
 
 export class HorariosTurnosServices{
 
@@ -52,6 +54,22 @@ export class HorariosTurnosServices{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHorarioTurnoByHora", "HorariosTurnosServices", "52", error as string);
             return ["Error al obtener el horario de turno", null];
+        }
+    }
+    public static getHorariosDisponiblePorMedico = async ( fecha: string, id_Medico: number) => { //!CREAR y CARGAR SELECT DE VISTA CREAR TURNO POR API
+        try {
+            const [errorServicio,turnosPorMedico] = await TurnosService.getTurnosByMedicoId(id_Medico);
+            if(errorServicio) return [errorServicio, undefined]
+            const [errorServicioHorarios, horarios] = await this.getHorariosTurnos();
+            if(errorServicioHorarios) return [errorServicioHorarios, undefined]
+            const horariosFiltrados = []
+            for(let horario of turnosPorMedico){//!FILTRAR EL ARREGLO BUSCAR METODO
+                
+            }
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getHorarioDisponible","HorariosTunosServices","57", error)
+            return ["error al obtener los horarios Disponibles", undefined]
         }
     }
 

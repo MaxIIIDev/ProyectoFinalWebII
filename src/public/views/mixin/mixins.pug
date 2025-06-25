@@ -74,5 +74,10 @@ mixin cargarUnidadVistaActualizarAdmision(alas, restosAdmision)
     
     for ala of alas 
         option(value= ala.nombre selected=(ala.nombre == restosAdmision)) #{ala.unidad}
-       
+mixin cargarMedicosDesdeDb(medicos)
+    for medico of medicos 
+        option(value = medico.dataValues.id_Medico) #{medico.dataValues.nombre} #{medico.dataValues.apellido} - Especialidad: #{medico.dataValues.especialidad.dataValues.nombre}
+mixin cargarHorarios(horarios)
+    for horario of horarios 
+        option( value = horario.dataValues.id_horario_turno) #{horario.dataValues.hora}  
        

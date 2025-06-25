@@ -13,7 +13,7 @@ export class AdmisionRoutes{
         
         const router = Router();
         const controller = new AdmisionController(conexionBd);
-        //router.use(MiddlewareFor.AuthSession());
+        //router.use(MiddlewareFor.AuthSession());//!DESCOMENTAR PARA QUE PROTEJA LAS RUTAS
 
         //vistas
         //!: 1- Vista principal de admision
@@ -72,12 +72,16 @@ export class AdmisionRoutes{
 
         //TURNOS
         //!EN DESARROLLO
-        router.get("/get/turnos", controller.getTurnosView)
-        router.get("/get/all/turnos/by/date", controller.getAllTurnosInDay) //todo:Deberia funcionar, no testeado
+        router.get("/get/turnos", controller.getTurnosView)//*TESTEADO ES LA VISTA  
+        router.get("/get/turnos/paciente", controller.vistaPrincipalDeTurnosDelPaciente)//*TESTEADO VISTA TURNOS PACIENTE
+        router.get("/create/turno/paciente", controller.createTurnoView)//*Testeado vista crear turno, falta agregar por api los horarios filtrados
+        //router.get("/update/turno/paciente")
+        
+        router.get("/get/all/turnos/by/date", controller.getAllTurnosInDay) //*TESTEADO, API
         router.get("/get/turno/for/patient", controller.getTurnosByPaciente) //todo:Deberia funcionar, no testeado
         router.post("/crear/turno", controller.crearTurno)//todo:Deberia funcionar, no testeado
         router.post("/actualizar/turno", controller.actualizarTurno)//todo:Deberia funcionar, no testeado
-        router.delete("/delete/turno", controller.eliminarTurno)//todo:Deberia funcionar, no testeado
+        router.get("/delete/turno", controller.eliminarTurno)//todo:Deberia funcionar, no testeado
         return router
     }
 

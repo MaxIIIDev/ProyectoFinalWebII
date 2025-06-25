@@ -33,10 +33,11 @@ export class CrearAdmisionDto{
             return [undefined, new CrearAdmisionDto(
                 objeto.estado,
                 id_motivo_de_InternacionParseado,
-                objeto.id_prioridad_de_atencion,
-                objeto.id_tipo_de_admision,
-                objeto.id_Paciente,
-                objeto.id_Cama)]
+                parseInt(objeto.id_prioridad_de_atencion),
+                parseInt(objeto.id_tipo_de_admision),
+                parseInt(objeto.id_Paciente),
+                parseInt(objeto.id_Cama)
+            )]
         } catch (error) {
             return [error as string]
         }

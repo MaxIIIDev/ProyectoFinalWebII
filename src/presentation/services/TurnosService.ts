@@ -111,11 +111,21 @@ export class TurnosService {
                 where:{
                     id_Paciente: id_Paciente,
                     estado: _estado
-                }
+                },
+                include: [
+                    {
+                        model: Medicos,
+                        as: "medico",
+                        attributes: ["id_Medico","nombre","apellido"]
+                    },
+                    {
+                        model: horarios_Turnos,
+                        as: "horario_turno",
+                        attributes: ["id_horario_turno","hora"]
+                    }
+                ]
             })
-            if(!turnosEncontrados || turnosEncontrados.length === 0){
-                return [`No se encontraron turnos ${(_estado ? "activos" : "inactivos")} para el paciente`, null]
-            }
+            
             return [undefined, turnosEncontrados];
 
         } catch (error) {

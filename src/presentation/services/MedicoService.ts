@@ -1,9 +1,29 @@
 import { Especialidades } from "../../data/models/Especialidades";
 import { Medicos } from "../../data/models/Medicos";
+import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 
 export class MedicoService {
 
-
+    public static async getAllMedicos(): Promise<[string?,any?]> {
+        try {
+            const medicos = await Medicos.findAll({
+                include: [
+                    {
+                        model: Especialidades,
+                        as: "especialidad",
+                        attributes: ["nombre"]
+                    }
+                ]
+            });
+            if(!medicos){
+                return ["No se obtuvieron medicos registrados", undefined]
+            }
+            return [undefined, medicos]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllMedicos","MedicoService","7",error as string)
+            return ["Error al obtener todos los medicos", null];
+        }
+    }
     public static async getMedicoById(id: number): Promise<[string?, any?]> { //* TESTEADO
         // Busca un medico por su ID y devuelve sus datos junto con la especialidad asociada
         try {
@@ -27,7 +47,7 @@ export class MedicoService {
 
             return [undefined, medico];
         } catch (error) {
-            console.error("Error al buscar el medico:", error);
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getMedicoById","MedicoService","18",error as string)
             return ["Error al buscar el medico", null];
         }
     }

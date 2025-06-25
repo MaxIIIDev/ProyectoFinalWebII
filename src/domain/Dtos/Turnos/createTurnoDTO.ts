@@ -30,7 +30,7 @@ export class CrearTurnoDto{
             if(!objeto.id_Medico) return ["Se requiere id_Medico"]
             if(!objeto.fecha) return ["Se requiere fecha"]
             if(!objeto.motivo || objeto.motivo.trim() === "") return ["Se requiere motivo"]
-            if(objeto.motivo.length < 30 || objeto.motivo.length > 255) return ["El motivo debe tener entre 30 y 255 caracteres"]
+            if(objeto.motivo.length < 20 || objeto.motivo.length > 255) return ["El motivo debe tener entre 20 y 255 caracteres"]
             const fechaParseada = new Date(objeto.fecha).toISOString().split('T')[0]; // Formato YYYY-MM-DD
             if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
             return [undefined, new CrearTurnoDto(

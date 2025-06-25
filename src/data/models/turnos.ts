@@ -30,7 +30,7 @@ export class Turnos extends Model{
 
     @AllowNull(false)
     @NotNull
-    @Length({min:30,max:255})
+    @Length({min:20,max:255})
     @Column(DataType.STRING)
     declare motivo: string
 
