@@ -822,7 +822,7 @@ export class AdmisionController{
                 res.redirect(`/admision/?error=${encodeURIComponent("No se proporciono el id_turno")}`)
                 return
             }
-            const [ error, habitacionesEncontradas ] = await HabitacionService.getHabitacionesDisponibles(req.session.paciente.genero, "Ala Norte")
+            const [ error, habitacionesEncontradas ] = await HabitacionService.getHabitacionesDisponibles(req.session.paciente.genero, "Ala Este")
             if(error){
                 res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent(error)}`)
                 return
@@ -873,7 +873,7 @@ export class AdmisionController{
                 return
             }
             
-            //todo: DAR DE BAJA EL TURNO
+         
             const [errorServicioTurno, confirmacion] = await TurnosService.darDeBaja(Number(req.body.id_turno));
             if(errorServicioTurno && confirmacion == false){
                 res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorServicioTurno as string)}`)
@@ -1641,14 +1641,14 @@ export class AdmisionController{
                 estado : estado
             });
             if(errorDto){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1334",errorDto);
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1644",errorDto);
                 res.redirect(`/admision/get/turnos/paciente?error${encodeURIComponent(`${errorDto}`)}`)//todo: Crear vista de actualizar turno y redireccionar a ella, Agregar alerta por query
                 res.json({errorDto: errorDto})
                 return
             }
             const [errorActualizarTurno, confirmacion] = await TurnosService.updateTurno(_updateTurnoDto!);
             if(errorActualizarTurno){
-                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1340",errorActualizarTurno);
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1651",errorActualizarTurno);
                 res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent(`${errorActualizarTurno}`)}`)//todo: Crear vista de actualizar turno y redireccionar a ella, Agregar alerta por query
                 //res.json({errorActualizarTurno: errorActualizarTurno})
                 return
@@ -1658,7 +1658,7 @@ export class AdmisionController{
             return
 
         }catch(error){
-            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1317",error as string)
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarTurno","AdmisionController","Line 1661",error as string)
             //res.redirect(`/admision/principal/paciente?error=${encodeURIComponent(`${error}`)}`)
             //res.json({errorCatch: error as string})
             return

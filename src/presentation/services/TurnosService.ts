@@ -262,7 +262,7 @@ export class TurnosService {
             
             const turnosEncontrados = await this.getTurnoByDateAndIdHorario(_updateTurnoDto.fecha, _updateTurnoDto.id_horario_turno)
             
-            if(!(await this.validateTurno(turnosEncontrados[1],_updateTurnoDto.id_Medico,_updateTurnoDto.id_Paciente,1))){
+            if(!(await this.validateTurno(turnosEncontrados[1],_updateTurnoDto.id_Medico,_updateTurnoDto.id_Paciente,1,_updateTurnoDto.id_turno))){
                 console.log("Entro el if");
                 
                 return ["Ya existe un turno para la fecha y horario especificados", null]
