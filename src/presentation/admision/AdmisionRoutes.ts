@@ -13,7 +13,7 @@ export class AdmisionRoutes{
         
         const router = Router();
         const controller = new AdmisionController(conexionBd);
-        //router.use(MiddlewareFor.AuthSession());//!DESCOMENTAR PARA QUE PROTEJA LAS RUTAS
+        router.use(MiddlewareFor.AuthSession());//!DESCOMENTAR PARA QUE PROTEJA LAS RUTAS
 
         //vistas
         //!: 1- Vista principal de admision
