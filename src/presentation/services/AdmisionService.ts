@@ -140,8 +140,6 @@ export class AdmisionService {
         try {
             const admisionEncontrada = await Admision.findOne(
                     {
-                        
-                        
                         where: { 
                             estado: "Activo",
                             id_Paciente: id_Paciente

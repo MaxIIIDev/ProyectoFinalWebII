@@ -165,11 +165,22 @@ export class AdmisionController{
                     warning: "Se cerró la sesión del paciente"})
                 return
             }
-            console.log("LLEGO ACA");
+            const [,admisionEncontrada] = await AdmisionService.buscarAdmisionVigentePorPaciente(paciente.id_Paciente)
+            if(admisionEncontrada){
+                const admision = {
+                    id_Admision: admisionEncontrada.dataValues.id_Admision,
+                    estado: admisionEncontrada.dataValues.estado,
+                    id_motivo_de_Internacion: admisionEncontrada.dataValues.id_motivo_de_Internacion,
+                    id_prioridad_de_atencion: admisionEncontrada.dataValues.prioridad_de_atencion,
+                    id_tipo_de_admision: admisionEncontrada.dataValues.id_tipo_de_admision,
+                    fecha_De_Admision: admisionEncontrada.dataValues.fecha_De_Admision,
+                    id_Paciente: admisionEncontrada.dataValues.id_Paciente,
+                    id_Cama: admisionEncontrada.dataValues.id_Cama
+                }
+                req.session.admision = admision
+            }
             
             if(error){
-                    console.log("INTENTO RENDERIZAR");
-                    
                     res.render("AdmisionViews/vistaPaciente.pug", {
                         paciente:paciente,
                         error: `${error}`}
@@ -187,7 +198,7 @@ export class AdmisionController{
         } catch (error) {
             res.render("AdmisionViews/principal.pug",{
                 error: `${error}`,
-                
+                usuarioLog: req.session.usuarioLogueado
             })
             return
         }
@@ -449,6 +460,7 @@ export class AdmisionController{
             
         } catch (error) {
             res.redirect(`/admision/?error=${encodeURI(error as string)}`)
+            return
         }
 
     }
@@ -798,12 +810,48 @@ export class AdmisionController{
     ////////////////////////////////////////////////
     //////////////!ADMISIONES///////////////////////
     ////////////////////////////////////////////////
+    public admitirPorTurnoView = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion")}`)
+                return
+            }
+            const id_turno = Number(req.query.id_turno)
+            console.log(id_turno);
+            if(!id_turno){
+                res.redirect(`/admision/?error=${encodeURIComponent("No se proporciono el id_turno")}`)
+                return
+            }
+            const [ error, habitacionesEncontradas ] = await HabitacionService.getHabitacionesDisponibles(req.session.paciente.genero, "Ala Norte")
+            if(error){
+                res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent(error)}`)
+                return
+            }
+            
+            
+            res.render("AdmisionViews/SeleccionaCamaAdmitirPorTurno.pug", {
+                habitaciones:habitacionesEncontradas,
+                id_turno:id_turno
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("admitirPorTurnoView","AdmisionController","801",error)
+            res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent(error)}`)
+            return
+        }
+    } 
     public crearAdmisionPorTurno = async(req:Request,res:Response) => { //!FALTA TESTEAR
 
         try {
 
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURIComponent("Se ha cerrado la sesion")}`)
+                return
+            }
+            console.log(req.body.id_turno);
+
+            if(!req.body.id_turno){
+                res.redirect(`/admision/?error=${encodeURIComponent("No se proporciono el id_turno")}`)
                 return
             }
             const [ error, crearAdmisionDto ] = CrearAdmisionDto.create({
@@ -815,18 +863,23 @@ export class AdmisionController{
             });
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 790", error);
-                //res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error as string)}`)
+                res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error as string)}`)
                 return
             }
             const [errorCrearAdmision, admisionCreada] = await AdmisionService.crearAdmision(crearAdmisionDto!);
             if(errorCrearAdmision){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 140", errorCrearAdmision);
-                //res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
+                res.redirect(`/admision/actualizar/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
                 return
             }
             
-            
-            //res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha creado la admision")}`)
+            //todo: DAR DE BAJA EL TURNO
+            const [errorServicioTurno, confirmacion] = await TurnosService.darDeBaja(Number(req.body.id_turno));
+            if(errorServicioTurno && confirmacion == false){
+                res.redirect(`/admision/crear/admision?error=${encodeURIComponent(errorServicioTurno as string)}`)
+                return
+            }
+            res.redirect(`/admision/principal/paciente?confirmacion=${encodeURIComponent("Se ha creado la admision")}`)
 
             return
 
@@ -1648,20 +1701,17 @@ export class AdmisionController{
     public test = async(req:Request,res:Response)=> {
 
          try {
-            const [error, turnos ] = await TurnosService.getTurnosByPacienteId(3,true)
-            
-            type tipoTurno = {
-                fecha: string,
-                hora: string,
-                paciente_nombre: string,
-                paciente_apellido: string,
-                paciente_dni: number,
-                medico_nombre: string,
-                medico_apellido:string,
-                motivo: string
+            const [ error, s ] = await HabitacionService.getHabitacionesDisponibles("Masculino", "Ala Norte")
+            type cama = {
+                id_Cama: number,
+                nroCama: number,
+                habitacion: number,
             }
-
-            res.json({turno: turnos})
+            console.log(s);
+            
+            res.render("AdmisionViews/SeleccionaCamaAdmitirPorTurno.pug", {
+                habitaciones:s
+            })
             return
         } catch (error) {
             res.json(error)

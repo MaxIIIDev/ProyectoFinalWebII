@@ -3,209 +3,157 @@ html(lang="es")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Emergencia de Desconocido
+    title Selección de Cama
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
-    include ../mixin/mixins
-    
     style.
-        .emergency-panel {
-            background: linear-gradient(135deg, #e74c3c 0%, #f39c12 100%);
-            min-height: 100vh;
-            position: relative;
-        }
-        .emergency-card {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 600px;
-        }
-        .emergency-btn {
-            background-color: #e74c3c;
-            border: none;
-            padding: 0.75rem 2rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        .emergency-btn:hover {
-            background-color: white !important;
-            color: #e74c3c !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-2px);
-        }
-        .form-control:invalid {
-            border-color: #dc3545;
-        }
-        .invalid-feedback {
-            color: #dc3545;
-            display: none;
-            margin-top: 0.25rem;
-            font-size: 0.875em;
-        }
-        .was-validated .form-control:invalid ~ .invalid-feedback {
-            display: block;
-        }
-        .home-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: white;
-            color: #e74c3c;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        .home-btn:hover {
-            transform: scale(1.1);
-            background-color: #f8f9fa;
-        }
+      .emergency-panel {
+          background: linear-gradient(135deg, #e74c3c 0%, #f39c12 100%);
+          min-height: 100vh;
+          position: relative;
+      }
+      .emergency-card {
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 15px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+          padding: 2.5rem;
+          width: 100%;
+          max-width: 600px;
+      }
+      .emergency-btn {
+          background-color: #e74c3c;
+          border: none;
+          padding: 0.75rem 2rem;
+          font-size: 1.2rem;
+          font-weight: 600;
+      }
+      .emergency-btn:hover {
+          background-color: white !important;
+          color: #e74c3c !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transform: translateY(-2px);
+      }
+      .form-control:invalid {
+          border-color: #dc3545;
+      }
+      .invalid-feedback {
+          color: #dc3545;
+          display: none;
+          margin-top: 0.25rem;
+          font-size: 0.875em;
+      }
+      .was-validated .form-control:invalid ~ .invalid-feedback {
+          display: block;
+      }
+      .home-btn {
+          position: absolute;
+          top: 20px;
+          left: 20px;
+          background-color: white;
+          color: #e74c3c;
+          border: none;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2rem;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          transition: all 0.3s ease;
+      }
+      .home-btn:hover {
+          transform: scale(1.1);
+          background-color: #f8f9fa;
+      }
+      .card-select-option {
+          cursor: pointer;
+          border: 2px solid #dee2e6;
+          transition: all 0.2s;
+          margin-bottom: 10px;
+          border-radius: 8px;
+      }
+      .card-select-option:hover {
+          border-color: #86b7fe;
+      }
+      .card-select-option.selected {
+          border-color: #0d6efd;
+          background-color: #f0f7ff;
+      }
+      .hidden-select {
+          position: absolute;
+          left: -9999px;
+      }
 
   body
-    include ../layout/alerts.pug
-    input(type="hidden", id="alasData", value=JSON.stringify(alas))
-          
-    
     .emergency-panel.d-flex.align-items-center.justify-content-center.p-4
-        a.home-btn(href="/admision") 
-            i.bi.bi-house-door-fill
-        
-        .text-start
-            h1.text-white.mb-5 
-                i.bi.bi-exclamation-triangle-fill.me-2
-                | Registro de Emergencia
-            
-            .emergency-card
-              form#emergencyForm.needs-validation(novalidate, method="POST", action="/admision/emergencia/habitacion")
-                .mb-3
-                  label.form-label(for="ala") Ala
-                  select.form-control(
-                    id="ala"
-                    name="ala"
-                    required
-                  )
-                    option(value="") Seleccione 
-                    +agregarAlasDesdeDb(alas)
-                  .invalid-feedback Por favor ingrese el ala
-                
-                .mb-3
-                  label.form-label(for="unidad") Unidad
-                  select.form-control(
-                    id="unidad" 
-                    name="unidad" 
-                    required
-                  )
-                    option(value="") Seleccione una unidad
-                  .invalid-feedback Por favor seleccione una unidad
-                
-                .mb-3
-                  label.form-label(for="genero") Género
-                  select.form-control(
-                    id="genero" 
-                    name="genero" 
-                    required
-                  )
-                    option(value="") Seleccione...
-                    option(value="Masculino") Masculino
-                    option(value="Femenino") Femenino
-                  .invalid-feedback Por favor seleccione un género
-                
-                .mb-3
-                  label.form-label(for="id_motivo_de_Internacion") Motivo de Internación
-                  select.form-control(
-                    id="id_motivo_de_Internacion" 
-                    name="id_motivo_de_Internacion" 
-                    required
-                  )
-                    option(value="") Seleccione...
-                    +agregarMotivosDesdeDb(motivoDeInternacion)
-                  .invalid-feedback Por favor describa el motivo
-                
-                .mb-3 
-                  label.form-label(for="id_Cama") Cama 
-                  select.form-control(id="id_Cama" name="id_Cama" required)
-                    //- option(value="" selected disabled) Seleccione una cama
-                  .invalid-feedback Por favor seleccione una cama
-
-                button.btn.emergency-btn.text-white.w-100(type="submit")
-                  i.bi.bi-search-heart-fill.me-2
-                  | Buscar Habitación Disponible
+      a.home-btn(href="/") 
+          i.bi.bi-house-door-fill
+      
+      .text-start
+          h1.text-white.mb-5 
+              i.bi.bi-hospital.me-2
+              | Selección de Cama
+          
+          .emergency-card
+            form#bedForm.needs-validation(novalidate, method="POST", action="/procesar-cama")
+              // Select real (oculto) que se enviará con el formulario
+              select.form-select.hidden-select(name="cama" required)#realSelect
+                option(value="" selected disabled) Seleccione una cama
+                each cama in camas
+                  option(value=cama.id)= `Habitación ${cama.habitacion} - Cama ${cama.numero}`
+              
+              // Opciones visuales (cards)
+              .mb-4#visualOptions
+                each cama in camas
+                  .card.card-select-option.mb-2(onclick=`selectOption(this, '${cama.id}')`)
+                    .card-body
+                      .d-flex.justify-content-between.align-items-center
+                        div
+                          h6.mb-0 Cama #{cama.numero}
+                          small.text-muted Habitación: #{cama.habitacion}
+                        i.bi.bi-check-circle-fill.text-primary(style="display: none")
+              
+              // Mensaje de validación
+              .invalid-feedback.mb-3#validationMsg Por favor seleccione una cama
+              
+              // Botones del formulario
+              .d-flex.justify-content-end.gap-2
+                button.btn.btn-secondary(type="button") Cancelar
+                button.btn.emergency-btn.text-white(type="submit")
+                  i.bi.bi-check-circle-fill.me-2
+                  | Confirmar Selección
 
     script.
-      // Función para cargar unidades cuando se selecciona un ala
-      document.getElementById("ala").addEventListener("change", function() {
-        const alas = JSON.parse(document.getElementById("alasData").value);
-        const alaSeleccionada = this.value;
-        const selectUnidad = document.getElementById("unidad");
+      function selectOption(cardElement, value) {
+        // Deseleccionar todas las opciones
+        document.querySelectorAll('.card-select-option').forEach(opt => {
+          opt.classList.remove('selected');
+          opt.querySelector('.bi-check-circle-fill').style.display = 'none';
+        });
         
-        // Limpiar opciones anteriores
-        selectUnidad.innerHTML = '<option value="">Seleccione una unidad</option>';
+        // Seleccionar la opción clickeada
+        cardElement.classList.add('selected');
+        cardElement.querySelector('.bi-check-circle-fill').style.display = 'block';
         
-        if (alaSeleccionada) {
-          const alaEncontrada = alas.find(ala => ala.nombre === alaSeleccionada);
-          if (alaEncontrada && alaEncontrada.unidad) {
-            const option = document.createElement("option");
-            option.value = alaEncontrada.unidad;
-            option.textContent = alaEncontrada.unidad;
-            selectUnidad.appendChild(option);
-          }
-        }
-      });
-
-      
-      async function actualizarCamas() {
-        const ala = document.getElementById("ala").value
-        const unidad = document.getElementById("unidad").value;
-        const genero = document.getElementById("genero").value;
-        const selectCama = document.getElementById("id_Cama");
+        // Actualizar el select real
+        const realSelect = document.getElementById('realSelect');
+        realSelect.value = value;
         
-        
-        selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
-        
-        if (unidad && genero) {
-          try {
-            const response = await fetch(`/admision/get/habitacion?ala=${encodeURIComponent(ala)}&genero=${encodeURIComponent(genero)}`);
-            
-            if (!response.ok) {
-              selectCama.innerHTML = '<option value="" selected disabled>No hay camas disponibles</option>';
-              throw new Error(`Error HTTP: ${response.status}`);
-            }
-            selectCama.innerHTML = '<option value="" selected disabled>Seleccione una cama</option>';
-            const data = await response.json();
-           
-            if (data.camas && Array.isArray(data.camas)) {
-              data.camas.forEach(cama => {
-                const option = document.createElement("option");
-                option.value = cama.id_cama;
-                option.textContent = `Habitación ${cama.nro_habitacion} - Cama ${cama.id_cama}`;
-                selectCama.appendChild(option);
-              });
-            }
-          } catch (error) {
-            console.error("Error al obtener las camas:", error);
-            
-          }
+        // Validación visual
+        if(value) {
+          document.getElementById('validationMsg').style.display = 'none';
+          realSelect.classList.remove('is-invalid');
         }
       }
 
-      // Event listeners para actualizar camas cuando cambian los campos relevantes
-      document.getElementById("unidad").addEventListener("change", actualizarCamas);
-      document.getElementById("genero").addEventListener("change", actualizarCamas);
-
       // Validación del formulario
-      document.getElementById("emergencyForm").addEventListener("submit", function(event) {
-        if (!this.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-          this.classList.add("was-validated");
+      document.getElementById('bedForm').addEventListener('submit', function(e) {
+        const realSelect = document.getElementById('realSelect');
+        if(!realSelect.value) {
+          e.preventDefault();
+          document.getElementById('validationMsg').style.display = 'block';
+          realSelect.classList.add('is-invalid');
         }
       });
 

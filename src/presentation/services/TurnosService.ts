@@ -281,6 +281,27 @@ export class TurnosService {
             return ["Error al actualizar el turno", false];
         }
     }
+    public static darDeBaja = async(id_turno: number) => {
+        try {
+            if(id_turno == null ||id_turno < 0  ){
+                return ["Proporcione valores correctos para el id_turno",false]
+            }
+            const turno = await Turnos.findOne({
+                where:{
+                    id_turno: id_turno
+                }
+            })
+            if(!turno){
+                return ["No hay un turno registrado con ese id", false]
+            }
+            turno.estado = false
+            await turno.save();
+            return [undefined,true]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("darDeBaja","TurnosServices","284",error as string)
+            return [error, false]
+        }
+    }
     public static deleteTurno = async(id_turno: number, id_Paciente: number): Promise<[string?, boolean?]> => {//*TESTEADO
 
         try {
