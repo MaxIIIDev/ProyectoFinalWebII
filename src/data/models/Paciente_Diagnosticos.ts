@@ -5,6 +5,7 @@ import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Paciente_pruebas_diagnosticas } from "./Paciente_pruebas_diagnosticas";
 import { Sintomas } from "./Sintomas";
 import { Tipo_De_Diagnostico } from "./Tipo_De_Diagnostico";
+import { Admision } from "./Admision";
 
 
 @Table({ tableName: "paciente_diagnosticos" })
@@ -60,5 +61,12 @@ export class Paciente_Diagnosticos extends Model{
 
     @HasMany(()=> Paciente_pruebas_diagnosticas)
     declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas
+
+    @ForeignKey(()=> Admision)
+    @Column(DataType.INTEGER)
+    declare id_Admision: number
+
+    @BelongsTo(()=> Admision)
+    declare admision: Admision
 
 }

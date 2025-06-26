@@ -2,6 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasM
 import { Paciente_recetas } from "./Paciente_recetas";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Tipo_De_Medicamento } from "./Tipo_De_Medicamento";
+import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 
 @Table({ tableName: "medicamentos" })
 export class Medicamentos extends Model{
@@ -38,10 +39,13 @@ export class Medicamentos extends Model{
     @Column(DataType.INTEGER)
     declare codigo:number;
 
-    @HasOne(()=> Paciente_recetas)
-    declare receta: Paciente_recetas
+    @HasMany(()=> Paciente_recetas)
+    declare receta: Paciente_recetas[]
 
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]
+
+    @HasMany(()=> Paciente_Medicacion_Actual)
+    declare Paciente_Medicacion_Actual : Paciente_Medicacion_Actual[]
 }
 

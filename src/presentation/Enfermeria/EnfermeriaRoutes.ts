@@ -13,7 +13,7 @@ export class EnfermeriaRoutes{
         const controller = new EnfermerosController();
 
         router.get("/hola", controller.getEnfermeros);
-
+        router.get("/test", controller.test)
 
         return router
     }

@@ -88,6 +88,6 @@ export class Medicos extends Model{
     declare recetas: Paciente_recetas[]
 
     @HasMany(()=> Turnos)
-    declare turnos: Turnos
+    declare turnos: Turnos[]
 
 }

@@ -110,7 +110,7 @@ export class Pacientes extends Model{
     declare pruebasDiagnosticasDelPaciente: Paciente_pruebas_diagnosticas[];
 
     @HasMany(()=> Paciente_recetas)
-    declare recetas: Paciente_recetas
+    declare recetas: Paciente_recetas[]
 
     // @HasMany(()=> paciente_terapia_fisica)
     // declare terapias_fisicas: paciente_terapia_fisica
@@ -118,8 +118,8 @@ export class Pacientes extends Model{
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]
 
-    @HasMany(()=> Turnos)
-    declare turnos: Turnos
+    @HasOne(()=> Turnos)
+    declare turnos: Turnos[]
 
 
 }

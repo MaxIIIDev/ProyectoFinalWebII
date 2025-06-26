@@ -143,12 +143,32 @@ export class AdmisionService {
                         where: { 
                             estado: "Activo",
                             id_Paciente: id_Paciente
-                        }
+                        },
+                        include:[
+                            {
+                                model:Hospital_camas,
+                                as: "camas",
+                                include:[
+                                    {
+                                        model: Hospital_habitaciones,
+                                        as:"habitacion",
+                                        include: [
+                                            {
+                                                model: Hospital_alas,
+                                                as: "ala",
+                                                attributes: ["nombre"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 )
             if(!admisionEncontrada) return ["No hay admiciones activas para dicho paciente"]
             return [undefined, admisionEncontrada]
         } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionVigentePorPaciente","AdmisionService","170",error as string)
             return [error as string]
         }
     }

@@ -75,6 +75,6 @@ export class Enfermero extends Model{
      @HasMany(()=> Paciente_Evaluacion_Fisica)
      declare evaluaciones_fisicas: Paciente_Evaluacion_Fisica[]
 
-    @HasOne(()=> paciente_tratamientos)
-    declare tratamiento: paciente_tratamientos
+    @HasMany(()=> paciente_tratamientos)
+    declare tratamiento: paciente_tratamientos[]
 }

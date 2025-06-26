@@ -5,9 +5,9 @@ export class CrearTurnoDto{
     private constructor(
         public fecha: string ,   
         public id_horario_turno: number,
-        public id_Paciente: number,
+        public id_paciente: number,
         public motivo:string,
-        public id_Medico: number,
+        public id_medico: number,
         public estado: boolean = true
             
     ){}
@@ -16,9 +16,9 @@ export class CrearTurnoDto{
         return {
             fecha: crearTurnoDto.fecha,
             id_horario_turno: crearTurnoDto.id_horario_turno,
-            id_Paciente: crearTurnoDto.id_Paciente,
+            id_paciente: crearTurnoDto.id_paciente,
             motivo: crearTurnoDto.motivo,
-            id_Medico: crearTurnoDto.id_Medico,
+            id_medico: crearTurnoDto.id_medico,
             estado: crearTurnoDto.estado
         }
     }
@@ -26,8 +26,8 @@ export class CrearTurnoDto{
         try {
             const id_horario_turnoParseado = parseInt(objeto.id_horario_turno)
             if(!id_horario_turnoParseado) return ["Se requiere id_horario_turno"]
-            if(!objeto.id_Paciente) return ["Se requiere id_Paciente"]
-            if(!objeto.id_Medico) return ["Se requiere id_Medico"]
+            if(!objeto.id_paciente) return ["Se requiere id_Paciente"]
+            if(!objeto.id_medico) return ["Se requiere id_Medico"]
             if(!objeto.fecha) return ["Se requiere fecha"]
             if(!objeto.motivo || objeto.motivo.trim() === "") return ["Se requiere motivo"]
             if(objeto.motivo.length < 20 || objeto.motivo.length > 255) return ["El motivo debe tener entre 20 y 255 caracteres"]
@@ -36,9 +36,9 @@ export class CrearTurnoDto{
             return [undefined, new CrearTurnoDto(
                 fechaParseada,
                 id_horario_turnoParseado,
-                parseInt(objeto.id_Paciente),
+                parseInt(objeto.id_paciente),
                 objeto.motivo,
-                parseInt(objeto.id_Medico)
+                parseInt(objeto.id_medico)
                 )]
         } catch (error) {
             return [error as string]

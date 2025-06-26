@@ -5,6 +5,10 @@ import { Pacientes } from "./Pacientes";
 import { Prioridad_De_Atencion } from "./Prioridad_De_Atencion";
 import { Sintomas } from "./Sintomas";
 import { tipo_De_Admision } from "./tipo_de_Admision";
+import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
+import { Paciente_Evaluacion_Fisica } from "./Paciente_Evaluacion_Fisica";
+import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
+import { Paciente_Cirugias } from "./Paciente_Cirugias";
  
 
 
@@ -71,6 +75,16 @@ export class Admision extends Model{
    @BelongsTo( () => Hospital_camas)
     declare camas: Hospital_camas;
 
+    @HasOne(()=> Paciente_Medicacion_Actual)
+    declare Paciente_Medicacion_Actual: Paciente_Medicacion_Actual
 
+    @HasOne(()=> Paciente_Evaluacion_Fisica)
+    declare paciente_evaluacion_fisica: Paciente_Evaluacion_Fisica
+
+    @HasMany(()=> Paciente_Diagnosticos)
+    declare paciente_diagnosticos: Paciente_Diagnosticos[]
+
+    @HasMany(()=> Paciente_Cirugias)
+    declare paciente_cirugias: Paciente_Cirugias[]
 }
 

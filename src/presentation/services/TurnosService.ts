@@ -226,15 +226,15 @@ export class TurnosService {
     public static createTurno = async(crearTurnoDto: CrearTurnoDto): Promise<[string?, Turnos?]> => {//*TESTEADO
 
         try {
-            if(await MedicoService.getMedicoById(crearTurnoDto.id_Medico).then(res => res[0])){
+            if(await MedicoService.getMedicoById(crearTurnoDto.id_medico).then(res => res[0])){
                 return ["Medico no encontrado", null]
             }
-            if(await PacienteServices.getPacienteById(crearTurnoDto.id_Paciente).then(res => res[0])){ 
+            if(await PacienteServices.getPacienteById(crearTurnoDto.id_paciente).then(res => res[0])){ 
                 return ["Paciente no encontrado", null]
             }
             const turnosEncontrados = await this.getTurnoByDateAndIdHorario(crearTurnoDto.fecha, crearTurnoDto.id_horario_turno)
 
-            if(!(await this.validateTurno(turnosEncontrados[1],crearTurnoDto.id_Medico,crearTurnoDto.id_Paciente,0))){
+            if(!(await this.validateTurno(turnosEncontrados[1],crearTurnoDto.id_medico,crearTurnoDto.id_paciente,0))){
                 return ["Ya existe un turno para la fecha y horario especificados", null]
             }
             const turnoCreado = await Turnos.create(CrearTurnoDto.toObject(crearTurnoDto));
@@ -253,16 +253,16 @@ export class TurnosService {
             if( await this.getTurnoById(_updateTurnoDto.id_turno).then(res => res[0])){
                 return ["Turno no encontrado", null]
             }
-            if(await MedicoService.getMedicoById(_updateTurnoDto.id_Medico).then(res => res[0])){
+            if(await MedicoService.getMedicoById(_updateTurnoDto.id_medico).then(res => res[0])){
                 return ["Medico no encontrado", null]
             }
-            if(await PacienteServices.getPacienteById(_updateTurnoDto.id_Paciente).then(res => res[0])){
+            if(await PacienteServices.getPacienteById(_updateTurnoDto.id_paciente).then(res => res[0])){
                 return ["Paciente no encontrado", null]
             }
             
             const turnosEncontrados = await this.getTurnoByDateAndIdHorario(_updateTurnoDto.fecha, _updateTurnoDto.id_horario_turno)
             
-            if(!(await this.validateTurno(turnosEncontrados[1],_updateTurnoDto.id_Medico,_updateTurnoDto.id_Paciente,1,_updateTurnoDto.id_turno))){
+            if(!(await this.validateTurno(turnosEncontrados[1],_updateTurnoDto.id_medico,_updateTurnoDto.id_paciente,1,_updateTurnoDto.id_turno))){
                 console.log("Entro el if");
                 
                 return ["Ya existe un turno para la fecha y horario especificados", null]

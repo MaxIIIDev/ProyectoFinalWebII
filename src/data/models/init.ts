@@ -38,6 +38,7 @@ import { Tipo_De_tratamiento } from "./Tipo_De_tratamiento";
 import { Tipo_Sanguineo } from "./Tipo_Sanguineo";
 import { Turnos } from "./Turnos";
 import { Usuarios } from "./Usuarios";
+import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 
 export const importaciones = [
     Horarios_Turnos,
@@ -68,6 +69,7 @@ export const importaciones = [
     Paciente_Evaluacion_Fisica,
     Paciente_seguro_medico,
     paciente_tratamientos,
+    Paciente_Medicacion_Actual,
     Pacientes,
     Personal_de_admision,
     Roles,

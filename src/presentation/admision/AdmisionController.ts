@@ -178,6 +178,8 @@ export class AdmisionController{
                     id_Cama: admisionEncontrada.dataValues.id_Cama
                 }
                 req.session.admision = admision
+                console.log(admisionEncontrada.dataValues);
+                
             }
             
             if(error){
@@ -334,21 +336,28 @@ export class AdmisionController{
     }
     public redireccionadorDeVistasDeAdmision = async(req:Request, res: Response) => {
         try {
+            const errorActualizar = req.query.error || undefined
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`)
+                return
             }
             const admisionEncontrada = await AdmisionService.buscarAdmisionVigentePorPaciente(req.session.paciente?.id_Paciente!)
             if(!admisionEncontrada[1]){
                 res.redirect(`/admision/crear/admision`)
+                return
             }
             
             req.session.admision = admisionEncontrada[1]?.dataValues!
             const alaOcupada = await CamaService.buscarCama(req.session.admision!.id_Cama);
             req.session.restosAdmision= alaOcupada[1]?.dataValues.habitacion.dataValues.ala.dataValues.nombre;
 
-            
+            if(errorActualizar){
+                res.redirect(`/admision/actualizar/admision?error=${encodeURIComponent(errorActualizar as string)}`)
+                return
+            }
             
             res.redirect("/admision/actualizar/admision")
+            return
         } catch (error) {
             res.redirect(`/admision/?error=${encodeURI(error as string)}`)
             return
@@ -869,7 +878,7 @@ export class AdmisionController{
             const [errorCrearAdmision, admisionCreada] = await AdmisionService.crearAdmision(crearAdmisionDto!);
             if(errorCrearAdmision){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 140", errorCrearAdmision);
-                res.redirect(`/admision/actualizar/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
+                res.redirect(`/admision/redireccion/admision?error=${encodeURIComponent(errorCrearAdmision as string)}`)
                 return
             }
             
@@ -1595,9 +1604,9 @@ export class AdmisionController{
             const [ errorDto, crearTurnoDto] = CrearTurnoDto.create({
                 fecha: fecha,
                 id_horario_turno: id_horario_turno,
-                id_Paciente: req.session.paciente.id_Paciente ,
+                id_paciente: req.session.paciente.id_Paciente ,
                 motivo: motivo,
-                id_Medico: id_Medico                
+                id_medico: id_Medico                
             })
             if(errorDto){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearTurno","AdmisionController","Line 1282",errorDto);
@@ -1636,8 +1645,8 @@ export class AdmisionController{
                 fecha: fecha,
                 id_horario_turno: id_horario_turno,
                 motivo: motivo,
-                id_Medico: id_Medico,
-                id_Paciente: req.session.paciente.id_Paciente,
+                id_medico: id_Medico,
+                id_paciente: req.session.paciente.id_Paciente,
                 estado : estado
             });
             if(errorDto){

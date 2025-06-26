@@ -2,6 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Leng
 import { Pacientes } from "./Pacientes";
 import { Medicos } from "./Medicos";
 import { nombre_Cirugia } from "./Nombre_Cirugia";
+import { Admision } from "./Admision";
 
 
 @Table({ tableName: "paciente_cirugias" })
@@ -44,5 +45,10 @@ export class Paciente_Cirugias extends Model{
     @BelongsTo(()=> Pacientes)
     declare paciente: Pacientes
 
+    @ForeignKey(()=> Admision)
+    @Column(DataType.INTEGER)
+    declare id_Admision: number
 
+    @BelongsTo(()=> Admision)
+    declare admision: Admision
 }
