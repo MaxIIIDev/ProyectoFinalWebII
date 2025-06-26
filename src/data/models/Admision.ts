@@ -27,6 +27,9 @@ export class Admision extends Model{
     @Column(DataType.STRING)
     declare estado:string;
 
+    @Column(DataType.STRING)
+    declare recomendacion_seguimiento_medico: string
+
     @ForeignKey(()=> motivo_De_Internacion)
     @Column(DataType.INTEGER)
     declare id_motivo_de_Internacion: number;

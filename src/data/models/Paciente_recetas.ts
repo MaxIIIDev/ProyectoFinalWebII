@@ -19,6 +19,9 @@ export class Paciente_recetas extends Model{
     @Column(DataType.DATE)
     declare fecha: Date;
 
+    @Column(DataType.STRING)
+    declare indicacion : string
+    
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
     declare id_paciente: number
