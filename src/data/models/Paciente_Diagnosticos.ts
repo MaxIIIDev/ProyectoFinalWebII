@@ -60,7 +60,7 @@ export class Paciente_Diagnosticos extends Model{
     declare tratamiento: paciente_tratamientos
 
     @HasMany(()=> Paciente_pruebas_diagnosticas)
-    declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas
+    declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas[]
 
     @ForeignKey(()=> Admision)
     @Column(DataType.INTEGER)
