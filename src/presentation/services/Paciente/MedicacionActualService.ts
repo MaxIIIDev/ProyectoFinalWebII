@@ -2,6 +2,7 @@ import { Paciente_Medicacion_Actual } from "../../../data/models/Paciente_Medica
 import { createMedicacionActualDto } from "../../../domain/Dtos/pacientes/Medicacion Actual/createMedicacionActualDto";
 import { updateMedicacionActualDto } from "../../../domain/Dtos/pacientes/Medicacion Actual/updateMedicacionActualDto";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
+import { MedicamentosServices } from "../MedicamentosServices";
 
 
 export class MedicacionActualService {
@@ -54,7 +55,9 @@ export class MedicacionActualService {
     public static async crearMedicacionActual(_createMedicacionActual: createMedicacionActualDto):Promise<[string?,Paciente_Medicacion_Actual?]>{//todo:testear
         try {
             //Todo: VALIDAR RECETA CUANDO SE CREE EL CRUD DE RECETAS
-            //todo: VALIDAR MEDICAMENTO CUANDO SE CREE EL CRUD MEDICAMENTO
+            
+            
+            if(!await MedicamentosServices.buscarMedicamentoPorId(_createMedicacionActual.id_Medicamento).then(res => res[1])) return["No se encontro el medicamento registrado por dicho Id", undefined]
             if(await this.existeMedicacionActual(_createMedicacionActual).then(res=> res[1])){
                 return ["Ya existe dicho registro", undefined]
             }
