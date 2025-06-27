@@ -11,6 +11,7 @@ import { Paciente_seguro_medico } from "./Paciente_seguro_medico";
 import { paciente_tratamientos } from "./paciente_tratamientos";
 import { Turnos } from "./Turnos";
 import { Paciente_Cirugias } from "./Paciente_Cirugias";
+import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 
 
 
@@ -121,5 +122,7 @@ export class Pacientes extends Model{
     @HasOne(()=> Turnos)
     declare turnos: Turnos[]
 
+    @HasMany(()=> Paciente_Medicacion_Actual)
+    declare paciente_medicaciones_actuales:Paciente_Medicacion_Actual[] 
 
 }

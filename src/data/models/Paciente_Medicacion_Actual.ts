@@ -2,6 +2,7 @@ import { AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Mode
 import { Paciente_recetas } from "./Paciente_recetas";
 import { Medicamentos } from "./Medicamentos";
 import { Admision } from "./Admision";
+import { Pacientes } from "./Pacientes";
 
 
 @Table({tableName:"paciente_medicacion_actual"})
@@ -33,6 +34,13 @@ export class Paciente_Medicacion_Actual extends Model {
 
     @BelongsTo(()=> Admision)
     declare admision: Admision
+
+    @ForeignKey(()=> Pacientes)
+    @Column(DataType.INTEGER)
+    declare id_Paciente: number
+
+    @BelongsTo(()=> Pacientes)
+    declare paciente:Pacientes
 
 
 }
