@@ -24,7 +24,7 @@ export class MedicoService {
             return ["Error al obtener todos los medicos", null];
         }
     }
-    public static async getMedicoById(id: number): Promise<[string?, any?]> { //* TESTEADO
+    public static async getMedicoById(id: number): Promise<[string?, Medicos?]> { //* TESTEADO
         // Busca un medico por su ID y devuelve sus datos junto con la especialidad asociada
         try {
             if(id === undefined || id === null || id <= 0) {
