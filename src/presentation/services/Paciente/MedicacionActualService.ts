@@ -54,8 +54,6 @@ export class MedicacionActualService {
     }
     public static async crearMedicacionActual(_createMedicacionActual: createMedicacionActualDto):Promise<[string?,Paciente_Medicacion_Actual?]>{//todo:testear
         try {
-            //Todo: VALIDAR RECETA CUANDO SE CREE EL CRUD DE RECETAS
-            
             
             if(!await MedicamentosServices.buscarMedicamentoPorId(_createMedicacionActual.id_Medicamento).then(res => res[1])) return["No se encontro el medicamento registrado por dicho Id", undefined]
             if(await this.existeMedicacionActual(_createMedicacionActual).then(res=> res[1])){
@@ -71,7 +69,8 @@ export class MedicacionActualService {
     }
     public static async actualizarMedicacionActual(_updateMedicacionActual: updateMedicacionActualDto):Promise<[string?,boolean?]>{//todo:testear
         try {
-            if(!this.buscarMedicacionActualPorId(_updateMedicacionActual.id_Paciente_Medicacion_Actual).then(res=> res[1])) return ["No se encontro registrada la mediacion actual por id", false]
+            if(!await this.buscarMedicacionActualPorId(_updateMedicacionActual.id_Paciente_Medicacion_Actual).then(res=> res[1])) return ["No se encontro registrada la mediacion actual por id", false]
+            if(!await MedicamentosServices.buscarMedicamentoPorId(_updateMedicacionActual.id_Medicamento).then(res=>res[1])) return ["No se encontro el medicamento registrado con dicho Id"]
             const actualizacion = await Paciente_Medicacion_Actual.update(updateMedicacionActualDto.toObject(_updateMedicacionActual), {
                 where: {
                     id_Paciente_Medicacion_Actual: _updateMedicacionActual.id_Paciente_Medicacion_Actual,

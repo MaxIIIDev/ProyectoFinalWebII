@@ -34,14 +34,14 @@ import { Admision } from "./Admision";
      
      @ForeignKey(()=> Pacientes)
      @Column(DataType.INTEGER)
-     declare paciente_id: number
+     declare id_Paciente: number
      
      @BelongsTo(()=> Pacientes)
      declare paciente: Pacientes
      
      @ForeignKey(()=> Enfermero)
      @Column(DataType.INTEGER)
-     declare enfermero_id: number
+     declare id_Enfermero: number
      
      @BelongsTo(()=> Enfermero)
      declare enfermero: Enfermero

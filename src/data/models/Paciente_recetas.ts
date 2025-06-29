@@ -1,4 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./Pacientes";
 import { Medicos } from "./Medicos";
 import { Medicamentos } from "./Medicamentos";
@@ -43,7 +43,6 @@ export class Paciente_recetas extends Model{
     @BelongsTo(()=> Medicamentos)
     declare medicamento: Medicamentos
 
-    @HasMany(()=> Paciente_Medicacion_Actual)
-    declare medicacion_actual: Paciente_Medicacion_Actual[]
+    
 
 }

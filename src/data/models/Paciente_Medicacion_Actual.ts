@@ -13,13 +13,6 @@ export class Paciente_Medicacion_Actual extends Model {
     @Column(DataType.INTEGER)
     declare id_Paciente_Medicacion_Actual : number
 
-    @AllowNull(true)
-    @ForeignKey(()=> Paciente_recetas)
-    @Column(DataType.INTEGER)
-    declare id_Receta: number
-
-    @BelongsTo(()=> Paciente_recetas)
-    declare recetas: Paciente_recetas
 
     @ForeignKey(()=> Medicamentos)
     @Column(DataType.INTEGER)

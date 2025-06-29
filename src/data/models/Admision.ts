@@ -81,8 +81,8 @@ export class Admision extends Model{
     @HasOne(()=> Paciente_Medicacion_Actual)
     declare Paciente_Medicacion_Actual: Paciente_Medicacion_Actual
 
-    @HasOne(()=> Paciente_Evaluacion_Fisica)
-    declare paciente_evaluacion_fisica: Paciente_Evaluacion_Fisica
+    @HasMany(()=> Paciente_Evaluacion_Fisica)
+    declare paciente_evaluacion_fisica: Paciente_Evaluacion_Fisica[]
 
     @HasMany(()=> Paciente_Diagnosticos)
     declare paciente_diagnosticos: Paciente_Diagnosticos[]

@@ -14,7 +14,21 @@ import { CamaService } from "./Hospital/CamaService";
 
 
 export class AdmisionService {
-
+    public static async buscarAdmisionPorId(id_Admision:number):Promise<[string?, Admision?]> {//todo: testear
+        try {
+            if(!id_Admision || id_Admision < 0) return ["El id_Admision es nulo o menor a 0"]
+            const admision = await Admision.findOne({
+                where: {
+                    id_Admision: id_Admision
+                }})
+            if(!admision) return ["No se encontro una admision registrada con dicho id", undefined]
+            return [undefined, admision]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAdmisionPorId","AdmisionService","10",error as string)
+            return [error as string, undefined]
+            
+        }
+    }
     public static getTiposDeAdmision = async():Promise<[string?,tipo_De_Admision[]?]> => {//!Programar
         try {
             const tiposDeAdmision: tipo_De_Admision[] = await tipo_De_Admision.findAll();
