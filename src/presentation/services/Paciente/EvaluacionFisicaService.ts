@@ -9,7 +9,7 @@ import { PacienteServices } from "../PacientesService";
 
 export class EvaluacionFisicaService {
 
-    public static async buscarEvaluacionFisicaPorId(id_Evaluacion_fisica:number) {
+    public static async buscarEvaluacionFisicaPorId(id_Evaluacion_fisica:number):Promise<[string?, Paciente_Evaluacion_Fisica?]>{
         try {
             
             if(!id_Evaluacion_fisica || id_Evaluacion_fisica < 0) return ["El id_Evaluacion_fisica es nulo o menor a 0"]
@@ -26,7 +26,7 @@ export class EvaluacionFisicaService {
             return [error as string, undefined]
         }
     }
-    public static async buscarTodasLasEvaluacionesFisicasPorPaciente(id_Paciente:number){
+    public static async buscarTodasLasEvaluacionesFisicasPorPaciente(id_Paciente:number):Promise<[string?, Paciente_Evaluacion_Fisica[]?]>{
         try {
             
             if(!id_Paciente || id_Paciente < 0) return ["id_Paciente es nulo o es menor a 0"]
@@ -44,7 +44,7 @@ export class EvaluacionFisicaService {
             return [error as string ,undefined]
         }
     }
-    public static async buscarEvaluacionesFisicasPorAdmision(id_Admision:number){
+    public static async buscarEvaluacionesFisicasPorAdmision(id_Admision:number):Promise<[string?, Paciente_Evaluacion_Fisica[]?]>{
         try {
             if(!id_Admision || id_Admision < 0) return ["id_Admision es nulo o es menor a 0"]
             if(! await AdmisionService.buscarAdmisionPorId(id_Admision).then(res => res[1])) return ["No se encontro una admision registrada con dicho id", undefined]
@@ -61,7 +61,7 @@ export class EvaluacionFisicaService {
         }
     }
 
-    public static async crearEvaluacionFisica(_createEvaluacionFisicaDto: CreateEvaluacionFisicaDto){
+    public static async crearEvaluacionFisica(_createEvaluacionFisicaDto: CreateEvaluacionFisicaDto):Promise<[string?, Paciente_Evaluacion_Fisica?]>{
         try {
             if(! await PacienteServices.buscarPacienteDesconocido(_createEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
             if(! await AdmisionService.buscarAdmisionPorId(_createEvaluacionFisicaDto.id_Admision).then(res => res[1])) return ["No se encontro una admision registrada con dicho id", undefined]
@@ -78,7 +78,7 @@ export class EvaluacionFisicaService {
             return [error as string, undefined]
         }
     }
-    public static async actualizarEvaluacionFisica(_updateEvaluacionFisicaDto: updateEvaluacionFisicaDto){
+    public static async actualizarEvaluacionFisica(_updateEvaluacionFisicaDto: updateEvaluacionFisicaDto):Promise<[string?, string?]>{
         try {
             if(this.buscarEvaluacionFisicaPorId(_updateEvaluacionFisicaDto.id_Evaluacion_fisica).then(res => res[1]) === undefined) return ["No se encontro una evaluacion fisica registrada con dicho id", undefined]
             if(! await PacienteServices.buscarPacienteDesconocido(_updateEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
@@ -98,20 +98,20 @@ export class EvaluacionFisicaService {
             return [error as string, undefined]
         }
     }
-    public static async eliminarEvaluacionFisica(id_Evaluacion_fisica:number){
+    public static async eliminarEvaluacionFisica(id_Evaluacion_fisica:number):Promise<[string?, boolean?]>{
         try {
-            if(!id_Evaluacion_fisica || id_Evaluacion_fisica < 0) return ["El id_Evaluacion_fisica es nulo o menor a 0"]
+            if(!id_Evaluacion_fisica || id_Evaluacion_fisica < 0) return ["El id_Evaluacion_fisica es nulo o menor a 0",false]
             const evaluacionFisica = await Paciente_Evaluacion_Fisica.findOne({
                 where: {
                     id_Evaluacion_fisica : id_Evaluacion_fisica
                 }
             })
-            if(!evaluacionFisica) return ["No se encontro una evaluacion fisica registrada con dicho id", undefined]
+            if(!evaluacionFisica) return ["No se encontro una evaluacion fisica registrada con dicho id", false]
             await evaluacionFisica.destroy()
-            return [undefined, "Evaluacion fisica eliminada correctamente"]
+            return [undefined, true]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarEvaluacionFisica","EvaluacionFisicaService","64",error as string)
-            return [error as string, undefined]
+            return [error as string, false]
         }
     }
 }
