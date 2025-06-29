@@ -5,6 +5,7 @@ import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
 import { Paciente_recetas } from "./Paciente_recetas";
 import { Turnos } from "./Turnos";
 import { Especialidades } from "./Especialidades";
+import { paciente_tratamientos } from "./paciente_tratamientos";
 
 @Table({ tableName: "medicos" })
 export class Medicos extends Model{
@@ -89,5 +90,8 @@ export class Medicos extends Model{
 
     @HasMany(()=> Turnos)
     declare turnos: Turnos[]
+
+    @HasMany(()=> paciente_tratamientos)
+    declare tratamientos: paciente_tratamientos[]
 
 }
