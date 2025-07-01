@@ -18,10 +18,15 @@ export class EnfermerosController{
     //////////////////todo VISTAS ///////////
     //////////////////////////////////////////////////Todo
 
-    public test = (req:Request,res:Response):void =>{
+    public test = async(req:Request,res:Response)=>{
         try {
-            
-            
+            const [error, sd] = await AlergiaService.buscarAlergiaPorPaciente(3,2);
+            if(error){
+                res.json({error:error})
+                return 
+            } 
+            res.json({log:sd})
+            return
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("test","EnfermeroController","",error as string)
@@ -275,7 +280,7 @@ export class EnfermerosController{
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const alergias = await AlergiaService.buscarTodasLasAlergiasPorPaciente(req.session.paciente.id_Paciente);
-            if(alergias[0]){
+            if(alergias[0] && alergias[1] &&alergias[1].length <=0){
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergias[0])}`);
                 return;
             }
@@ -567,6 +572,36 @@ export class EnfermerosController{
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarAlergia", "85", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public eliminarAlergia = async(req:Request, res:Response) => {
+        try {
+            
+            const id_nombre_alergia = req.query.id_nombre_alergia || undefined;
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede eliminar una alergia de un paciente desconocido"))
+                return;
+            }
+            if(!id_nombre_alergia){
+                res.redirect("/enfermeria/view/historial/paciente?error=" + encodeURIComponent("No se ha seleccionado una alergia para eliminar"));
+                return;
+            }
+            const alergiaEliminada = await AlergiaService.eliminarAlergia(Number(id_nombre_alergia), req.session.paciente.id_Paciente);
+            if(alergiaEliminada[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaEliminada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/alergias/paciente?confirmacion=${encodeURIComponent("Alergia eliminada correctamente")}`);
+            return;
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarAlergia", "90", error as string);
             res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }

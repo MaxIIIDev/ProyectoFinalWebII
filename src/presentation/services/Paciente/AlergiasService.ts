@@ -74,10 +74,13 @@ export class AlergiaService {
             if(_id_nombre_alergia < 0) return ["El id_nombre_alergia no puede ser negativo"]
             const alergiaBuscada = await Paciente_Alergias.findOne({
                 where: {
-                    id_nombre_alergia: _id_nombre_alergia,
-                    id_paciente: _id_paciente
+                    id_paciente: _id_paciente,
+                    id_nombre_alergia:_id_nombre_alergia
+                    
                 }
             })
+            
+            
             if(!alergiaBuscada) return ["No se encontro asignada dicha alergia a este paciente", undefined]
             
             return [null, alergiaBuscada]

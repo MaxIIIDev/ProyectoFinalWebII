@@ -27,6 +27,7 @@ export class EnfermeriaRoutes{
         router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", controller.crearAlergia)
         router.post("/actualizarAlergia", controller.actualizarAlergia);
+        router.get("/eliminarAlergia",controller.eliminarAlergia)
        
         
 
