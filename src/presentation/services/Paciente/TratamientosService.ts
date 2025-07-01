@@ -43,7 +43,7 @@ export class TratamientosService {
             return [error as string, undefined];
         }
     }
-    public static async registrarTratamiento(_createTratamientoDto:createTratamientoDto){
+    public static async registrarTratamiento(_createTratamientoDto:createTratamientoDto):Promise<[string?,paciente_tratamientos?]>{
 
         try {
 
@@ -61,7 +61,7 @@ export class TratamientosService {
         }
 
     }
-    public static async actualizarTratamiento(_updateTratamientoDto:updateTratamientoDto){
+    public static async actualizarTratamiento(_updateTratamientoDto:updateTratamientoDto):Promise<[string?,number?]>{
         try {
             if(!await paciente_tratamientos.findOne({ where: { id: _updateTratamientoDto.id_tratamiento } })) return ["El tratamiento no existe", undefined];
             if(!await TipoDeTratamientoService.buscarTipoDeTratamientoPorId(_updateTratamientoDto.id_tipo_de_tratamiento).then(res => res[1])) return ["El tipo de tratamiento no existe", undefined];
@@ -75,7 +75,7 @@ export class TratamientosService {
                 }
             });
             if(!tratamiento) return ["Error al actualizar el tratamiento", undefined];
-            return [undefined, tratamiento];
+            return [undefined, tratamiento[0]];
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TratamientosService", "actualizarTratamiento", "64", error);
             return [error as string, undefined];

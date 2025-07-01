@@ -94,3 +94,9 @@ mixin cargarNombresDeAlergia(nombresDeAlergias)
 mixin cargarNombresDeAlergiaYSeleccionar(nombresDeAlergias, alergiaActual)
     for nombreDeAlergia of nombresDeAlergias
         option(value=nombreDeAlergia.dataValues.id_nombre_alergia, selected=(nombreDeAlergia.dataValues.id_nombre_alergia === alergiaActual.id_nombre_alergia)) #{nombreDeAlergia.dataValues.nombre}
+mixin cargarMedicamentos(medicamentos,medicamentoActual)
+    for medicamento of medicamentos 
+        option(value=medicamento.dataValues.id_Medicamento selected=((medicamentoActual) && medicamentoActual.dataValues.id_Medicamento == medicamento.dataValues.id_Medicamento)) #{medicamento.dataValues.nombre}
+mixin cargarTiposDeTratamiento(tiposDeTratamiento,tipoDeTratamientoActual)
+    for tipoDeTratamiento of tiposDeTratamiento
+        option(value=tipoDeTratamiento.dataValues.id_Tipo_De_Tratamiento ,selected=((tipoDeTratamientoActual) && tipoDeTratamientoActual.dataValues.id_Tipo_De_Tratamiento == tipoDeTratamiento.dataValues.id_Tipo_De_Tratamiento)) #{tipoDeTratamiento.dataValues.nombre}

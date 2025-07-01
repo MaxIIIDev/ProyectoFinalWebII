@@ -6,6 +6,10 @@ import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto
 import { AlergiaService } from "../services/Paciente/AlergiasService";
 import { createAlergiaDto } from "../../domain/Dtos/pacientes/Alergias/createAlergiaDto";
 import { updateAlergiaDto } from "../../domain/Dtos/pacientes/Alergias/updateAlergiaDto";
+import { MedicamentosServices } from "../services/MedicamentosServices";
+import { TipoDeTratamientoService } from "../services/TipoDeTratamientoService";
+import { createTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/createTratamientoDto";
+import { TratamientosService } from "../services/Paciente/TratamientosService";
 
 
 export class EnfermerosController{
@@ -431,6 +435,81 @@ export class EnfermerosController{
             return;
         }
     }
+    public vistaCrearTratamientoAlergia = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un tratamiento para un paciente desconocido"))
+                return;
+            }
+            const confirmacion = req.query.confirmacion || undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const id_Alergia = req.query.id_Alergia || undefined;
+            if(!id_Alergia){
+                res.redirect("/enfermeria/view/crear/alergia?error=" + encodeURIComponent("No se ha seleccionado una alergia"));
+                return;
+            }
+            const alergiaActual = await AlergiaService.buscarAlergiaPorId(Number(id_Alergia));
+            if(alergiaActual[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaActual[0])}`);
+                return;
+            }
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos();
+            if(medicamentos[0] && medicamentos[1] && medicamentos[1].length <= 0){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicamentos[0])}`);
+                return;
+            }
+            const tiposDetratamiento = await TipoDeTratamientoService.getAllTiposDeTratamiento();
+            if(tiposDetratamiento[0] && tiposDetratamiento[1] && tiposDetratamiento[1].length <= 0){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(tiposDetratamiento[0])}`);
+                return;
+            }
+            console.log(tiposDetratamiento[1]);
+            
+            if(confirmacion){
+                res.render("EnfermeroViews/Alergias/VistaCrearTratamientoAlergia.pug", {
+                    success: confirmacion,
+                    medicamentos: medicamentos[1],
+                    id_Alergia: id_Alergia,
+                    tiposDeTratamiento: tiposDetratamiento[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/Alergias/VistaCrearTratamientoAlergia.pug", {
+                    warning: warning,
+                    medicamentos: medicamentos[1],
+                    id_Alergia: id_Alergia,
+                    tiposDeTratamiento: tiposDetratamiento[1]
+                })
+                return
+            }
+            if(error){
+                res.render("EnfermeroViews/Alergias/VistaCrearTratamientoAlergia.pug", {
+                    error: error,
+                    medicamentos: medicamentos[1],
+                   id_Alergia: id_Alergia,
+                   tiposDeTratamiento: tiposDetratamiento[1]
+                })
+                return
+            }
+
+            res.render("EnfermeroViews/Alergias/VistaCrearTratamientoAlergia.pug", {
+                medicamentos: medicamentos[1],
+                id_Alergia: id_Alergia,
+                tiposDeTratamiento: tiposDetratamiento[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearTratamientoAlergia", "80", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
 
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
@@ -602,6 +681,83 @@ export class EnfermerosController{
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarAlergia", "90", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public crearTratamientoAlergia = async (req:Request, res:Response) => {
+        try {
+            const id_Alergia = Number(req.body.id_Alergia) || undefined;
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un tratamiento para un paciente desconocido"))
+                return;
+            }
+            if(!id_Alergia){
+                res.redirect("/enfermeria/view/crear/tratamiento/alergia?error=" + encodeURIComponent("No se ha seleccionado una alergia"));
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/alergias/paciente?error=" + encodeURIComponent("No se han recibido datos para crear el tratamiento"));
+                return;
+            }
+            
+            const alergia = await AlergiaService.buscarAlergiaPorId(id_Alergia)
+            if(alergia[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergia[0])}`);
+                return;
+            }
+            if(alergia[1] && alergia[1].dataValues.id_tratamiento && alergia[1].dataValues.id_tratamiento !== null){
+                //todo: Redireccionar a vista de actualizar tratamiento
+                res.redirect(`/enfermeria/view/alergias/paciente?error=${encodeURIComponent("La alergia ya tiene un tratamiento asociado")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+                return;
+            }
+            const [errorDto, createTratamientoAlergiaDtoReady] = createTratamientoDto.create({
+                    id_tipo_de_tratamiento: req.body.id_tipo_de_tratamiento,
+                    detalle: req.body.detalle,
+                    cantidad_suministrada: req.body.cantidad_suministrada,
+                    fecha_de_inicio: null,
+                    fecha_de_fin:  null,
+                    id_paciente: req.session.paciente.id_Paciente,
+                    id_medicamento: req.body.id_medicamento,
+                    id_enfermero: req.session.usuarioLogueado.id_Personal,
+                    id_medico: null
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/tratamiento/alergia?error=${encodeURIComponent(errorDto)}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+                return;
+            }
+            const tratamientoCreado = await TratamientosService.registrarTratamiento(createTratamientoAlergiaDtoReady);
+            if(tratamientoCreado[0]){
+                res.redirect(`/enfermeria/view/crear/tratamiento/alergia?error=${encodeURIComponent(tratamientoCreado[0])}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+                return;
+            }
+            
+            
+            alergia[1].id_tratamiento = tratamientoCreado[1].dataValues.id_tratamiento;
+            const [updateAlergiaError, updateAlergiaDtoReady] = updateAlergiaDto.create({
+                id_Alergia:alergia[1].dataValues.id_Alergia,
+                id_nombre_alergia: alergia[1].dataValues.id_nombre_alergia,
+                descripcion: alergia[1].dataValues.descripcion,
+                id_paciente: alergia[1].dataValues.id_paciente,
+                id_tratamiento: alergia[1].dataValues.id_tratamiento
+            });
+            if(updateAlergiaError){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(updateAlergiaError)}`);
+                return;
+            }
+            const alergiaActualizada = await AlergiaService.actualizarAlergia(updateAlergiaDtoReady);
+            if(alergiaActualizada[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaActualizada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/crear/tratamiento/alergia?confirmacion=${encodeURIComponent("Tratamiento creado con éxito")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearTratamientoAlergia", "95", error as string);
             res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }

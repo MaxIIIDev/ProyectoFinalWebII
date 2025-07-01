@@ -23,12 +23,13 @@ export class EnfermeriaRoutes{
         router.get("/view/alergias/paciente", controller.vistaListaAlergias);
         router.get("/view/crear/alergia", controller.vistaCrearAlergia);
         router.get("/view/actualizar/alergia", controller.vistaActualizarAlergia);
-
+        router.get("/view/crear/tratamiento/alergia", controller.vistaCrearTratamientoAlergia);
+        
         router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", controller.crearAlergia)
         router.post("/actualizarAlergia", controller.actualizarAlergia);
         router.get("/eliminarAlergia",controller.eliminarAlergia)
-       
+        router.post("/crear/Tratamiento/Para/Alergia", controller.crearTratamientoAlergia);
         
 
         return router

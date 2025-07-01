@@ -7,7 +7,7 @@ export class createTratamientoDto {
         public id_tipo_de_tratamiento: number,
         public detalle: string,
         public cantidad_suministrada: number,
-        public fecha_de_inicio: string,
+        public fecha_de_inicio: string | null,
         public fecha_de_fin: string | null,
         public id_paciente: number,
         public id_medicamento: number,
@@ -36,10 +36,10 @@ export class createTratamientoDto {
             if(!object.id_tipo_de_tratamiento || object.id_tipo_de_tratamiento < 0) return ["Se requiere id_tipo_de_tratamiento"];
             if(!object.detalle || object.detalle.trim() === "") return ["Se requiere detalle"];
             if(!object.cantidad_suministrada || isNaN(object.cantidad_suministrada) || object.cantidad_suministrada <= 0) return ["Se requiere cantidad_suministrada"];
-            if(!object.fecha_de_inicio) return ["Se requiere fecha_de_inicio"];
             
-            const fechaParseada = new Date(object.fecha_de_inicio).toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
+            
+            const fechaParseada = object.fecha_de_inicio ?new Date(object.fecha_de_inicio).toISOString().split('T')[0]: null; // Formato YYYY-MM-DD
+            if(fechaParseada && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
             
             const fecha_de_finParseada = object.fecha_de_fin ? new Date(object.fecha_de_fin).toISOString().split('T')[0] : null; // Formato YYYY-MM-DD
             if( fecha_de_finParseada && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha_de_finParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
@@ -50,15 +50,15 @@ export class createTratamientoDto {
             if(object.id_medico && (isNaN(object.id_medico) || object.id_medico < 0)) return ["id_medico debe ser un número positivo"];
             if(!object.id_enfermero && !object.id_medico) return ["Se requiere al menos un id_enfermero o id_medico"];
             return [undefined, new createTratamientoDto(
-                parseInt(object.id_tipo_de_tratamiento),
+                Number(object.id_tipo_de_tratamiento),
                 object.detalle,
                 parseFloat(object.cantidad_suministrada),
                 fechaParseada,
                 fecha_de_finParseada,
-                parseInt(object.id_paciente),
-                parseInt(object.id_medicamento),
-                object.id_enfermero ? parseInt(object.id_enfermero) : null,
-                object.id_medico ? parseInt(object.id_medico) : null
+                Number(object.id_paciente),
+                Number(object.id_medicamento),
+                object.id_enfermero ? Number(object.id_enfermero) : null,
+                object.id_medico ? Number(object.id_medico) : null
             )];
 
         } catch (error) {
