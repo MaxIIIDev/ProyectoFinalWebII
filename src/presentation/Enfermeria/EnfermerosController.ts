@@ -4,6 +4,7 @@ import { AdmisionService } from "../services/AdmisionService";
 import { PacienteServices } from "../services/PacientesService";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { AlergiaService } from "../services/Paciente/AlergiasService";
+import { createAlergiaDto } from "../../domain/Dtos/pacientes/Alergias/createAlergiaDto";
 
 
 export class EnfermerosController{
@@ -313,6 +314,7 @@ export class EnfermerosController{
     public vistaCrearAlergia = async (req:Request, res:Response) => {
         try {
             
+            
             if(!req.session.paciente){
                 res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
                 return;
@@ -429,5 +431,41 @@ export class EnfermerosController{
             return;
         }
     }
-
+    public crearAlergia = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/crear/alergia?error=" + encodeURIComponent("No se han recibido datos para crear la alergia"));
+                return;
+            }
+            const [errorDto, createAlergiaDtoReady] = createAlergiaDto.create({
+                id_nombre_alergia: req.body.id_nombre_alergia,
+                descripcion: req.body.descripcion,
+                id_paciente: req.session.paciente.id_Paciente,
+               
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/alergia?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const alergiaCreada = await AlergiaService.registrarAlergia(createAlergiaDtoReady);
+            if(alergiaCreada[0]){
+                res.redirect(`/enfermeria/view/crear/alergia?error=${encodeURIComponent(alergiaCreada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/crear/alergia?confirmacion=${encodeURIComponent("Alergia creada correctamente")}`);
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearAlergia", "80", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
 }

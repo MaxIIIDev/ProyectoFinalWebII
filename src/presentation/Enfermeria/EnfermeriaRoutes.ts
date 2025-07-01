@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { EnfermerosController } from "./EnfermerosController";
 import { Conexion } from "../../data/conexion";
+import { MiddlewareFor } from "../../middlewares/MiddlewareFor";
 
 
 
@@ -11,6 +12,9 @@ export class EnfermeriaRoutes{
 
         const router = Router();
         const controller = new EnfermerosController();
+        router.use(MiddlewareFor.InicializarSessionEnfermero)
+
+        router.get("/test", controller.test)
 
         router.get("/", controller.vistaPrincipal);
         router.get("/view/paciente", controller.vistaPacienteSeleccionado);
@@ -18,8 +22,11 @@ export class EnfermeriaRoutes{
         router.get("/view/historial/paciente", controller.vistaHistorialMedico);
         router.get("/view/alergias/paciente", controller.vistaListaAlergias);
         router.get("/view/crear/alergia", controller.vistaCrearAlergia);
+        
         router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
-        router.get("/test", controller.test)
+        router.post("/crearAlergia", controller.crearAlergia)
+       
+        
 
         return router
     }

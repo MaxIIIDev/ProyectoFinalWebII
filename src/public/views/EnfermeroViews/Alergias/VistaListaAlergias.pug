@@ -139,8 +139,10 @@ html(lang="es")
                                         tr
                                             td= alergia.dataValues.nombre_alergia.dataValues.nombre
                                             td= alergia.dataValues.descripcion
-                                            td= alergia.dataValues.tratamiento.dataValues.detalle
-
+                                            if alergia.dataValues.tratamiento != undefined
+                                                td= alergia.dataValues.tratamiento.dataValues.detalle
+                                            else 
+                                                td No hay tratamiento asignado
                                             td
                                                 
                                                 a.btn.btn-action.btn-success.btn-sm(
