@@ -14,7 +14,7 @@ export class TratamientosService {
     public static async getTratamientosByIdPaciente(id_paciente: number): Promise<[string?,paciente_tratamientos[]?]> {
         try {
             if(!id_paciente || id_paciente < 0) return ["El id del paciente es inválido", undefined];
-            if(! await PacienteServices.buscarPacienteDesconocido(id_paciente).then(res=> res[1])) return ["El paciente no existe", undefined];
+            if(! await PacienteServices.getPacienteById(id_paciente).then(res=> res[1])) return ["El paciente no existe", undefined];
             const tratamientosDelPaciente = await paciente_tratamientos.findAll({
                 where: {
                     id_paciente: id_paciente
@@ -48,7 +48,7 @@ export class TratamientosService {
         try {
 
             if(!await TipoDeTratamientoService.buscarTipoDeTratamientoPorId(_createTratamientoDto.id_tipo_de_tratamiento).then(res => res[1])) return ["El tipo de tratamiento no existe", undefined];
-            if(!await PacienteServices.buscarPacienteDesconocido(_createTratamientoDto.id_paciente).then(res => res[1])) return ["El paciente no existe", undefined];
+            if(!await PacienteServices.getPacienteById(_createTratamientoDto.id_paciente).then(res => res[1])) return ["El paciente no existe", undefined];
             if(_createTratamientoDto.id_medico && !await MedicoService.getMedicoById(_createTratamientoDto.id_medico).then(res => res[1])) return ["El médico no existe", undefined];
             if(_createTratamientoDto.id_enfermero && !await EnfermerosService.getEnfermeroById(_createTratamientoDto.id_enfermero).then(res=>res[1])) return ["El enfermero no existe", undefined];
 
@@ -65,7 +65,7 @@ export class TratamientosService {
         try {
             if(!await paciente_tratamientos.findOne({ where: { id: _updateTratamientoDto.id_tratamiento } })) return ["El tratamiento no existe", undefined];
             if(!await TipoDeTratamientoService.buscarTipoDeTratamientoPorId(_updateTratamientoDto.id_tipo_de_tratamiento).then(res => res[1])) return ["El tipo de tratamiento no existe", undefined];
-            if(!await PacienteServices.buscarPacienteDesconocido(_updateTratamientoDto.id_paciente).then(res => res[1])) return ["El paciente no existe", undefined];
+            if(!await PacienteServices.getPacienteById(_updateTratamientoDto.id_paciente).then(res => res[1])) return ["El paciente no existe", undefined];
             if(_updateTratamientoDto.id_medico && !await MedicoService.getMedicoById(_updateTratamientoDto.id_medico).then(res => res[1])) return ["El médico no existe", undefined];
             if(_updateTratamientoDto.id_enfermero && !await EnfermerosService.getEnfermeroById(_updateTratamientoDto.id_enfermero).then(res=>res[1])) return ["El enfermero no existe", undefined];
 

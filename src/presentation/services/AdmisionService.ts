@@ -83,9 +83,9 @@ export class AdmisionService {
         }
     }
 
-    public static async buscarTodasLasAdmisiones(modo:number): Promise<[string?, Admision[]?]> {
+    public static async buscarTodasLasAdmisiones(modo?:number): Promise<[string?, Admision[]?]> {
         try {
-            if(modo === 1){ //*modo 1 trae todas las admisiones
+            if(modo && modo === 1){ //*modo 1 trae todas las admisiones
                 const admisiones = await Admision.findAll({
                     include: [
                         {
@@ -122,7 +122,19 @@ export class AdmisionService {
                     },
                     {
                         model: Hospital_camas,
-                        as: "camas"
+                        as: "camas",
+                        include: [
+                            {
+                                model: Hospital_habitaciones,
+                                as: "habitacion",
+                                include: [
+                                        {
+                                            model: Hospital_alas,
+                                            as: "ala"
+                                    }
+                        ]
+                    }
+                        ]
                     },
                     {
                         model: motivo_De_Internacion,

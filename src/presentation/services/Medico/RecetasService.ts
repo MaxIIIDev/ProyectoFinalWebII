@@ -28,7 +28,7 @@ export class RecetasService {
     public static async buscarTodaslasRecetasDelPaciente(id_Paciente: number):Promise<[string?,Paciente_recetas[]?]>{//todo:TESTEAR
         try {
             if(!id_Paciente || id_Paciente < 0) return ["El id_Paciente es nulo o menor que 0"]
-            if(!await PacienteServices.buscarPacienteDesconocido(id_Paciente).then(res => res[0])) return ["No se ha encontrado registrado el paciente"]
+            if(!await PacienteServices.getPacienteById(id_Paciente).then(res => res[0])) return ["No se ha encontrado registrado el paciente"]
             const recetasDelPaciente = await Paciente_recetas.findAll({
                 where: {
                     id_Paciente: id_Paciente
@@ -44,7 +44,7 @@ export class RecetasService {
     public static async crearReceta(_createRecetaDto:createRecetaDto):Promise<[string?,Paciente_recetas?]>{//todo:TESTEAR
         try {
             
-            if(!await PacienteServices.buscarPacienteDesconocido(_createRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente"]
+            if(!await PacienteServices.getPacienteById(_createRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente"]
             if(!await MedicoService.getMedicoById(_createRecetaDto.id_medico).then(res => res[1])) return ["No se encontro el medico registrado con dicho Id"]
             if(!await MedicamentosServices.buscarMedicamentoPorId(_createRecetaDto.id_medicamento).then(res => res[1])) return ["No se encontro un medicamento registrado con dicho Id"]
 
@@ -61,7 +61,7 @@ export class RecetasService {
     public static async actualizarReceta(_updateRecetaDto: updateRecetaDto):Promise<[string?, boolean?]>{//todo:TESTEAR
         try {
             if(!await this.buscarRecetaPorId(_updateRecetaDto.id_Receta).then(res => res[1])) return ["La receta con dicho id no se encontro registrada", false]
-            if(!await PacienteServices.buscarPacienteDesconocido(_updateRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente", false]
+            if(!await PacienteServices.getPacienteById(_updateRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente", false]
             if(!await MedicoService.getMedicoById(_updateRecetaDto.id_medico).then(res => res[1])) return ["No se encontro el medico registrado con dicho Id", false]
             if(!await MedicamentosServices.buscarMedicamentoPorId(_updateRecetaDto.id_medicamento).then(res => res[1])) return ["No se encontro un medicamento registrado con dicho Id", false]
             const recetaActualizada = await Paciente_recetas.update(updateRecetaDto.toObject(_updateRecetaDto), {

@@ -12,7 +12,12 @@ export class EnfermeriaRoutes{
         const router = Router();
         const controller = new EnfermerosController();
 
-        router.get("/hola", controller.getEnfermeros);
+        router.get("/", controller.vistaPrincipal);
+        router.get("/view/paciente", controller.vistaPacienteSeleccionado);
+        router.get("/view/actualizar/paciente", controller.vistaActualizarInformacionPaciente);
+
+        router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
+
         router.get("/test", controller.test)
 
         return router

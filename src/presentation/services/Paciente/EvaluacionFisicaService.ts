@@ -30,7 +30,7 @@ export class EvaluacionFisicaService {
         try {
             
             if(!id_Paciente || id_Paciente < 0) return ["id_Paciente es nulo o es menor a 0"]
-            if(!PacienteServices.buscarPacienteDesconocido(id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
+            if(!PacienteServices.getPacienteById(id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
             const evaluacionesFisicasPorPaciente = await Paciente_Evaluacion_Fisica.findAll({
                 where: {
                     id_Paciente: id_Paciente
@@ -63,7 +63,7 @@ export class EvaluacionFisicaService {
 
     public static async crearEvaluacionFisica(_createEvaluacionFisicaDto: CreateEvaluacionFisicaDto):Promise<[string?, Paciente_Evaluacion_Fisica?]>{
         try {
-            if(! await PacienteServices.buscarPacienteDesconocido(_createEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
+            if(! await PacienteServices.getPacienteById(_createEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
             if(! await AdmisionService.buscarAdmisionPorId(_createEvaluacionFisicaDto.id_Admision).then(res => res[1])) return ["No se encontro una admision registrada con dicho id", undefined]
             //todo: Verificar que el id_Enfermero sea un id de enfermero valido
             const buscarEvaluacionFisicaIdentica = await Paciente_Evaluacion_Fisica.findOne({
@@ -81,7 +81,7 @@ export class EvaluacionFisicaService {
     public static async actualizarEvaluacionFisica(_updateEvaluacionFisicaDto: updateEvaluacionFisicaDto):Promise<[string?, string?]>{
         try {
             if(this.buscarEvaluacionFisicaPorId(_updateEvaluacionFisicaDto.id_Evaluacion_fisica).then(res => res[1]) === undefined) return ["No se encontro una evaluacion fisica registrada con dicho id", undefined]
-            if(! await PacienteServices.buscarPacienteDesconocido(_updateEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
+            if(! await PacienteServices.getPacienteById(_updateEvaluacionFisicaDto.id_Paciente).then(res => res[1])) return ["No se encontro un paciente registrado con dicho id", undefined]
             if(! await AdmisionService.buscarAdmisionPorId(_updateEvaluacionFisicaDto.id_Admision).then(res => res[1])) return ["No se encontro una admision registrada con dicho id", undefined]
             //todo: Verificar que el id_Enfermero sea un id de enfermero valido
             const actualizarEvaluacionFisica = await Paciente_Evaluacion_Fisica.update(

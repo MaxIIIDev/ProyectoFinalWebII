@@ -25,7 +25,7 @@ export class AlergiaService {
         try {
             
             if(!_id_Paciente || _id_Paciente < 0 ) return ["El id_Paciente es nulo o es menor que 0", undefined]
-            if(!(await PacienteServices.buscarPacienteDesconocido(_id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_id_Paciente).then(res => res[0]))){
                 return ["No se encontro dicho paciente registrado", undefined]
             }
             const alergiasEncontradas = await Paciente_Alergias.findAll({

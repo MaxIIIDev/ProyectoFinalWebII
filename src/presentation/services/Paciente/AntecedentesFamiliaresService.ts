@@ -27,7 +27,7 @@ export class AntecedentesFamiliaresService{
     public static async buscarAntecedentesFamiliaresPorPaciente(id_Paciente: number): Promise<[string?,AntecedentesFamiliaresService[]?]>{//todo: TESTEAR
         try {
             if(!id_Paciente || Number(id_Paciente) < 0 ) return ["El id_Paciente es nulo || id_Paciente es menor que 0"]
-            if(!(await PacienteServices.buscarPacienteDesconocido(id_Paciente).then(res => res[1]))){
+            if(!(await PacienteServices.getPacienteById(id_Paciente).then(res => res[1]))){
                 return ["El paciente no se encuentra registrado", undefined]
             }
             const antecedentesFamiliaresDelPaciente = await Paciente_antecedentes_familiares.findAll({
@@ -65,7 +65,7 @@ export class AntecedentesFamiliaresService{
     }
     public static async createAntecedenteFamiliar(_createAntecenteFamiliarDto: createAntecedenteFamiliarDto):Promise<[string?,Paciente_antecedentes_familiares?]>{//todo: TESTEAR
         try {
-            if(!(await PacienteServices.buscarPacienteDesconocido(_createAntecenteFamiliarDto.id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_createAntecenteFamiliarDto.id_Paciente).then(res => res[0]))){
                 return ["No se encontro regitrado el paciente", undefined]
             }
             if(!(await this.validarAntecedenteFamiliarIdentico(null, _createAntecenteFamiliarDto).then(res=> {
@@ -85,7 +85,7 @@ export class AntecedentesFamiliaresService{
     }
     public static async updateAntecedenteFamiliar(_updateAntecedenteFamiliarDto:updateAntecedenteFamiliarDto):Promise<[string?,boolean?]>{//todo: TESTEAR
         try {
-            if(!(await PacienteServices.buscarPacienteDesconocido(_updateAntecedenteFamiliarDto.id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_updateAntecedenteFamiliarDto.id_Paciente).then(res => res[0]))){
                 return ["No se encontro regitrado el paciente", undefined]
             }
             if(!(await this.validarAntecedenteFamiliarIdentico(null, _updateAntecedenteFamiliarDto).then(res=> {
@@ -111,7 +111,7 @@ export class AntecedentesFamiliaresService{
         try {
             if(!id_Paciente || id_Paciente < 0 ) return ["El id_Paciente es nulo o es menor que 0", false]
             if(!id_Antecedente_Familiar || id_Antecedente_Familiar < 0 ) return ["El id_Antecedente_Familiar es nulo o es menor que 0", false]
-            if(!(await PacienteServices.buscarPacienteDesconocido(id_Paciente).then(res=> res[1]))) return ["El paciente no se encuentra registrado", false]
+            if(!(await PacienteServices.getPacienteById(id_Paciente).then(res=> res[1]))) return ["El paciente no se encuentra registrado", false]
             if(!(await this.buscarAntecedenteFamiliarPorId(id_Antecedente_Familiar).then(res => res[1]))) return ["No se encontro registrado el antecedente familiar con dicho ID", false]
             const confirmacionEliminacion = await Paciente_antecedentes_familiares.destroy({
                 where:{
