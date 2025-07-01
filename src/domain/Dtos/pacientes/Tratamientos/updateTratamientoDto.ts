@@ -10,7 +10,7 @@ export class updateTratamientoDto {
         public id_tipo_de_tratamiento: number,
         public detalle: string,
         public cantidad_suministrada: number,
-        public fecha_de_inicio: string,
+        public fecha_de_inicio: string | null,
         public fecha_de_fin: string | null,
         public id_paciente: number,
         public id_medicamento: number,
@@ -42,10 +42,10 @@ export class updateTratamientoDto {
             if(!object.id_tipo_de_tratamiento || object.id_tipo_de_tratamiento < 0) return ["Se requiere id_tipo_de_tratamiento"];
             if(!object.detalle || object.detalle.trim() === "") return ["Se requiere detalle"];
             if(!object.cantidad_suministrada || isNaN(object.cantidad_suministrada) || object.cantidad_suministrada <= 0) return ["Se requiere cantidad_suministrada"];
-            if(!object.fecha_de_inicio) return ["Se requiere fecha_de_inicio"];
+           
             
-            const fechaParseada = new Date(object.fecha_de_inicio).toISOString().split('T')[0]; // Formato YYYY-MM-DD
-            if(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
+            const fechaParseada = object.fecha_de_inicio ? new Date(object.fecha_de_inicio).toISOString().split('T')[0] : null; // Formato YYYY-MM-DD
+            if(fechaParseada && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fechaParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
             
             const fecha_de_finParseada = object.fecha_de_fin ? new Date(object.fecha_de_fin).toISOString().split('T')[0] : null; // Formato YYYY-MM-DD
             if( fecha_de_finParseada && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha_de_finParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]

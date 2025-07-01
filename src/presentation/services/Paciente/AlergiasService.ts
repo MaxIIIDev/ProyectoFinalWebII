@@ -142,4 +142,22 @@ export class AlergiaService {
             return [error as string, false]
         }
     }
+    public static async eliminarTratamientoDeAlergia(_id_Alergia: number): Promise<[string?, boolean?]>{
+        try {
+            if(!_id_Alergia || _id_Alergia < 0) return ["id_Alergia es menor que 0 o es null"]
+            if(!(await this.buscarAlergiaPorId(_id_Alergia).then(res => res[1]))){
+                return ["No se encuentra dicha alergia registrada", false]
+            }
+            const confirmacion = await Paciente_Alergias.update({id_tratamiento: null},{
+                where: {
+                    id_Alergia: _id_Alergia
+                }
+            })
+            if(!confirmacion || confirmacion[0] == 0) return ["No se elimino la alergia", false]
+            return [undefined, true]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarTratamientoDeAlergia","AlergiaService","149",error as string)
+            return [error as string, false]
+        }
+    }
 }

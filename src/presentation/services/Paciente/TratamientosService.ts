@@ -33,7 +33,7 @@ export class TratamientosService {
             if(!id_tratamiento || id_tratamiento < 0) return ["El id del tratamiento es inválido", undefined];
             const tratamiento = await paciente_tratamientos.findOne({
                 where: {
-                    id: id_tratamiento
+                    id_tratamiento: id_tratamiento
                 }
             })
             if(!tratamiento) return ["El tratamiento no existe", undefined];
@@ -63,7 +63,7 @@ export class TratamientosService {
     }
     public static async actualizarTratamiento(_updateTratamientoDto:updateTratamientoDto):Promise<[string?,number?]>{
         try {
-            if(!await paciente_tratamientos.findOne({ where: { id: _updateTratamientoDto.id_tratamiento } })) return ["El tratamiento no existe", undefined];
+            if(!await paciente_tratamientos.findOne({ where: { id_tratamiento: _updateTratamientoDto.id_tratamiento } })) return ["El tratamiento no existe", undefined];
             if(!await TipoDeTratamientoService.buscarTipoDeTratamientoPorId(_updateTratamientoDto.id_tipo_de_tratamiento).then(res => res[1])) return ["El tipo de tratamiento no existe", undefined];
             if(!await PacienteServices.getPacienteById(_updateTratamientoDto.id_paciente).then(res => res[1])) return ["El paciente no existe", undefined];
             if(_updateTratamientoDto.id_medico && !await MedicoService.getMedicoById(_updateTratamientoDto.id_medico).then(res => res[1])) return ["El médico no existe", undefined];
