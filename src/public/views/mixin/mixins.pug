@@ -87,4 +87,7 @@ mixin cargarMedicosYSeleccionarDesdeDb(medicos, actual)
 mixin cargarHorariosYSeleccionar(horarios, actual)
     for horario of horarios 
         option( value = horario.dataValues.id_horario_turno, selected=(horario.dataValues.id_horario_turno == actual.dataValues.id_horario_turno)) #{horario.dataValues.hora}  
-       
+
+mixin cargarNombresDeAlergia(nombresDeAlergias)
+    for nombreDeAlergia of nombresDeAlergias 
+        option(value=nombreDeAlergia.dataValues.id_nombre_alergia) #{nombreDeAlergia.dataValues.nombre}

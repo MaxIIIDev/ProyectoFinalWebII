@@ -1,10 +1,26 @@
+import { nombre_Alergia } from "../../../data/models/Nombre_Alergia";
 import { Paciente_Alergias } from "../../../data/models/Paciente_Alergias";
+import { paciente_tratamientos } from "../../../data/models/paciente_tratamientos";
 import { createAlergiaDto } from "../../../domain/Dtos/pacientes/Alergias/createAlergiaDto";
 import { updateAlergiaDto } from "../../../domain/Dtos/pacientes/Alergias/updateAlergiaDto";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 import { PacienteServices } from "../PacientesService";
 
 export class AlergiaService {
+    public static async buscarTodosLosNombresDeAlergia():Promise<[string?, nombre_Alergia[]?]> {//todo: Falta testear
+
+        try {
+            
+            const nombresDeAlergia = await nombre_Alergia.findAll();
+            if(!nombresDeAlergia || nombresDeAlergia.length <= 0) return ["No se encontraron nombres de alergia registrados", undefined]
+            return [undefined, nombresDeAlergia]
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodosLosNombresDeAlergia","AlergiaService","3",error as string)
+            return [error as string, undefined]
+        }
+
+    }
     public static async buscarAlergiaPorId(_id_Alergia):Promise<[string?,Paciente_Alergias?]>{ //todo: Falta testear
         try {
             if(!_id_Alergia) return ["Se requiere id_Alergia"]
@@ -25,13 +41,23 @@ export class AlergiaService {
         try {
             
             if(!_id_Paciente || _id_Paciente < 0 ) return ["El id_Paciente es nulo o es menor que 0", undefined]
-            if(!(await PacienteServices.getPacienteById(_id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_id_Paciente).then(res => res[1]))){
                 return ["No se encontro dicho paciente registrado", undefined]
             }
             const alergiasEncontradas = await Paciente_Alergias.findAll({
                 where: {
                     id_paciente: _id_Paciente
-                }
+                },
+                include: [
+                    {
+                        model: nombre_Alergia,
+                        as: "nombre_alergia"
+                    },
+                    {
+                        model: paciente_tratamientos,
+                        as: "tratamiento"
+                    }
+                ]
             })
             if(!alergiasEncontradas || alergiasEncontradas.length <= 0) return ["No se encontraron alergias para dicho paciente", undefined]
             return [undefined, alergiasEncontradas]

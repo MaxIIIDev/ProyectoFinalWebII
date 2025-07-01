@@ -65,7 +65,7 @@ export class AntecedentesFamiliaresService{
     }
     public static async createAntecedenteFamiliar(_createAntecenteFamiliarDto: createAntecedenteFamiliarDto):Promise<[string?,Paciente_antecedentes_familiares?]>{//todo: TESTEAR
         try {
-            if(!(await PacienteServices.getPacienteById(_createAntecenteFamiliarDto.id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_createAntecenteFamiliarDto.id_Paciente).then(res => res[1]))){
                 return ["No se encontro regitrado el paciente", undefined]
             }
             if(!(await this.validarAntecedenteFamiliarIdentico(null, _createAntecenteFamiliarDto).then(res=> {
@@ -85,7 +85,7 @@ export class AntecedentesFamiliaresService{
     }
     public static async updateAntecedenteFamiliar(_updateAntecedenteFamiliarDto:updateAntecedenteFamiliarDto):Promise<[string?,boolean?]>{//todo: TESTEAR
         try {
-            if(!(await PacienteServices.getPacienteById(_updateAntecedenteFamiliarDto.id_Paciente).then(res => res[0]))){
+            if(!(await PacienteServices.getPacienteById(_updateAntecedenteFamiliarDto.id_Paciente).then(res => res[1]))){
                 return ["No se encontro regitrado el paciente", undefined]
             }
             if(!(await this.validarAntecedenteFamiliarIdentico(null, _updateAntecedenteFamiliarDto).then(res=> {

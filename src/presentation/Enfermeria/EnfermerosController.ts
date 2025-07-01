@@ -3,6 +3,7 @@ import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { AdmisionService } from "../services/AdmisionService";
 import { PacienteServices } from "../services/PacientesService";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
+import { AlergiaService } from "../services/Paciente/AlergiasService";
 
 
 export class EnfermerosController{
@@ -11,6 +12,9 @@ export class EnfermerosController{
     public getEnfermeros = (req:Request,res:Response):void => {
         res.send("hola estas en el metodo get enfermeros");
     }
+    //////////////////////////////////////////////////Todo
+    //////////////////todo VISTAS ///////////
+    //////////////////////////////////////////////////Todo
 
     public test = (req:Request,res:Response):void =>{
         try {
@@ -212,6 +216,155 @@ export class EnfermerosController{
         }
     }
 
+    public vistaHistorialMedico = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede ver el historial medico de un paciente desconocido"))
+                return;
+            }
+            const confirmacion = req.query.confirmacion || undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            if(confirmacion) {
+                res.render("EnfermeroViews/vistaHistorialMedico.pug",{
+                    success: confirmacion,
+                    paciente: req.session.paciente,
+                })
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/vistaHistorialMedico.pug",{
+                    warning: warning,
+                    paciente: req.session.paciente,
+                })
+                return
+            }
+            if(error){
+                res.render("EnfermeroViews/vistaHistorialMedico.pug",{
+                    error: error,
+                    paciente: req.session.paciente,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/vistaHistorialMedico.pug",{
+                paciente: req.session.paciente,
+            })
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaHistorialMedico", "55", error as string);
+            res.redirect(`/enfermeria/?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaListaAlergias = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede ver la lista de alergias de un paciente desconocido"))
+                return;
+            }
+            const confirmacion = req.query.confirmacion || undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const alergias = await AlergiaService.buscarTodasLasAlergiasPorPaciente(req.session.paciente.id_Paciente);
+            if(alergias[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergias[0])}`);
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
+                    success: confirmacion,
+                    alergias: alergias[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
+                    warning: warning,
+                    alergias: alergias[1]
+                })
+                return
+            }
+            if(error){
+                res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
+                    error: error,
+                    alergias: alergias[1]
+                })
+                return
+            }
+            console.log(alergias[1]);
+            
+            res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
+                    alergias: alergias[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaAlergias", "58", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaCrearAlergia = async (req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
+                return;
+            }
+            const confirmacion = req.query.confirmacion || undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const nombresDeAlergia = await AlergiaService.buscarTodosLosNombresDeAlergia();
+            if(nombresDeAlergia[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(nombresDeAlergia[0])}`);
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Alergias/VistaCrearAlergia.pug", {
+                    success: confirmacion,
+                    nombresDeAlergias: nombresDeAlergia[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/Alergias/VistaCrearAlergia.pug", {
+                    warning: warning,
+                    nombresDeAlergias: nombresDeAlergia[1]
+                })
+                return
+            }
+            if(error){
+                res.render("EnfermeroViews/Alergias/VistaCrearAlergia.pug", {
+                    error: error,
+                    nombresDeAlergias: nombresDeAlergia[1]
+                })
+                return
+            }
+            
+            res.render("EnfermeroViews/Alergias/VistaCrearAlergia.pug", {
+                nombresDeAlergias: nombresDeAlergia[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearAlergia", "70", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+
+    //////////////////////////////////////////////////Todo
+    //////////////////todo FUNCIONALIDADES ///////////
+    //////////////////////////////////////////////////Todo
     public actualizarInformacionPaciente = async (req:Request, res:Response) => {
         try {
             if(!req.session.paciente.dni){

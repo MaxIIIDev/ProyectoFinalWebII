@@ -3,7 +3,7 @@ html(lang="es")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Historial Medico
+    title Atencion de Paciente
     link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
     link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
     style.
@@ -35,7 +35,7 @@ html(lang="es")
         border: 1px solid rgba(255,255,255,0.1);
       }
       .panel-container {
-        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        background: linear-gradient(135deg, #2c3e50 0%,rgb(186, 52, 219) 100%);
         min-height: 100vh;
       }
       .buttons-container {
@@ -113,30 +113,30 @@ html(lang="es")
   body
     include ../layout/alerts.pug
     .panel-container.d-flex.flex-column.justify-content-center.align-items-center.p-4
-      a.home-btn(href="/enfermeria/") 
+      a.home-btn(href="/enfermeria/view/paciente") 
         i.bi.bi-house-door-fill
       h1.patient-title Paciente:  #{paciente.nombre} #{paciente.apellido}
       
       .buttons-container
-        a.btn.btn-panel.btn-edit(href=`/enfermeria/view/actualizar/paciente` role="button")
+        a.btn.btn-panel.btn-edit(href=`/enfermeria/view/alergias/paciente` role="button")
           i.bi.bi-pencil-square.me-3
-          | Actualizar Paciente
+          | Alergias
         
-        a.btn.btn-panel.btn-medical.p5-2(href="/enfermeria/view/historial/paciente" role="button")
+        a.btn.btn-panel.btn-medical.p5-2(href="/enfermeria" role="button")
           i.bi.bi-heart-pulse.me-3
-          | Historial Medico
+          | Medicamentos Actuales
         
         a.btn.btn-panel.btn-appointment(href="/enfermeria" role="button")
           i.bi.bi-calendar-plus.me-3
-          | Internacion
+          | Antecedentes Familiares
         
         a.btn.btn-panel.btn-admission(href="/enfermeria" role="button" )
           i.bi.bi-clipboard2-pulse.me-3
-          |Evaluacion Fisica
+          | Diagnosticos
         
-        a.btn.btn-panel.btn-delete(href="/admision/borrar" role="button" disabled=true)
+        a.btn.btn-panel.btn-delete(href="/enfermeria" role="button")
           i.bi.bi-trash3.me-3
-          | Plan de Cuidados Preliminar
+          | Cirugias
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
     script.

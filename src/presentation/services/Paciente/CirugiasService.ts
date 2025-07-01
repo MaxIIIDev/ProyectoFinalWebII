@@ -39,7 +39,7 @@ export class CirugiasService {
     public static async buscarCirugiasPorPaciente( id_paciente: number):Promise<[string?, Paciente_Cirugias[]?]>{//todo:TESTEAR
         try {
             if(!id_paciente || id_paciente < 0) return ["Se requiere id_paciente o es menor que 0", undefined]
-            if(!(await PacienteServices.getPacienteById(id_paciente).then(res=> res[0]))){
+            if(!(await PacienteServices.getPacienteById(id_paciente).then(res=> res[1]))){
                 return ["No se encontro el paciente registrado", undefined]
             }
             const cirugiaEncontrada = await Paciente_Cirugias.findAll({
@@ -58,7 +58,7 @@ export class CirugiasService {
         try {
             if(!id_cirugia || id_cirugia < 0) return ["id_cirugia es nulo o es menor que 0", false]
             if(!id_paciente || id_paciente < 0) return ["id_paciente es nulo o es menor que 0", false]
-            if(!(await PacienteServices.getPacienteById(id_paciente).then(res=> res[0]))){
+            if(!(await PacienteServices.getPacienteById(id_paciente).then(res=> res[1]))){
                 return ["No se encontro el paciente registrado", undefined]
             }
             if(!(await this.buscarCirugiaPorId(id_cirugia).then(res=> res[1]))){
