@@ -91,3 +91,6 @@ mixin cargarHorariosYSeleccionar(horarios, actual)
 mixin cargarNombresDeAlergia(nombresDeAlergias)
     for nombreDeAlergia of nombresDeAlergias 
         option(value=nombreDeAlergia.dataValues.id_nombre_alergia) #{nombreDeAlergia.dataValues.nombre}
+mixin cargarNombresDeAlergiaYSeleccionar(nombresDeAlergias, alergiaActual)
+    for nombreDeAlergia of nombresDeAlergias
+        option(value=nombreDeAlergia.dataValues.id_nombre_alergia, selected=(nombreDeAlergia.dataValues.id_nombre_alergia === alergiaActual.id_nombre_alergia)) #{nombreDeAlergia.dataValues.nombre}

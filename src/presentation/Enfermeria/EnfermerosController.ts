@@ -5,6 +5,7 @@ import { PacienteServices } from "../services/PacientesService";
 import { UpdatePacienteDto } from "../../domain/Dtos/pacientes/updatePacienteDto";
 import { AlergiaService } from "../services/Paciente/AlergiasService";
 import { createAlergiaDto } from "../../domain/Dtos/pacientes/Alergias/createAlergiaDto";
+import { updateAlergiaDto } from "../../domain/Dtos/pacientes/Alergias/updateAlergiaDto";
 
 
 export class EnfermerosController{
@@ -363,6 +364,68 @@ export class EnfermerosController{
             return;
         }
     }
+    public vistaActualizarAlergia = async (req:Request, res:Response) => {
+        try {
+            const id_Alergia = req.query.id_Alergia || undefined;
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
+                return;
+            }
+            const confirmacion = req.query.confirmacion || undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const nombresDeAlergia = await AlergiaService.buscarTodosLosNombresDeAlergia();
+            if(nombresDeAlergia[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(nombresDeAlergia[0])}`);
+                return;
+            }
+            const alergiaActual = await AlergiaService.buscarAlergiaPorId(Number(id_Alergia));
+            if(alergiaActual[0]){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaActual[0])}`);
+                return;
+            }
+            console.log(alergiaActual[1]);
+            
+            if(confirmacion){
+                res.render("EnfermeroViews/Alergias/VistaActualizarAlergia.pug", {
+                    success: confirmacion,
+                    nombresDeAlergias: nombresDeAlergia[1],
+                    alergiaActual: alergiaActual[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/Alergias/VistaActualizarAlergia.pug", {
+                    warning: warning,
+                    nombresDeAlergias: nombresDeAlergia[1],
+                    alergiaActual: alergiaActual[1]
+                })
+                return
+            }
+            if(error){
+                res.render("EnfermeroViews/Alergias/VistaActualizarAlergia.pug", {
+                    error: error,
+                    nombresDeAlergias: nombresDeAlergia[1],
+                    alergiaActual: alergiaActual[1]
+                })
+                return
+            }
+
+            res.render("EnfermeroViews/Alergias/VistaActualizarAlergia.pug", {
+                nombresDeAlergias: nombresDeAlergia[1],
+                alergiaActual: alergiaActual[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaActualizarAlergia", "75", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
 
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
@@ -464,6 +527,46 @@ export class EnfermerosController{
             return;
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearAlergia", "80", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public actualizarAlergia = async (req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar una alergia de un paciente desconocido"))
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/actualizar/alergia?error=" + encodeURIComponent("No se han recibido datos para actualizar la alergia"));
+                return;
+            }
+            const [errorDto, updateAlergiaDtoReady] = updateAlergiaDto.create({
+                id_Alergia: req.body.id_Alergia,
+                id_nombre_alergia: req.body.id_nombre_alergia,
+                descripcion: req.body.descripcion,
+                id_paciente: req.session.paciente.id_Paciente,
+                
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/alergia?error=${encodeURIComponent(errorDto)}&id_Alergia=${encodeURIComponent(req.body.id_Alergia)}`);
+                return;
+            }
+            const alergiaActualizada = await AlergiaService.actualizarAlergia(updateAlergiaDtoReady);
+            if(alergiaActualizada[0]){
+                res.redirect(`/enfermeria/view/actualizar/alergia?error=${encodeURIComponent(alergiaActualizada[0])}&id_Alergia=${encodeURIComponent(updateAlergiaDtoReady.id_Alergia)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/actualizar/alergia?confirmacion=${encodeURIComponent("Alergia actualizada correctamente")}&id_Alergia=${encodeURIComponent(updateAlergiaDtoReady.id_Alergia)}`);
+            return;
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarAlergia", "85", error as string);
             res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }
