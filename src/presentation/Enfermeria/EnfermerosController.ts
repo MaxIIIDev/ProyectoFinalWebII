@@ -11,6 +11,9 @@ import { TipoDeTratamientoService } from "../services/TipoDeTratamientoService";
 import { createTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/createTratamientoDto";
 import { TratamientosService } from "../services/Paciente/TratamientosService";
 import { updateTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/updateTratamientoDto";
+import { MedicacionActualService } from "../services/Paciente/MedicacionActualService";
+import { createMedicacionActualDto } from "../../domain/Dtos/pacientes/Medicacion Actual/createMedicacionActualDto";
+import { updateMedicacionActualDto } from "../../domain/Dtos/pacientes/Medicacion Actual/updateMedicacionActualDto";
 
 
 export class EnfermerosController{
@@ -64,7 +67,7 @@ export class EnfermerosController{
             
             
             for(let admision of admisiones[1]){
-                console.log(admision);
+                
                 const admisionFormateada: admisionesType = {
                     id_Admision: admision.dataValues.id_Admision,
                     Fecha: new Date(admision.dataValues.fecha_De_Admision).toISOString().split("T")[0],
@@ -108,7 +111,7 @@ export class EnfermerosController{
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const id_Admision = req.query.id_Admision || undefined;
-            console.log(id_Admision);
+            
             let id_AdmisionValida = undefined;
             if(id_Admision) id_AdmisionValida = Number(id_Admision);
             if(!id_Admision && req.session.admision) id_AdmisionValida = req.session.admision.id_Admision;
@@ -214,7 +217,7 @@ export class EnfermerosController{
                 })
                 return;
             } 
-            console.log(req.session.paciente.fecha_nac);
+            
             
             res.render("EnfermeroViews/vistaActualizarInformacionPaciente.pug", {
                 paciente: req.session.paciente,
@@ -310,8 +313,8 @@ export class EnfermerosController{
                 })
                 return
             }
-            console.log(alergias[1]);
-            
+   
+        
             res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
                     alergias: alergias[1]
             })
@@ -398,7 +401,7 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaActual[0])}`);
                 return;
             }
-            console.log(alergiaActual[1]);
+            
             
             if(confirmacion){
                 res.render("EnfermeroViews/Alergias/VistaActualizarAlergia.pug", {
@@ -473,7 +476,7 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(tiposDetratamiento[0])}`);
                 return;
             }
-            console.log(tiposDetratamiento[1]);
+            
             
             if(confirmacion){
                 res.render("EnfermeroViews/Alergias/VistaCrearTratamientoAlergia.pug", {
@@ -592,6 +595,176 @@ export class EnfermerosController{
             return;
         }
     }
+
+
+    public vistaListaMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+
+            const error = req.query.error || undefined
+            const confirmacion = req.query.confirmacion || undefined
+            
+            const medicacionesActualesDelPaciente = await MedicacionActualService.buscarLasMedicacionesActualesPorPacienteYAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision);
+            if(medicacionesActualesDelPaciente[0] && medicacionesActualesDelPaciente[1] && medicacionesActualesDelPaciente[1].length <= 0){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicacionesActualesDelPaciente[0])}`);
+                return;
+            }
+            
+            
+            if(error){
+                res.render("EnfermeroViews/MedicacionActual/vistaListarTodasLasMedicacionesActuales.pug", {
+                    medicacionesActuales: medicacionesActualesDelPaciente[1],
+                    error: error
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/MedicacionActual/vistaListarTodasLasMedicacionesActuales.pug", {
+                    medicacionesActuales: medicacionesActualesDelPaciente[1],
+                    success: confirmacion
+                })
+                return;
+            }
+            res.render("EnfermeroViews/MedicacionActual/vistaListarTodasLasMedicacionesActuales.pug", {
+                medicacionesActuales: medicacionesActualesDelPaciente[1]
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaMedicacionActual", "601", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaCrearMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
+                return;
+            }
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos();
+            if(medicamentos[0] && medicamentos[1] && medicamentos[1].length <= 0){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicamentos[0])}`);
+                return;
+            }
+            
+            if(error){
+                res.render("EnfermeroViews/MedicacionActual/vistaCrearMedicacionActual.pug", {
+                    error: error,
+                    medicamentos: medicamentos[1] 
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/MedicacionActual/vistaCrearMedicacionActual.pug", {
+                    warning: warning,
+                    medicamentos: medicamentos[1]    
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/MedicacionActual/vistaCrearMedicacionActual.pug", {
+                    success: confirmacion,
+                    medicamentos: medicamentos[1]    
+                })
+                return;
+            }
+            res.render("EnfermeroViews/MedicacionActual/vistaCrearMedicacionActual.pug",{
+                medicamentos: medicamentos[1]    
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearMedicacionActual", "646", error as string);
+            res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaEditarMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            const id_MedicacionActual = (req.query.id_Paciente_Medicacion_Actual ) ? Number(req.query.id_Paciente_Medicacion_Actual) : undefined;
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
+                return;
+            }
+            if(!id_MedicacionActual || id_MedicacionActual <= 0){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
+                return;
+            }
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos();
+            if(medicamentos[0] && medicamentos[1] && medicamentos[1].length <= 0){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicamentos[0])}`);
+                return;
+            }
+            const medicacionActual = await MedicacionActualService.buscarMedicacionActualPorId(id_MedicacionActual);
+            if(medicacionActual[0] && !medicacionActual[1] ){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicacionActual[0])}`);
+                return;
+            }
+            
+            if(error){
+                res.render("EnfermeroViews/MedicacionActual/vistaActualizarMedicacionActual.pug", {
+                    error: error,
+                    medicamentos: medicamentos[1],
+                    medicacionActual: medicacionActual[1] 
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/MedicacionActual/vistaActualizarMedicacionActual.pug", {
+                    warning: warning,
+                    medicamentos: medicamentos[1],
+                    medicacionActual: medicacionActual[1]    
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/MedicacionActual/vistaActualizarMedicacionActual.pug", {
+                    success: confirmacion,
+                    medicamentos: medicamentos[1],
+                    medicacionActual: medicacionActual[1]       
+                })
+                return;
+            }
+            console.log(medicacionActual[1]);
+            
+            res.render("EnfermeroViews/MedicacionActual/vistaActualizarMedicacionActual.pug",{
+                medicamentos: medicamentos[1],
+                medicamentoActual: medicacionActual[1]    
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaEditarMedicacionActual", "700", error as string);   
+            res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
@@ -649,7 +822,7 @@ export class EnfermerosController{
                 id_tipo_sanguineo: paciente[1].dataValues.id_tipo_sanguineo,
                 id_seguro_medico: paciente[1].dataValues.id_seguro_medico
             }
-            console.log(req.session.paciente);
+           
             
             res.redirect(`/enfermeria/view/actualizar/paciente?confirmacion=${encodeURIComponent("Paciente actualizado correctamente")}`);
             return;
@@ -957,6 +1130,116 @@ export class EnfermerosController{
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarTratamientoAlergia", "", error as string);
             res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
             return; 
+        }
+    }
+    public crearMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un medicamento actual para un paciente desconocido"))
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/crear/medicacion/actual?error=" + encodeURIComponent("No se han recibido datos para crear el medicamento actual"));
+                return;
+            }
+            const medicamento = await MedicamentosServices.buscarMedicamentoPorId(req.body.id_Medicamento)
+            if(medicamento[0]){
+                res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(medicamento[0])}`);
+                return;
+            }
+            const [errorDto, createMedicacionActualDtoReady] = createMedicacionActualDto.create({
+                id_Admision: req.session.admision.id_Admision,
+                id_Paciente: req.session.paciente.id_Paciente,
+                id_Medicamento: req.body.id_Medicamento || undefined
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/medicacion/actual?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const medicamentoCreado = await MedicacionActualService.crearMedicacionActual(createMedicacionActualDtoReady)
+            if(medicamentoCreado[0]){
+                res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(medicamentoCreado[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/medicacion/actual?confirmacion=${encodeURIComponent("Medicamento actual creado correctamente")}`);
+            return; 
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearMedicacionActual", "", error as string);
+            res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public actualizarMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/actualizar/medicacion/actual?error=" + encodeURIComponent("No se han recibido datos para actualizar"));
+                return;
+            }
+            const { id_Paciente_Medicacion_Actual, id_Medicamento } = req.body
+            const [errorDto, updateMedicacionActualDtoReady] = updateMedicacionActualDto.create({
+                id_Paciente_Medicacion_Actual: id_Paciente_Medicacion_Actual,
+                id_Admision: req.session.admision.id_Admision,
+                id_Paciente: req.session.paciente.id_Paciente,
+                id_Medicamento: id_Medicamento
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/medicacion/actual?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const medicacionActualActualizada = await MedicacionActualService.actualizarMedicacionActual(updateMedicacionActualDtoReady)
+            if(medicacionActualActualizada[0] && medicacionActualActualizada[1] == false){
+                res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(medicacionActualActualizada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/medicacion/actual?confirmacion=${encodeURIComponent("Medicacion actual actualizada correctamente")}`);
+            return; 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarMedicacionActual", "", error as string);
+            res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public eliminarMedicacionActual = async (req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
+                return;
+            }
+            
+            const id_Paciente_Medicacion_Actual = (req.query.id_Paciente_Medicacion_Actual) ?Number(req.query.id_Paciente_Medicacion_Actual) :undefined
+            if(!id_Paciente_Medicacion_Actual){
+                res.redirect("/enfermeria/view/medicacion/actual?error=" + encodeURIComponent("No se ha recibido el id de la medicacion actual"));
+                return;
+            }
+            const medicacionActualEliminada = await MedicacionActualService.eliminarMedicacionActual(id_Paciente_Medicacion_Actual)
+            if(medicacionActualEliminada[0] && medicacionActualEliminada[1] == false){
+                res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(medicacionActualEliminada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/medicacion/actual?confirmacion=${encodeURIComponent("Medicacion actual eliminada correctamente")}`);
+            return; 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarMedicacionActual", "", error as string);
+            res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;     
         }
     }
 }

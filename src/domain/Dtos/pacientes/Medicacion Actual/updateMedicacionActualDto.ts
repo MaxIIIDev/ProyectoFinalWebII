@@ -20,7 +20,7 @@ export class updateMedicacionActualDto{
             id_Medicamento: object.id_Medicamento
         }
     }
-    public static create(object: {[key:string]:any}){
+    public static create(object: {[key:string]:any}):[string?,updateMedicacionActualDto?]{
         try {
             if(!object.id_Paciente_Medicacion_Actual || Number(object.id_Paciente_Medicacion_Actual) < 0 ) return ["id_Paciente_Medicacion_Actual es nulo o menor que 0"]
             if(!object.id_Admision || Number(object.id_Admision) < 0) return ["El id_Admision es nulo o es menor que 0"]

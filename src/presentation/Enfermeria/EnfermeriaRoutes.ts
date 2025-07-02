@@ -25,7 +25,11 @@ export class EnfermeriaRoutes{
         router.get("/view/actualizar/alergia", controller.vistaActualizarAlergia);
         router.get("/view/crear/tratamiento/alergia", controller.vistaCrearTratamientoAlergia);
         router.get("/view/actualizar/tratamiento/alergia", controller.vistaActualizarTratamientoAlergia);
-        
+        router.get("/view/medicacion/actual", controller.vistaListaMedicacionActual);
+        router.get("/view/crear/medicacion/actual", controller.vistaCrearMedicacionActual);
+        router.get("/view/editar/medicacion/actual", controller.vistaEditarMedicacionActual);
+
+
         router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", controller.crearAlergia)
         router.post("/actualizarAlergia", controller.actualizarAlergia);
@@ -33,6 +37,9 @@ export class EnfermeriaRoutes{
         router.post("/crear/Tratamiento/Para/Alergia", controller.crearTratamientoAlergia);
         router.post("/actualizar/Tratamiento/Para/Alergia", controller.actualizarTratamientoAlergia);
         router.get("/eliminar/tratamiento/alergia", controller.eliminarTratamientoAlergia);
+        router.post("/crear/medicacion/actual", controller.crearMedicacionActual);
+        router.post("/actualizar/medicacion/actual", controller.actualizarMedicacionActual);
+        router.get("/eliminar/medicacion/actual", controller.eliminarMedicacionActual);
         return router
     }
 
