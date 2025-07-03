@@ -109,3 +109,9 @@ mixin cargarLazos(lazos,lazoActual)
     for lazo of lazos
         option(value=lazo.dataValues.id_Lazo_Familiar selected=((lazoActual) && lazoActual.dataValues.id_Lazo_Familiar == lazo.dataValues.id_Lazo_Familiar)) #{lazo.dataValues.lazo}
         
+mixin cargarNombresCirugias(nombreCirugias, cirugiaActual)
+    for nombreCirugia of nombreCirugias
+        option(value=nombreCirugia.dataValues.id_nombre_cirugia selected=((cirugiaActual) && cirugiaActual.dataValues.id_nombre_cirugia == nombreCirugia.dataValues.id_nombre_cirugia)) #{nombreCirugia.dataValues.nombre}
+mixin cargarMedicos(medicos, cirugiaActual)
+    for medico of medicos 
+        option(value = medico.dataValues.id_Medico selected=((cirugiaActual) && cirugiaActual.dataValues.id_medico == medico.dataValues.id_Medico)) #{medico.dataValues.nombre} #{medico.dataValues.apellido} - Especialidad: #{medico.dataValues.especialidad.dataValues.nombre}

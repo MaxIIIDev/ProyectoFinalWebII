@@ -4,7 +4,7 @@ import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 
 export class MedicoService {
 
-    public static async getAllMedicos(): Promise<[string?,any?]> {
+    public static async getAllMedicos(): Promise<[string?,Medicos[]?]> {
         try {
             const medicos = await Medicos.findAll({
                 include: [

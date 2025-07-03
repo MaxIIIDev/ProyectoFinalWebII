@@ -16,7 +16,7 @@ export class Paciente_Cirugias extends Model{
 
     @AllowNull(false)
     @NotNull
-    @Column(DataType.DATE)
+    @Column(DataType.DATEONLY)
     declare fecha:Date;
 
     @ForeignKey(()=> nombre_Cirugia)

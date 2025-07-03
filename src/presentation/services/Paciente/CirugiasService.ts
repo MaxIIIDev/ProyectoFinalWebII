@@ -1,3 +1,7 @@
+import { Op } from "sequelize";
+import { Especialidades } from "../../../data/models/Especialidades";
+import { Medicos } from "../../../data/models/Medicos";
+import { nombre_Cirugia } from "../../../data/models/Nombre_Cirugia";
 import { Paciente_Cirugias } from "../../../data/models/Paciente_Cirugias";
 import { createCirugiaDto } from "../../../domain/Dtos/pacientes/Cirugias/createCirugiaDto";
 import { updateCirugiaDto } from "../../../domain/Dtos/pacientes/Cirugias/updateCirugiaDto";
@@ -24,13 +28,40 @@ export class CirugiasService {
         }
 
     }
-    public static async buscarCirugiaIdentica(_createCirugiaDto : createCirugiaDto):Promise<[string?,boolean?]>{//todo:TESTEAR
+    public static async buscarCirugiaIdentica(_createCirugiaDto?: createCirugiaDto,_updateCirugiaDto?:updateCirugiaDto):Promise<[string?,boolean?]>{//todo:TESTEAR
         try {
-            const cirugiaEncontrada = Paciente_Cirugias.findOne({
-                where: createCirugiaDto.toObject(_createCirugiaDto)
-            })
-            if(!cirugiaEncontrada) return [undefined, false]
-            return [undefined, true]
+            if(_createCirugiaDto){
+                const cirugiaEncontrada = await Paciente_Cirugias.findOne({
+                    where: {
+                        id_nombre_cirugia: _createCirugiaDto.id_nombre_cirugia,
+                        id_medico: _createCirugiaDto.id_medico,
+                        id_paciente: _createCirugiaDto.id_paciente,
+                        id_Admision: _createCirugiaDto.id_Admision,
+                        descripcion: _createCirugiaDto.descripcion,
+                        fecha: _createCirugiaDto.fecha
+                    }
+                })
+                if(!cirugiaEncontrada) return [undefined, false]
+                return [undefined, true]
+            }
+            if(_updateCirugiaDto){
+                const cirugiaEncontrada = await Paciente_Cirugias.findOne({
+                    where: {
+                        id_nombre_cirugia: _updateCirugiaDto.id_nombre_cirugia,
+                        id_medico: _updateCirugiaDto.id_medico,
+                        id_paciente: _updateCirugiaDto.id_paciente,
+                        id_Admision: _updateCirugiaDto.id_Admision,
+                        descripcion: _updateCirugiaDto.descripcion,
+                        fecha: new Date().toISOString().split('T')[0],
+                        id_cirugia: {
+                            [Op.ne]: _updateCirugiaDto.id_cirugia
+                        }
+                    }
+                })
+                if(!cirugiaEncontrada) return [undefined, false]
+                return [undefined, true]
+            }
+            return [undefined, false]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarCirugiaIdentica","CirugiasServices","26",error as string)
             return [error as string ,false]
@@ -45,7 +76,23 @@ export class CirugiasService {
             const cirugiaEncontrada = await Paciente_Cirugias.findAll({
                 where: {
                     id_paciente: id_paciente
-                }   
+                },
+                include: [
+                    {
+                        model: nombre_Cirugia,
+                        as: "nombre_cirugia"
+                    },
+                    {
+                        model:Medicos,
+                        as:"medico",
+                        include: [
+                            {
+                                model: Especialidades,
+                                as: "especialidad"
+                            }
+                        ]
+                    }
+                ]
             })
             if(!cirugiaEncontrada) return ["El paciente no tiene cirugias asociadas", undefined]
             return [undefined, cirugiaEncontrada];
@@ -79,9 +126,9 @@ export class CirugiasService {
     }
     public static async crearCirugia(_createCirugiaDto: createCirugiaDto):Promise<[string?, Paciente_Cirugias?]>{//todo:TESTEAR
         try {
-            const cirugiaIdentica = await this.buscarCirugiaIdentica(_createCirugiaDto)
+            const cirugiaIdentica = await this.buscarCirugiaIdentica(_createCirugiaDto, null)
             if(!(cirugiaIdentica[0] == undefined && cirugiaIdentica[1] == false)){
-                return [cirugiaIdentica[0], undefined]
+                return ["Ya hay una cirugia identica registrada", undefined]
             }
             const cirugiaCreada = await Paciente_Cirugias.create(createCirugiaDto.toObject(_createCirugiaDto))
             if(!cirugiaCreada) return ["No se creo la cirugia", undefined]
@@ -95,6 +142,9 @@ export class CirugiasService {
         try {
             if(!(await this.buscarCirugiaPorId(_updateCirugiaDto.id_cirugia).then(res => res[1]))){
                 return ["No se encontro registrada la cirugia", false];
+            }
+            if(await this.buscarCirugiaIdentica(null,_updateCirugiaDto).then(res => res[1])){
+                return ["Ya hay una cirugia identica registrada", false];
             }
             const cirugiaActualizada = await Paciente_Cirugias.update(updateCirugiaDto.toObject(_updateCirugiaDto),{where: {
                 id_cirugia: _updateCirugiaDto.id_cirugia

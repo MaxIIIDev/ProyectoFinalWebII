@@ -19,6 +19,11 @@ import { Lazo_Familiar } from "../../data/models/Lazo_familiar";
 import { LazoFamiliarService } from "../services/Paciente/LazoFamiliarService";
 import { createAntecedenteFamiliarDto } from "../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/createAntecedenteFamiliarDto";
 import { updateAntecedenteFamiliarDto } from "../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/updateAntecedenteFamiliarDto";
+import { CirugiasService } from "../services/Paciente/CirugiasService";
+import { NombreCirugiasServices } from "../services/NombreCirugiasServices";
+import { MedicoService } from "../services/MedicoService";
+import { createCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/createCirugiaDto";
+import { updateCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/updateCirugiaDto";
 
 
 export class EnfermerosController{
@@ -198,14 +203,8 @@ export class EnfermerosController{
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
-           if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
+
+            
             if(confirmacion){
                 res.render("EnfermeroViews/vistaActualizarInformacionPaciente.pug", {
                     paciente: req.session.paciente,
@@ -238,14 +237,6 @@ export class EnfermerosController{
 
     public vistaHistorialMedico = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede ver el historial medico de un paciente desconocido"))
-                return;
-            }
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -281,14 +272,6 @@ export class EnfermerosController{
     }
     public vistaListaAlergias = async(req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede ver la lista de alergias de un paciente desconocido"))
-                return;
-            }
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -297,6 +280,7 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergias[0])}`);
                 return;
             }
+
             if(confirmacion){
                 res.render("EnfermeroViews/Alergias/VistaListaAlergias.pug", {
                     success: confirmacion,
@@ -332,16 +316,6 @@ export class EnfermerosController{
     }
     public vistaCrearAlergia = async (req:Request, res:Response) => {
         try {
-            
-            
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
-                return;
-            }
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -385,14 +359,6 @@ export class EnfermerosController{
     public vistaActualizarAlergia = async (req:Request, res:Response) => {
         try {
             const id_Alergia = req.query.id_Alergia || undefined;
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
-                return;
-            }
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -446,14 +412,7 @@ export class EnfermerosController{
     }
     public vistaCrearTratamientoAlergia = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un tratamiento para un paciente desconocido"))
-                return;
-            }
+            
             const confirmacion = req.query.confirmacion || undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -605,15 +564,6 @@ export class EnfermerosController{
     public vistaListaMedicacionActual = async (req:Request, res:Response) => {
         try {
             
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-
             const error = req.query.error || undefined
             const confirmacion = req.query.confirmacion || undefined
             
@@ -650,14 +600,7 @@ export class EnfermerosController{
     }
     public vistaCrearMedicacionActual = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
-                return;
-            }
+            
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const confirmacion = req.query.confirmacion || undefined;
@@ -702,18 +645,6 @@ export class EnfermerosController{
     public vistaEditarMedicacionActual = async (req:Request, res:Response) => {
         try {
             const id_MedicacionActual = (req.query.id_Paciente_Medicacion_Actual ) ? Number(req.query.id_Paciente_Medicacion_Actual) : undefined;
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
-                return;
-            }
             if(!id_MedicacionActual || id_MedicacionActual <= 0){
                 res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede editar la medicacion actual de un paciente desconocido"))
                 return;
@@ -772,14 +703,7 @@ export class EnfermerosController{
     }
     public vistaAntecedentesFamiliares = async(req:Request, res:Response) => {
         try {
-            if(!req.session.paciente    ){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
+            
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const confirmacion = req.query.confirmacion || undefined;
@@ -826,14 +750,7 @@ export class EnfermerosController{
     public vistaCrearAntecedentesFamiliares = async(req:Request, res:Response) => {
         try {
             
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"))
-                return;
-            }
+            
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const confirmacion = req.query.confirmacion || undefined;
@@ -878,14 +795,7 @@ export class EnfermerosController{
     }
     public vistaActualizarAntecedentesFamiliares = async(req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
+            
             const id_Antecedente_Familiar = (req.query.id_Antecedente_Familiar)? Number(req.query.id_Antecedente_Familiar) : undefined;
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
@@ -939,16 +849,134 @@ export class EnfermerosController{
             return; 
         }
     }
+    public  vistaListaCirugias = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const cirugias = await CirugiasService.buscarCirugiasPorPaciente(req.session.paciente.id_Paciente)
+            
+            if(cirugias[0] && cirugias[1] == undefined){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(cirugias[0])}`);
+                return;
+            }
+            
+            if(error){
+                res.render("EnfermeroViews/Cirugias/VistaListaCirugias.pug", {
+                    error: error,
+                    cirugias: cirugias[1],
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Cirugias/VistaListaCirugias.pug", {
+                    warning: warning,
+                    cirugias: cirugias[1],
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Cirugias/VistaListaCirugias.pug", {
+                    success: confirmacion,
+                    cirugias: cirugias[1],
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/Cirugias/VistaListaCirugias.pug", {
+                cirugias: cirugias[1],
+            })
+            return; 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaEditarAntecedentesFamiliares", "835", error as string);   
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return; 
+        }
+    }
+    public vistaCrearCirugia = async (req:Request, res:Response) => {
+        try {
+            const nombresCirugias = await NombreCirugiasServices.buscarTodosLosNombresDeCirugias();
+            if(nombresCirugias[0] && nombresCirugias[1] == undefined){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(nombresCirugias[0])}`);
+                return;
+            }
+            const medicos = await MedicoService.getAllMedicos();
+            if(medicos[0] && medicos[1] == undefined){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(medicos[0])}`);
+                return;
+            }
+            const error = req.query.error || undefined;
+            if(error){
+                res.render("EnfermeroViews/Cirugias/VistaCrearCirugia.pug", {
+                    error: error,
+                    nombresCirugias: nombresCirugias[1],
+                    medicos: medicos[1],
+                })
+                return; 
+            }
+            res.render("EnfermeroViews/Cirugias/VistaCrearCirugia.pug", {
+                nombresCirugias: nombresCirugias[1],
+                medicos: medicos[1],
+            })
+            return; 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearCirugia", "886", error as string);   
+            res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
+            return; 
+        }
+    }
+    public vistaActualizarCirugia = async(req:Request, res:Response) => {
+        try {
+            const id_cirugia = (req.query.id_cirugia)? Number(req.query.id_cirugia) : undefined;
+            if(!id_cirugia){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent("No se ha proporcionado un id de cirugia")}`);
+                return;
+            }
+            const [errorServicio, cirugia] = await CirugiasService.buscarCirugiaPorId(id_cirugia);
+            if(errorServicio && !cirugia){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(errorServicio)}`);
+                return;
+            }
+            const [ErrorServicioMedicos, medicos] = await MedicoService.getAllMedicos();
+            if(ErrorServicioMedicos && medicos == undefined){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(ErrorServicioMedicos)}`);
+                return;
+            }
+            const [ErrorServicioNombresCirugias, nombresCirugias] = await NombreCirugiasServices.buscarTodosLosNombresDeCirugias();
+            if(ErrorServicioNombresCirugias && nombresCirugias == undefined){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(ErrorServicioNombresCirugias)}`);
+                return;
+            }
+            const error = req.query.error || undefined;
+            if(error){
+                res.render("EnfermeroViews/Cirugias/VistaActualizarCirugia.pug", {
+                    error: error,
+                    cirugiaActual: cirugia,
+                    medicos: medicos,   
+                    nombresCirugias: nombresCirugias,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Cirugias/VistaActualizarCirugia.pug", {
+                cirugiaActual: cirugia,
+                medicos: medicos,
+                nombresCirugias: nombresCirugias,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaActualizarCirugia", "932", error as string);   
+            res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
     
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
     public actualizarInformacionPaciente = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
+            
+
             if(!req.body){
                 res.redirect("/enfermeria/view/actualizar/paciente?error=" + encodeURIComponent("No se han recibido datos para actualizar"));
                 return;
@@ -1009,14 +1037,7 @@ export class EnfermerosController{
     }
     public crearAlergia = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear una alergia para un paciente desconocido"))
-                return;
-            }
+            
             if(!req.body){
                 res.redirect("/enfermeria/view/crear/alergia?error=" + encodeURIComponent("No se han recibido datos para crear la alergia"));
                 return;
@@ -1047,14 +1068,7 @@ export class EnfermerosController{
     public actualizarAlergia = async (req:Request, res:Response) => {
         try {
             
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar una alergia de un paciente desconocido"))
-                return;
-            }
+            
             if(!req.body){
                 res.redirect("/enfermeria/view/actualizar/alergia?error=" + encodeURIComponent("No se han recibido datos para actualizar la alergia"));
                 return;
@@ -1088,14 +1102,7 @@ export class EnfermerosController{
         try {
             
             const id_nombre_alergia = req.query.id_nombre_alergia || undefined;
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede eliminar una alergia de un paciente desconocido"))
-                return;
-            }
+            
             if(!id_nombre_alergia){
                 res.redirect("/enfermeria/view/historial/paciente?error=" + encodeURIComponent("No se ha seleccionado una alergia para eliminar"));
                 return;
@@ -1117,14 +1124,7 @@ export class EnfermerosController{
     public crearTratamientoAlergia = async (req:Request, res:Response) => {
         try {
             const id_Alergia = Number(req.body.id_Alergia) || undefined;
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un tratamiento para un paciente desconocido"))
-                return;
-            }
+            
             if(!id_Alergia){
                 res.redirect("/enfermeria/view/crear/tratamiento/alergia?error=" + encodeURIComponent("No se ha seleccionado una alergia"));
                 return;
@@ -1194,14 +1194,6 @@ export class EnfermerosController{
     public actualizarTratamientoAlergia = async (req:Request, res:Response) => {
         try {
             const id_Alergia = Number(req.body.id_Alergia) || undefined;
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar un tratamiento para un paciente desconocido"))
-                return;
-            }
             if(!id_Alergia){
                 res.redirect("/enfermeria/view/actualizar/tratamiento/alergia?error=" + encodeURIComponent("No se ha seleccionado una alergia"));
                 return;
@@ -1256,14 +1248,7 @@ export class EnfermerosController{
     }
     public eliminarTratamientoAlergia = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede eliminar un tratamiento para un paciente desconocido"))
-                return;
-            }
+            
             const id_Alergia = Number(req.query.id_Alergia) || undefined
             if(!id_Alergia){
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent("No se ha seleccionado una alergia")}`);
@@ -1310,14 +1295,7 @@ export class EnfermerosController{
     public crearMedicacionActual = async (req:Request, res:Response) => {
         try {
             
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un medicamento actual para un paciente desconocido"))
-                return;
-            }
+            
             if(!req.body){
                 res.redirect("/enfermeria/view/crear/medicacion/actual?error=" + encodeURIComponent("No se han recibido datos para crear el medicamento actual"));
                 return;
@@ -1352,18 +1330,7 @@ export class EnfermerosController{
     }
     public actualizarMedicacionActual = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
-                return;
-            }
-            if(!req.body){
-                res.redirect("/enfermeria/view/actualizar/medicacion/actual?error=" + encodeURIComponent("No se han recibido datos para actualizar"));
-                return;
-            }
+            
             const { id_Paciente_Medicacion_Actual, id_Medicamento } = req.body
             const [errorDto, updateMedicacionActualDtoReady] = updateMedicacionActualDto.create({
                 id_Paciente_Medicacion_Actual: id_Paciente_Medicacion_Actual,
@@ -1390,14 +1357,7 @@ export class EnfermerosController{
     }
     public eliminarMedicacionActual = async (req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
-                return;
-            }
+            
             
             const id_Paciente_Medicacion_Actual = (req.query.id_Paciente_Medicacion_Actual) ?Number(req.query.id_Paciente_Medicacion_Actual) :undefined
             if(!id_Paciente_Medicacion_Actual){
@@ -1420,18 +1380,7 @@ export class EnfermerosController{
     public crearAntecedentesFamiliares = async (req:Request, res:Response) => {
         try {
             
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning=" + encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"));
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
-                return;
-            }
+            
             if(!req.body){
                 res.redirect("/enfermeria/view/crear/antecedentes/familiares?error=" + encodeURIComponent("No se han recibido datos para crear el antecedente familiar"));
                 return;
@@ -1465,18 +1414,7 @@ export class EnfermerosController{
     }
     public actualizarAntecedentesFamiliares = async(req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-                return;
-            }
+            
             if(!req.body){
                 res.redirect("/enfermeria/view/actualizar/antecedentes/familiares?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
                 return;
@@ -1509,18 +1447,7 @@ export class EnfermerosController{
     }
     public eliminarAntecedentesFamiliares = async(req:Request, res:Response) => {
         try {
-            if(!req.session.paciente){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
-                return;
-            }
-            if(!req.session.paciente.dni){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se puede eliminar un antecedente familiar de un paciente desconocido"));
-                return;
-            }
-            if(!req.session.admision){
-                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
-                return;
-            }
+            
             const id_Antecedente_Familiar = (req.query.id_Antecedente_Familiar)? Number(req.query.id_Antecedente_Familiar) : undefined;
             if(!id_Antecedente_Familiar){
                 res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent("No se ha proporcionado un id de antecedente familiar")}`);
@@ -1539,4 +1466,91 @@ export class EnfermerosController{
             return;     
         }
     }
+    public crearCirugia = async(req:Request, res:Response) => {
+        try {
+            
+            if(!req.body){
+                res.redirect("/enfermeria/view/crear/cirugia?error=" + encodeURIComponent("No se han recibido datos para crear la cirugia"));
+                return;
+            }
+            const { id_nombre_cirugia, descripcion, id_medico } = req.body
+            const [errorDto, createCirugiaDtoReady   ] = createCirugiaDto.create({
+                id_nombre_cirugia: id_nombre_cirugia,
+                descripcion: descripcion,
+                id_medico: id_medico,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_Admision: req.session.admision.id_Admision
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/cirugia?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const cirugiaCreada = await CirugiasService.crearCirugia(createCirugiaDtoReady)
+            if(cirugiaCreada[0] && cirugiaCreada[1] == undefined){
+                res.redirect(`/enfermeria/view/crear/cirugia?error=${encodeURIComponent(cirugiaCreada[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/cirugias?confirmacion=${encodeURIComponent("Cirugia creada correctamente")}`);
+            return;     
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearCirugia", "1427", error as string);   
+            res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public actualizarCirugia = async(req:Request, res:Response) => {
+        try {
+            
+            if(!req.body){
+                res.redirect("/enfermeria/view/actualizar/cirugia?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            const { id_cirugia, id_nombre_cirugia, descripcion, id_medico } = req.body
+            const [errorDto, updateCirugiaDtoReady   ] = updateCirugiaDto.create({
+                id_cirugia: id_cirugia,
+                id_nombre_cirugia: id_nombre_cirugia,
+                descripcion: descripcion,
+                id_medico: id_medico,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_Admision: req.session.admision.id_Admision
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/cirugia?error=${encodeURIComponent(errorDto)}&id_cirugia=${id_cirugia}`);
+                return;
+            }
+            const cirugiaActualizada = await CirugiasService.actualizarCirugia(updateCirugiaDtoReady)
+            if(cirugiaActualizada[0] && cirugiaActualizada[1] == false){
+                res.redirect(`/enfermeria/view/actualizar/cirugia?error=${encodeURIComponent(cirugiaActualizada[0])}&id_cirugia=${id_cirugia}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/cirugias?confirmacion=${encodeURIComponent("Cirugia actualizada correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarCirugia", "1457", error as string);   
+            res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }   
+    public eliminarCirugia = async(req:Request, res:Response) => {
+        try {
+            
+            const id_cirugia = (req.query.id_cirugia)? Number(req.query.id_cirugia) : undefined;
+            if(!id_cirugia){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent("No se ha proporcionado un id de cirugia")}`);
+                return;
+            }
+            const [error, cirugiaEliminada] = await CirugiasService.eliminarCirugia(id_cirugia, req.session.paciente.id_Paciente);
+            if(error && !cirugiaEliminada){
+                res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/cirugias?confirmacion=${encodeURIComponent("Cirugia eliminada correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarCirugia", "1457", error as string);   
+            res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }   
 }

@@ -41,4 +41,46 @@ export class MiddlewareFor {
             return 
         }
     }
+    static verificarSessionPaciente = (ruta:string,tipoDeAdvertencia:string,mensaje:string)=> (req:Request,res:Response,next:NextFunction) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect(`${ruta}?${tipoDeAdvertencia}=${encodeURIComponent(mensaje)}`)
+                return
+            }
+            next();
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("verificarSessionPaciente","MiddlewareFor","51",error as string)
+            res.redirect(`${ruta}?error=${encodeURIComponent(error as string)}`);
+            return
+        }
+    }
+    static verificarPacienteNoDesconocido = (ruta:string,tipoDeAdvertencia:string,mensaje:string)=> (req:Request,res:Response,next:NextFunction) => {
+        try {
+            if(!req.session.paciente.dni || req.session.paciente.dni < 0 || req.session.paciente.dni === undefined){
+                res.redirect(`${ruta}?${tipoDeAdvertencia}=${encodeURIComponent(mensaje)}`)
+                return
+            }
+            next();
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("verificarPacienteNoDesconocido","MiddlewareFor","59",error as string)
+            res.redirect(`${ruta}?error=${encodeURIComponent(error as string)}`);
+            return
+        }
+    }
+    static verificarSessionAdmision = (ruta:string,tipoDeAdvertencia:string,mensaje:string)=> (req:Request,res:Response,next:NextFunction) => {
+        try {
+            if(!req.session.admision){
+                res.redirect(`${ruta}?${tipoDeAdvertencia}=${encodeURIComponent(mensaje)}`)
+                return
+            }
+            next();
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("verificarSessionAdmision","MiddlewareFor","73",error as string)
+            res.redirect(`${ruta}?error=${encodeURIComponent(error as string)}`);
+            return
+        }
+    }
 }
