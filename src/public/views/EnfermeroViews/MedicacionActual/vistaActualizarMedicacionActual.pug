@@ -132,7 +132,10 @@ html(lang="es")
                                 option(value="" disabled selected) Seleccione el Medicamento
                                 +cargarMedicamentosMismoNombre(medicamentos, medicamentoActual )
                             .invalid-feedback Por favor seleccione el medicamento
-
+                        .mb-3
+                            label.form-label(for="motivo") Motivo
+                            textarea#motivo.form-control(name="motivo" minlength="10" maxlength="255" required)= medicamentoActual.dataValues.motivo
+                            .invalid-feedback Por favor ingrese el motivo
                         button.btn.btn-submit(type="submit") 
                             i.bi.bi-save.me-2
                             | Guardar Medicacion Actual

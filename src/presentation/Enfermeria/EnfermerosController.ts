@@ -663,6 +663,7 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(medicacionActual[0])}`);
                 return;
             }
+            console.log(medicacionActual[1]);
             
             if(error){
                 res.render("EnfermeroViews/MedicacionActual/vistaActualizarMedicacionActual.pug", {
@@ -1308,7 +1309,8 @@ export class EnfermerosController{
             const [errorDto, createMedicacionActualDtoReady] = createMedicacionActualDto.create({
                 id_Admision: req.session.admision.id_Admision,
                 id_Paciente: req.session.paciente.id_Paciente,
-                id_Medicamento: req.body.id_Medicamento || undefined
+                id_Medicamento: req.body.id_Medicamento || undefined,
+                motivo: req.body.motivo
             })
             if(errorDto){
                 res.redirect(`/enfermeria/view/crear/medicacion/actual?error=${encodeURIComponent(errorDto)}`);
@@ -1331,11 +1333,12 @@ export class EnfermerosController{
     public actualizarMedicacionActual = async (req:Request, res:Response) => {
         try {
             
-            const { id_Paciente_Medicacion_Actual, id_Medicamento } = req.body
+            const { id_Paciente_Medicacion_Actual, id_Medicamento, motivo } = req.body
             const [errorDto, updateMedicacionActualDtoReady] = updateMedicacionActualDto.create({
                 id_Paciente_Medicacion_Actual: id_Paciente_Medicacion_Actual,
                 id_Admision: req.session.admision.id_Admision,
                 id_Paciente: req.session.paciente.id_Paciente,
+                motivo: motivo,
                 id_Medicamento: id_Medicamento
             })
             if(errorDto){

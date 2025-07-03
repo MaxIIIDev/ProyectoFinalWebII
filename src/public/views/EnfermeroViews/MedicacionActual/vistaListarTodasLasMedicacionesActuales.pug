@@ -129,6 +129,7 @@ html(lang="es")
                             thead
                                 tr
                                     th Medicamento
+                                    th Motivo
                                     th Fecha de Admision
                                     th Acciones
                                     
@@ -138,6 +139,7 @@ html(lang="es")
                                     each medicacionActual of medicacionesActuales
                                         tr
                                             td= medicacionActual.dataValues.medicamentos.dataValues.nombre
+                                            td= medicacionActual.dataValues.motivo
                                             td= new Date(medicacionActual.dataValues.admision.dataValues.fecha_de_admision).toISOString().split("T")[0]
                                             
                                             td

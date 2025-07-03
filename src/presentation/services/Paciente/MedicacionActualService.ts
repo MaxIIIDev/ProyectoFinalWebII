@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Admision } from "../../../data/models/Admision";
 import { Medicamentos } from "../../../data/models/Medicamentos";
 import { Paciente_Medicacion_Actual } from "../../../data/models/Paciente_Medicacion_Actual";
@@ -56,22 +57,36 @@ export class MedicacionActualService {
             return [error as string,undefined]
         }
     }
-    public static async existeMedicacionActual(_createMedicacionActual?: createMedicacionActualDto, _updateMedicacionActual?:updateMedicacionActualDto):Promise<[string?,boolean?]>{//todo:testear
+    public static async existeMedicacionActual(_createMedicacionActual?: createMedicacionActualDto, _updateMedicacionActual?: updateMedicacionActualDto): Promise<[string?, boolean?]> {
         try {
-            if(!_createMedicacionActual && !_updateMedicacionActual) return ["Se requiere el _createMedicacionActual || _updateMedicacionActual "]
-            const objectMedicacionActual = (_createMedicacionActual)? createMedicacionActualDto.toObject(_createMedicacionActual): updateMedicacionActualDto.toObject(_updateMedicacionActual)
+            if(!_createMedicacionActual && !_updateMedicacionActual) {
+                return ["Se requiere el _createMedicacionActual || _updateMedicacionActual "];
+            }
+    
+            const objectMedicacionActual = _createMedicacionActual 
+                ? createMedicacionActualDto.toObject(_createMedicacionActual) 
+                : updateMedicacionActualDto.toObject(_updateMedicacionActual);
+    
+            const whereClause: any = {
+                id_Medicamento: objectMedicacionActual.id_Medicamento,
+                id_Paciente: objectMedicacionActual.id_Paciente,
+                id_Admision: objectMedicacionActual.id_Admision
+            };
+    
+            if(_updateMedicacionActual) {
+                whereClause.id_Paciente_Medicacion_Actual = {
+                    [Op.ne]: objectMedicacionActual.id_Paciente_Medicacion_Actual
+                };
+            }
+    
             const confirmacion = await Paciente_Medicacion_Actual.findOne({
-                where: {
-                    id_Medicamento : objectMedicacionActual.id_Medicamento,
-                    id_Paciente : objectMedicacionActual.id_Paciente,
-                    id_Admision : objectMedicacionActual.id_Admision
-                }
-            })
-            if(confirmacion) return [undefined,true]
-            return [undefined, false]
+                where: whereClause
+            });
+    
+            return [undefined, !!confirmacion];
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("validarMedicacionActual", "MedicacionACtualService","30",error as string)
-            return [error as string, undefined]
+            return [error as string, undefined];
         }
     }
     public static async crearMedicacionActual(_createMedicacionActual: createMedicacionActualDto):Promise<[string?,Paciente_Medicacion_Actual?]>{//todo:testear
