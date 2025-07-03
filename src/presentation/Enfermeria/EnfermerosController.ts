@@ -24,6 +24,8 @@ import { NombreCirugiasServices } from "../services/NombreCirugiasServices";
 import { MedicoService } from "../services/MedicoService";
 import { createCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/createCirugiaDto";
 import { updateCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/updateCirugiaDto";
+import { Paciente_Diagnosticos } from "../../data/models/Paciente_Diagnosticos";
+import { DiagnosticoService } from "../services/Medico/DiagnosticosService";
 
 
 export class EnfermerosController{
@@ -968,6 +970,33 @@ export class EnfermerosController{
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaActualizarCirugia", "932", error as string);   
             res.redirect(`/enfermeria/view/cirugias?error=${encodeURIComponent(error as string)}`);
             return;     
+        }
+    }
+    public vistaDiagnosticos = async (req:Request, res:Response) => {
+        try {
+            const warning = req.query.warning || undefined;
+            const [error, diagnosticos] = await DiagnosticoService.buscarDiagnosticosPorPaciente(req.session.paciente.id_Paciente)
+            if(error && diagnosticos == undefined){
+                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            console.log(diagnosticos);
+            
+            if(warning){
+                res.render("EnfermeroViews/Diagnosticos/VistaListaDiagnosticos.pug", {
+                    warning: warning,
+                    diagnosticos: diagnosticos,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Diagnosticos/VistaListaDiagnosticos.pug", {
+                diagnosticos: diagnosticos,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaDiagnosticos", "980", error as string);
+            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
         }
     }
     

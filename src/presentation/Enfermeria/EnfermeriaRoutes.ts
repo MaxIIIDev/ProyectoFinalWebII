@@ -44,7 +44,7 @@ export class EnfermeriaRoutes{
         router.get("/view/crear/cirugia", ...middlewareEnfermero, controller.vistaCrearCirugia)
         router.get("/view/actualizar/cirugia", ...middlewareEnfermero, controller.vistaActualizarCirugia)
         router.get("/eliminar/cirugia", ...middlewareEnfermero, controller.eliminarCirugia)
-        
+        router.get("/view/diagnosticos", ...middlewareEnfermero, controller.vistaDiagnosticos)
         
         router.post("/actualizar/paciente",...middlewareEnfermero,controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", ...middlewareEnfermero,controller.crearAlergia)
