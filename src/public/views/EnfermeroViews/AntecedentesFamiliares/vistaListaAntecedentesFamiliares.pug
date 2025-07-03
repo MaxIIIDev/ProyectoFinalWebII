@@ -3,7 +3,7 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Gestion de Medicacion Actual
+        title Gestion de Antecedentes Familiares
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
         style.
@@ -121,33 +121,35 @@ html(lang="es")
                 .card-header
                     h1.card-title 
                         i.bi.bi-calendar2-check.me-2
-                        | Medicacion Actual del paciente
+                        | Antecedentes Familiares del paciente
                 
                 .card-body
                     .table-responsive
                         table.table.table-separated
                             thead
                                 tr
-                                    th Medicamento
-                                    th Fecha de Admision
+                                    th Lazo Familiar
+                                    th Nombre de la Enfermedad
+                                    th Detalles
                                     th Acciones
                                     
                             tbody
-                                a.btn.btn-action.btn-success(href=`/enfermeria/view/crear/medicacion/actual` title="Registrar Medicacion") Registrar Medicacion
-                                if medicacionesActuales != undefined
-                                    each medicacionActual of medicacionesActuales
+                                a.btn.btn-action.btn-success(href=`/enfermeria/view/crear/antecedentes/familiares` title="Registrar Antecedentes Familiares") Registrar Antecedentes Familiares
+                                if antecedentesFamiliares != undefined
+                                    each antecedenteFamiliar of antecedentesFamiliares
                                         tr
-                                            td= medicacionActual.dataValues.medicamentos.dataValues.nombre
-                                            td= new Date(medicacionActual.dataValues.admision.dataValues.fecha_de_admision).toISOString().split("T")[0]
+                                            td= antecedenteFamiliar.dataValues.lazo_familiar.dataValues.lazo
+                                            td= antecedenteFamiliar.dataValues.nombre_Enfermedad
+                                            td= antecedenteFamiliar.dataValues.detalles
                                             
                                             td
                                                 a.btn.btn-action.btn-primary.btn-sm(
-                                                    href=`/enfermeria/view/editar/medicacion/actual?id_Paciente_Medicacion_Actual=${medicacionActual.dataValues.id_Paciente_Medicacion_Actual}`
+                                                    href=`/enfermeria/view/actualizar/antecedentes/familiares?id_Antecedente_Familiar=${antecedenteFamiliar.dataValues.id_Antecedente_Familiar}`
                                                     title="Editar"
                                                 )
                                                     i.bi.bi-pencil
                                                 a.btn.btn-action.btn-danger.btn-sm(
-                                                    href=`/enfermeria/eliminar/medicacion/actual?id_Paciente_Medicacion_Actual=${medicacionActual.dataValues.id_Paciente_Medicacion_Actual}`
+                                                    href=`/enfermeria/eliminar/antecedentes/familiares?id_Antecedente_Familiar=${antecedenteFamiliar.dataValues.id_Antecedente_Familiar}`
                                                     title="Eliminar"
                                                     
                                                 )

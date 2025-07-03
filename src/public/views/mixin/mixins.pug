@@ -104,3 +104,8 @@ mixin cargarMedicamentosMismoNombre(medicamentos,medicamentoActual)
 mixin cargarTiposDeTratamiento(tiposDeTratamiento,tipoDeTratamientoActual)
     for tipoDeTratamiento of tiposDeTratamiento
         option(value=tipoDeTratamiento.dataValues.id_Tipo_De_Tratamiento ,selected=((tipoDeTratamientoActual) && tipoDeTratamientoActual.dataValues.id_tipo_de_tratamiento == tipoDeTratamiento.dataValues.id_Tipo_De_Tratamiento)) #{tipoDeTratamiento.dataValues.nombre}
+
+mixin cargarLazos(lazos,lazoActual)
+    for lazo of lazos
+        option(value=lazo.dataValues.id_Lazo_Familiar selected=((lazoActual) && lazoActual.dataValues.id_Lazo_Familiar == lazo.dataValues.id_Lazo_Familiar)) #{lazo.dataValues.lazo}
+        

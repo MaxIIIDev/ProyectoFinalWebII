@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+import { Lazo_Familiar } from "../../../data/models/Lazo_familiar";
 import { Paciente_antecedentes_familiares } from "../../../data/models/Paciente_antecedentes_familiares";
 import { createAntecedenteFamiliarDto } from "../../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/createAntecedenteFamiliarDto";
 import { updateAntecedenteFamiliarDto } from "../../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/updateAntecedenteFamiliarDto";
@@ -33,7 +35,14 @@ export class AntecedentesFamiliaresService{
             const antecedentesFamiliaresDelPaciente = await Paciente_antecedentes_familiares.findAll({
                 where: {
                     id_Paciente: id_Paciente
-                }
+                },
+                include: [
+                    {
+                        model: Lazo_Familiar,
+                        as: "lazo_familiar",
+                        attributes: ["id_Lazo_Familiar", "lazo"]
+                    }
+                ]
             })
             if(!antecedentesFamiliaresDelPaciente) return ["No se encontraron antecedentes familiares registrados para el paciente", undefined]
             return [ undefined, antecedentesFamiliaresDelPaciente]
@@ -46,14 +55,25 @@ export class AntecedentesFamiliaresService{
         try {
             if(_updateAtencenteFamiliarDto){
                 const antecedenteBuscado = await Paciente_antecedentes_familiares.findOne({
-                    where: updateAntecedenteFamiliarDto.toObject(_updateAtencenteFamiliarDto)
+                    where: {
+                        id_Paciente: _updateAtencenteFamiliarDto.id_Paciente,
+                        nombre_Enfermedad: _updateAtencenteFamiliarDto.nombre_Enfermedad.trim(),
+                        id_Lazo_Familiar: _updateAtencenteFamiliarDto.id_Lazo_Familiar,
+                        id_Antecedente_Familiar: {
+                            [Op.ne]: _updateAtencenteFamiliarDto.id_Antecedente_Familiar
+                        }
+                    }
                 })            
                 if(!antecedenteBuscado) return [undefined, true]
                 return [ undefined, false]
             }
             if(_createAntecenteFamiliarDto){
                 const antecedenteBuscado = await Paciente_antecedentes_familiares.findOne({
-                    where: createAntecedenteFamiliarDto.toObject(_createAntecenteFamiliarDto)
+                    where: {
+                        id_Paciente: _createAntecenteFamiliarDto.id_Paciente,
+                        nombre_Enfermedad: _createAntecenteFamiliarDto.nombre_Enfermedad.trim(),
+                        id_Lazo_Familiar: _createAntecenteFamiliarDto.id_Lazo_Familiar
+                    }
                 })            
                 if(!antecedenteBuscado) return [undefined, true]
                 return [ undefined, false]
@@ -80,7 +100,7 @@ export class AntecedentesFamiliaresService{
             return [undefined, registroCreado]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("createAntecedenteFamiliar","AntecedentesFamiliaresService","44",error as string)
-            return error
+            return [error as string, undefined]
         }
     }
     public static async updateAntecedenteFamiliar(_updateAntecedenteFamiliarDto:updateAntecedenteFamiliarDto):Promise<[string?,boolean?]>{//todo: TESTEAR
@@ -88,7 +108,7 @@ export class AntecedentesFamiliaresService{
             if(!(await PacienteServices.getPacienteById(_updateAntecedenteFamiliarDto.id_Paciente).then(res => res[1]))){
                 return ["No se encontro regitrado el paciente", undefined]
             }
-            if(!(await this.validarAntecedenteFamiliarIdentico(null, _updateAntecedenteFamiliarDto).then(res=> {
+            if(!(await this.validarAntecedenteFamiliarIdentico(_updateAntecedenteFamiliarDto,undefined ).then(res=> {
                 const valido = (!res[0] && res[1]== false)?  false:  true
                 return valido;
             }))){

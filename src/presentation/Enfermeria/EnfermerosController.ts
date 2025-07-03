@@ -14,6 +14,11 @@ import { updateTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/u
 import { MedicacionActualService } from "../services/Paciente/MedicacionActualService";
 import { createMedicacionActualDto } from "../../domain/Dtos/pacientes/Medicacion Actual/createMedicacionActualDto";
 import { updateMedicacionActualDto } from "../../domain/Dtos/pacientes/Medicacion Actual/updateMedicacionActualDto";
+import { AntecedentesFamiliaresService } from "../services/Paciente/AntecedentesFamiliaresService";
+import { Lazo_Familiar } from "../../data/models/Lazo_familiar";
+import { LazoFamiliarService } from "../services/Paciente/LazoFamiliarService";
+import { createAntecedenteFamiliarDto } from "../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/createAntecedenteFamiliarDto";
+import { updateAntecedenteFamiliarDto } from "../../domain/Dtos/pacientes/AntecedentesFamiliares.ts/updateAntecedenteFamiliarDto";
 
 
 export class EnfermerosController{
@@ -765,6 +770,176 @@ export class EnfermerosController{
             return;
         }
     }
+    public vistaAntecedentesFamiliares = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente    ){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+
+            
+
+            const antecedentesFamiliares = await AntecedentesFamiliaresService.buscarAntecedentesFamiliaresPorPaciente(req.session.paciente.id_Paciente);
+            if(antecedentesFamiliares[0] && !antecedentesFamiliares[1] ){
+                res.redirect(`/enfermeria/view/historial/paciente?warning=${encodeURIComponent(antecedentesFamiliares[0])}`);
+                return;
+            }
+            if(error ){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaListaAntecedentesFamiliares.pug", {
+                    error: error,
+                    antecedentesFamiliares: antecedentesFamiliares[1] 
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaListaAntecedentesFamiliares.pug", {
+                    warning: warning,
+                    antecedentesFamiliares: antecedentesFamiliares[1]    
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaListaAntecedentesFamiliares.pug", {
+                    success: confirmacion,
+                    antecedentesFamiliares: antecedentesFamiliares[1]       
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/AntecedentesFamiliares/vistaListaAntecedentesFamiliares.pug", {
+                antecedentesFamiliares: antecedentesFamiliares[1] 
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaAntecedentesFamiliares", "700", error as string);   
+            res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaCrearAntecedentesFamiliares = async(req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"))
+                return;
+            }
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const lazos = await LazoFamiliarService.buscarTodosLosLazosFamiliares();
+            if(lazos[0]){
+                res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(lazos[0])}`);
+                return;
+            }
+
+            if(error){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaCrearAntecedenteFamiliar.pug", {
+                    error: error,
+                    lazos: lazos[1] 
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaCrearAntecedenteFamiliar.pug", {
+                    warning: warning,
+                    lazos: lazos[1]    
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaCrearAntecedenteFamiliar.pug", {
+                    success: confirmacion,
+                    lazos: lazos[1]       
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/AntecedentesFamiliares/vistaCrearAntecedenteFamiliar.pug", {
+                lazos: lazos[1] 
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearAntecedentesFamiliares", "826", error as string);   
+            res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaActualizarAntecedentesFamiliares = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            const id_Antecedente_Familiar = (req.query.id_Antecedente_Familiar)? Number(req.query.id_Antecedente_Familiar) : undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const antecedentesFamiliares = await AntecedentesFamiliaresService.buscarAntecedenteFamiliarPorId(id_Antecedente_Familiar);
+            if(antecedentesFamiliares[0] && !antecedentesFamiliares[1] ){
+                res.redirect(`/enfermeria/view/historial/paciente?warning=${encodeURIComponent(antecedentesFamiliares[0])}`);
+                return;
+            }
+            const lazos = await LazoFamiliarService.buscarTodosLosLazosFamiliares();
+            if(lazos[0] && !lazos[1] ){
+                res.redirect(`/enfermeria/view/historial/paciente?warning=${encodeURIComponent(lazos[0])}`);
+                return;
+            }
+            console.log(antecedentesFamiliares[1]);
+            
+            if(error){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaActualizarAntecedenteFamiliar.pug", {
+                    error: error,
+                    antecedenteFamiliarActual: antecedentesFamiliares[1],
+                    lazos: lazos[1] 
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaActualizarAntecedenteFamiliar.pug", {
+                    warning: warning,
+                    antecedenteFamiliarActual: antecedentesFamiliares[1],
+                    lazos: lazos[1]    
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/AntecedentesFamiliares/vistaActualizarAntecedenteFamiliar.pug", {
+                    success: confirmacion,
+                    antecedenteFamiliarActual: antecedentesFamiliares[1],
+                    lazos: lazos[1]       
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/AntecedentesFamiliares/vistaActualizarAntecedenteFamiliar.pug", {
+                antecedenteFamiliarActual: antecedentesFamiliares[1],
+                lazos: lazos[1] 
+            })
+            return; 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaEditarAntecedentesFamiliares", "835", error as string);   
+            res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            return; 
+        }
+    }
+    
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
@@ -1239,6 +1414,128 @@ export class EnfermerosController{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarMedicacionActual", "", error as string);
             res.redirect(`/enfermeria/view/medicacion/actual?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public crearAntecedentesFamiliares = async (req:Request, res:Response) => {
+        try {
+            
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning=" + encodeURIComponent("No se puede crear un antecedente familiar de un paciente desconocido"));
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/crear/antecedentes/familiares?error=" + encodeURIComponent("No se han recibido datos para crear el antecedente familiar"));
+                return;
+            }
+            const { id_Lazo_Familiar, nombre_Enfermedad, detalles  } = req.body
+
+            const [errorDto, createAntecedentesFamiliaresDtoReady   ] = createAntecedenteFamiliarDto.create({
+                id_Lazo_Familiar: id_Lazo_Familiar,
+                id_Paciente: req.session.paciente.id_Paciente,
+                nombre_Enfermedad: nombre_Enfermedad,
+                detalles: detalles
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/antecedentes/familiares?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const antecedentesFamiliaresCreados = await AntecedentesFamiliaresService.createAntecedenteFamiliar(createAntecedentesFamiliaresDtoReady)
+            if(antecedentesFamiliaresCreados[0] ){
+                res.redirect(`/enfermeria/view/crear/antecedentes/familiares?error=${encodeURIComponent(antecedentesFamiliaresCreados[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/antecedentes/familiares?confirmacion=${encodeURIComponent("Antecedentes familiares creados correctamente")}`);
+            return; 
+
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearAntecedentesFamiliares", "", error as string);
+            res.redirect(`/enfermeria/view/crear/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public actualizarAntecedentesFamiliares = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            if(!req.body){
+                res.redirect("/enfermeria/view/actualizar/antecedentes/familiares?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            const { id_Antecedente_Familiar, id_Lazo_Familiar, nombre_Enfermedad, detalles  } = req.body
+            
+            const [errorDto, updateAntecedentesFamiliaresDtoReady   ] = updateAntecedenteFamiliarDto.create({
+                id_Antecedente_Familiar: id_Antecedente_Familiar,
+                id_Lazo_Familiar: id_Lazo_Familiar,
+                nombre_Enfermedad: nombre_Enfermedad,
+                detalles: detalles,
+                id_Paciente: req.session.paciente.id_Paciente
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const antecedentesFamiliaresActualizados = await AntecedentesFamiliaresService.updateAntecedenteFamiliar(updateAntecedentesFamiliaresDtoReady)
+            if(antecedentesFamiliaresActualizados[0] && antecedentesFamiliaresActualizados[1]== undefined){
+                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(antecedentesFamiliaresActualizados[0])}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/antecedentes/familiares?confirmacion=${encodeURIComponent("Antecedentes familiares actualizados correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarAntecedentesFamiliares", "", error as string);
+            res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public eliminarAntecedentesFamiliares = async(req:Request, res:Response) => {
+        try {
+            if(!req.session.paciente){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado un paciente"));
+                return;
+            }
+            if(!req.session.paciente.dni){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se puede eliminar un antecedente familiar de un paciente desconocido"));
+                return;
+            }
+            if(!req.session.admision){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent("No se ha seleccionado una admision"));
+                return;
+            }
+            const id_Antecedente_Familiar = (req.query.id_Antecedente_Familiar)? Number(req.query.id_Antecedente_Familiar) : undefined;
+            if(!id_Antecedente_Familiar){
+                res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent("No se ha proporcionado un id de antecedente familiar")}`);
+                return;
+            }
+            const [error, antecedenteFamiliarEliminado] = await AntecedentesFamiliaresService.deleteAntecedenteFamiliar(req.session.paciente.id_Paciente,id_Antecedente_Familiar);
+            if(error && !antecedenteFamiliarEliminado){
+                res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/antecedentes/familiares?confirmacion=${encodeURIComponent("Antecedente familiar eliminado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarAntecedentesFamiliares", "844", error as string);   
+            res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
             return;     
         }
     }

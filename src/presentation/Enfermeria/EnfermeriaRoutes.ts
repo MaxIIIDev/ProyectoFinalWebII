@@ -28,7 +28,10 @@ export class EnfermeriaRoutes{
         router.get("/view/medicacion/actual", controller.vistaListaMedicacionActual);
         router.get("/view/crear/medicacion/actual", controller.vistaCrearMedicacionActual);
         router.get("/view/editar/medicacion/actual", controller.vistaEditarMedicacionActual);
-
+        router.get("/view/antecedentes/familiares", controller.vistaAntecedentesFamiliares);
+        router.get("/view/crear/antecedentes/familiares", controller.vistaCrearAntecedentesFamiliares);
+        router.get("/view/actualizar/antecedentes/familiares", controller.vistaActualizarAntecedentesFamiliares)
+        router.get("/eliminar/antecedentes/familiares", controller.eliminarAntecedentesFamiliares)
 
         router.post("/actualizar/paciente",controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", controller.crearAlergia)
@@ -40,6 +43,8 @@ export class EnfermeriaRoutes{
         router.post("/crear/medicacion/actual", controller.crearMedicacionActual);
         router.post("/actualizar/medicacion/actual", controller.actualizarMedicacionActual);
         router.get("/eliminar/medicacion/actual", controller.eliminarMedicacionActual);
+        router.post("/crear/antecedentes/familiares", controller.crearAntecedentesFamiliares);
+        router.post("/actualizar/antecedentes/familiares", controller.actualizarAntecedentesFamiliares);
         return router
     }
 
