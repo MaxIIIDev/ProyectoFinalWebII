@@ -122,31 +122,31 @@ html(lang="es")
                         | Actualizar Evaluacion Fisica
                 
                 .card-body
-                    form.form-container.needs-validation(action="/enfermeria/actualizarEvaluacionFisica" method="POST" novalidate)
+                    form.form-container.needs-validation(action="/enfermeria/actualizar/evaluacion/fisica" method="POST" novalidate)
                         input(type="hidden" name="id_Evaluacion_fisica" value=evaluacionActual.dataValues.id_Evaluacion_fisica)
                         
                         .mb-3
                             label.form-label(for="color_de_piel") Color de piel
-                            input#color_de_piel.form-control(type="text" name="color_de_piel" placeholder="Por favor ingrese el color de piel" min="5" required)= evaluacionActual.dataValues.color_de_piel
+                            input#color_de_piel.form-control(type="text" name="color_de_piel" placeholder="Por favor ingrese el color de piel" min="5" required value=evaluacionActual.dataValues.color_de_piel)
                             .invalid-feedback Por favor ingrese el color de piel
                         
                         .mb-3
                             label.form-label(for="frecuencia_cardiaca") Frecuencia cardiaca
-                            input#frecuencia_cardiaca.form-control(type="number" name="frecuencia_cardiaca" placeholder="Por favor ingrese la frecuencia cardiaca" min="0" max="400" required)= evaluacionActual.dataValues.frecuencia_cardiaca
+                            input#frecuencia_cardiaca.form-control(type="number" name="frecuencia_cardiaca" placeholder="Por favor ingrese la frecuencia cardiaca" min="0" max="400" required value=evaluacionActual.dataValues.frecuencia_cardiaca)
                             .invalid-feedback Por favor ingrese la frecuencia cardiaca
                         
                         .mb-3
                             label.form-label(for="presion_arterial") Presion arterial Sistolica 
-                            input#presion_arterial.form-control(type="number" name="presion_arterial_sistolica" placeholder="Por favor ingrese la presion arterial sistolica" min="0" max="300" required)= evaluacionActual.dataValues.presion_arterial_sistolica
+                            input#presion_arterial.form-control(type="number" name="presion_arterial_sistolica" placeholder="Por favor ingrese la presion arterial sistolica" min="0" max="300" required value=evaluacionActual.dataValues.presion_arterial_sistolica)
                             .invalid-feedback Por favor ingrese la presion arterial sistolica
                         .mb-3
                             label.form-label(for="presion_arterial") Presion arterial Diastolica
-                            input#presion_arterial.form-control(type="number" name="presion_arterial_diastolica" placeholder="Por favor ingrese la presion arterial diastolica" min="0" max="200" required)= evaluacionActual.dataValues.presion_arterial_diastolica
+                            input#presion_arterial.form-control(type="number" name="presion_arterial_diastolica" placeholder="Por favor ingrese la presion arterial diastolica" min="0" max="200" required value=evaluacionActual.dataValues.presion_arterial_diastolica)
                             .invalid-feedback Por favor ingrese la presion arterial diastolica
                         
                         .mb-3
                             label.form-label(for="respuesta_a_estimulos") Respuestas a estimulos
-                            input#respuesta_a_estimulos.form-control(type="text" name="respuesta_a_estimulos" placeholder="Por favor ingrese las respuestas a estimulos" min="5" required)= evaluacionActual.dataValues.respuesta_estimulos
+                            input#respuesta_a_estimulos.form-control(type="text" name="respuesta_a_estimulos" placeholder="Por favor ingrese las respuestas a estimulos" min="5" required value=evaluacionActual.dataValues.respuesta_a_estimulos)
                             .invalid-feedback Por favor ingrese las respuestas a estimulos
                         
                         button.btn.btn-submit(type="submit") 

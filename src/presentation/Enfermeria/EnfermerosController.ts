@@ -1780,61 +1780,61 @@ export class EnfermerosController{
             return;     
         }
     }
-    // public actualizarEvaluacionFisica = async(req:Request, res:Response) => {
-    //     try {
+    public actualizarEvaluacionFisica = async(req:Request, res:Response) => {
+        try {
             
-    //         if(!req.body){
-    //             res.redirect("/enfermeria/view/actualizar/evaluacion/fisica?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
-    //             return;
-    //         }
-    //         const { id_Evaluacion_fisica, color_de_piel, frecuencia_cardiaca, presion_arterial_sistolica, presion_arterial_diastolica, respuesta_a_estimulos } = req.body
-    //         const [errorDto, updateEvaluacionFisicaDtoReady   ] = updateEvaluacionFisicaDto.create({
-    //             id_Evaluacion_fisica: id_Evaluacion_fisica,
-    //             color_de_piel: color_de_piel,
-    //             frecuencia_cardiaca: frecuencia_cardiaca,
-    //             presion_arterial_sistolica: presion_arterial_sistolica,
-    //             presion_arterial_diastolica: presion_arterial_diastolica,   
-    //             respuesta_a_estimulos: respuesta_a_estimulos,
-    //             id_Paciente: req.session.paciente.id_Paciente,
-    //             id_Enfermero: req.session.usuarioLogueado.id_Personal,
-    //             id_Admision: req.session.admision.id_Admision
-    //         })
-    //         if(errorDto){
-    //             res.redirect(`/enfermeria/view/actualizar/evaluacion/fisica?error=${encodeURIComponent(errorDto)}&id_Evaluacion_fisica=${id_Evaluacion_fisica}`);
-    //             return;
-    //         }
-    //         const evaluacionFisicaActualizada = await EvaluacionFisicaService.actualizarEvaluacionFisica(updateEvaluacionFisicaDtoReady)
-    //         if(evaluacionFisicaActualizada[0] && evaluacionFisicaActualizada[1] == false){
-    //             res.redirect(`/enfermeria/view/actualizar/evaluacion/fisica?error=${encodeURIComponent(evaluacionFisicaActualizada[0])}&id_Evaluacion_fisica=${id_Evaluacion_fisica}`);
-    //             return;
-    //         }
-    //         res.redirect(`/enfermeria/view/evaluaciones/fisicas?confirmacion=${encodeURIComponent("Evaluacion fisica actualizada correctamente")}`);
-    //         return;     
-    //     } catch (error) {
-    //         HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarEvaluacionFisica", "1751", error as string);       
-    //         res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error as string)}`);
-    //         return;     
-    //     }
-    // }
-    // public eliminarEvaluacionFisica = async(req:Request, res:Response) => {
-    //     try {
+            if(!req.body){
+                res.redirect("/enfermeria/view/actualizar/evaluacion/fisica?warning="+encodeURIComponent("No se puede actualizar la informacion de un paciente desconocido"))
+                return;
+            }
+            const { id_Evaluacion_fisica, color_de_piel, frecuencia_cardiaca, presion_arterial_sistolica, presion_arterial_diastolica, respuesta_a_estimulos } = req.body
+            const [errorDto, updateEvaluacionFisicaDtoReady   ] = updateEvaluacionFisicaDto.create({
+                id_Evaluacion_fisica: id_Evaluacion_fisica,
+                color_de_piel: color_de_piel,
+                frecuencia_cardiaca: frecuencia_cardiaca,
+                presion_arterial_sistolica: presion_arterial_sistolica,
+                presion_arterial_diastolica: presion_arterial_diastolica,   
+                respuesta_a_estimulos: respuesta_a_estimulos,
+                id_Paciente: req.session.paciente.id_Paciente,
+                id_Enfermero: req.session.usuarioLogueado.id_Personal,
+                id_Admision: req.session.admision.id_Admision
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/evaluacion/fisica?error=${encodeURIComponent(errorDto)}&id_Evaluacion_fisica=${id_Evaluacion_fisica}`);
+                return;
+            }
+            const evaluacionFisicaActualizada = await EvaluacionFisicaService.actualizarEvaluacionFisica(updateEvaluacionFisicaDtoReady)
+            if(evaluacionFisicaActualizada[0] && evaluacionFisicaActualizada[1] == undefined){
+                res.redirect(`/enfermeria/view/actualizar/evaluacion/fisica?error=${encodeURIComponent(evaluacionFisicaActualizada[0])}&id_Evaluacion_fisica=${id_Evaluacion_fisica}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/evaluaciones/fisicas?confirmacion=${encodeURIComponent("Evaluacion fisica actualizada correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarEvaluacionFisica", "1751", error as string);       
+            res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public eliminarEvaluacionFisica = async(req:Request, res:Response) => {
+        try {
             
-    //         const id_Evaluacion_fisica = (req.query.id_Evaluacion_fisica)? Number(req.query.id_Evaluacion_fisica) : undefined;
-    //         if(!id_Evaluacion_fisica){
-    //             res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent("No se ha proporcionado un id de evaluacion fisica")}`);
-    //             return;
-    //         }
-    //         const [error, evaluacionFisicaEliminada] = await EvaluacionFisicaService.eliminarEvaluacionFisica(id_Evaluacion_fisica, req.session.paciente.id_Paciente);
-    //         if(error && !evaluacionFisicaEliminada){
-    //             res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error)}`);
-    //             return;
-    //         }
-    //         res.redirect(`/enfermeria/view/evaluaciones/fisicas?confirmacion=${encodeURIComponent("Evaluacion fisica eliminada correctamente")}`);
-    //         return;     
-    //     } catch (error) {
-    //         HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarEvaluacionFisica", "1751", error as string);       
-    //         res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error as string)}`);
-    //         return;     
-    //     }
-    // }
+            const id_Evaluacion_fisica = (req.query.id_Evaluacion_fisica)? Number(req.query.id_Evaluacion_fisica) : undefined;
+            if(!id_Evaluacion_fisica){
+                res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent("No se ha proporcionado un id de evaluacion fisica")}`);
+                return;
+            }
+            const [error, evaluacionFisicaEliminada] = await EvaluacionFisicaService.eliminarEvaluacionFisica(id_Evaluacion_fisica);
+            if(error && !evaluacionFisicaEliminada){
+                res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/evaluaciones/fisicas?confirmacion=${encodeURIComponent("Evaluacion fisica eliminada correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarEvaluacionFisica", "1751", error as string);       
+            res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
 }
