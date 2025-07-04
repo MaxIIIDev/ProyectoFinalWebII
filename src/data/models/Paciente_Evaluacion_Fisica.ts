@@ -13,13 +13,20 @@ import { Admision } from "./Admision";
      declare id_Evaluacion_fisica: number
      
      @CreatedAt
-     @Column(DataType.DATE)
+     @Column(DataType.DATEONLY)
      declare fecha: Date
      
+     
+
      @AllowNull(false)
      @NotNull
      @Column(DataType.INTEGER)
-     declare presion_arterial:number
+     declare presion_arterial_sistolica:number
+
+     @AllowNull(false)
+     @NotNull
+     @Column(DataType.INTEGER)
+     declare presion_arterial_diastolica:number
      
      @AllowNull(false)
      @NotNull

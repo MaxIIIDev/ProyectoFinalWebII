@@ -45,6 +45,11 @@ export class EnfermeriaRoutes{
         router.get("/view/actualizar/cirugia", ...middlewareEnfermero, controller.vistaActualizarCirugia)
         router.get("/eliminar/cirugia", ...middlewareEnfermero, controller.eliminarCirugia)
         router.get("/view/diagnosticos", ...middlewareEnfermero, controller.vistaDiagnosticos)
+        router.get("/view/evaluaciones/fisicas", ...middlewareEnfermero, controller.vistaListaEvaluacionFisica)
+        router.get("/view/lista/all/evaluacion/fisica", ...middlewareEnfermero, controller.vistaListaAllEvaluacionFisica)
+        router.get("/view/crear/evaluacion/fisica", ...middlewareEnfermero, controller.vistaCrearEvaluacionFisica)
+        router.get("/view/actualizar/evaluacion/fisica", ...middlewareEnfermero, controller.vistaActualizarEvaluacionFisica)
+        //router.get("/eliminar/Evaluacion/Fisica", ...middlewareEnfermero, controller.eliminarEvaluacionFisica)
         
         router.post("/actualizar/paciente",...middlewareEnfermero,controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", ...middlewareEnfermero,controller.crearAlergia)
@@ -60,6 +65,8 @@ export class EnfermeriaRoutes{
         router.post("/actualizar/antecedentes/familiares", ...middlewareEnfermero,controller.actualizarAntecedentesFamiliares);
         router.post("/crear/cirugia", ...middlewareEnfermero,controller.crearCirugia)
         router.post("/actualizar/cirugia", ...middlewareEnfermero,controller.actualizarCirugia)
+        router.post("/crear/evaluacion/fisica", ...middlewareEnfermero,controller.crearEvaluacionFisica)
+        //router.post("/actualizar/evaluacion/fisica", ...middlewareEnfermero,controller.actualizarEvaluacionFisica)
         return router
     }
 
