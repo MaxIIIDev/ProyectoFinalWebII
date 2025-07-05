@@ -29,6 +29,10 @@ import { DiagnosticoService } from "../services/Medico/DiagnosticosService";
 import { EvaluacionFisicaService } from "../services/Paciente/EvaluacionFisicaService";
 import { CreateEvaluacionFisicaDto } from "../../domain/Dtos/pacientes/EvaluacionFisica/createEvaluacionFisicaDto";
 import { updateEvaluacionFisicaDto } from "../../domain/Dtos/pacientes/EvaluacionFisica/updateEvaluacionFisicaDto";
+import { MotivosDeInternacionService } from "../services/MotivosDeInternacionService";
+import { SintomasServices } from "../services/SintomasServices";
+import { NombreSintomaService } from "../services/NombreSintomaService";
+import { CreateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/createSintomaDto";
 
 
 export class EnfermerosController{
@@ -77,6 +81,8 @@ export class EnfermerosController{
                 habitacion: number;
                 ala: string;
                 cama: number;
+                motivo_de_internacion: string;
+                prioridad_de_atencion: string;
             }
             const admisionesFormateadas = []
             
@@ -91,7 +97,9 @@ export class EnfermerosController{
                     dni: admision.dataValues.pacientes.dataValues.dni,
                     habitacion: admision.dataValues.camas.dataValues.habitacion.dataValues.nro_Habitacion,
                     ala: admision.dataValues.camas.dataValues.habitacion.dataValues.ala.dataValues.nombre,
-                    cama: admision.dataValues.camas.dataValues.id_Cama
+                    cama: admision.dataValues.camas.dataValues.id_Cama,
+                    motivo_de_internacion: admision.dataValues.motivo_de_internacion.dataValues.motivo,
+                    prioridad_de_atencion: admision.dataValues.prioridad_de_atencion.dataValues.prioridad
                 }
                 admisionesFormateadas.push(admisionFormateada)
             }
@@ -1161,6 +1169,190 @@ export class EnfermerosController{
             return;
         }
     }   
+    public vistaInternacion = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const motivoDeInternacion = await MotivosDeInternacionService.buscarMotivoDeInternacionPorId(req.session.admision.id_motivo_de_Internacion);
+            if(motivoDeInternacion[0]){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent(motivoDeInternacion[0]));
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/Internacion/VistaInternacion.pug", {
+                    error: error,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Internacion/VistaInternacion.pug", {
+                    warning: warning,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/VistaInternacion.pug", {
+                    confirmacion: confirmacion,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/VistaInternacion.pug", {
+                paciente: req.session.paciente,
+                motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaInternacion", "1172", error as string);
+            res.redirect(`/enfermeria/view/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaListaSintomas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const sintomas = await SintomasServices.getAllSintomasByPacienteAndAdmision(req.session.paciente.id_Paciente,req.session.admision.id_Admision);
+            
+            if(sintomas[0] && sintomas[1] == undefined){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent(sintomas[0]));
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
+                    error: error,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
+                    warning: warning,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
+                    confirmacion: confirmacion,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
+                sintomas: sintomas[1],
+                enfermero: req.session.usuarioLogueado,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaSintomas", "1221", error as string);
+            res.redirect(`/enfermeria/view/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaAllSintomas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const sintomas = await SintomasServices.getAllSintomasByPaciente(req.session.paciente.id_Paciente);
+            
+            if(sintomas[0] && sintomas[1] == undefined){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent(sintomas[0]));
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
+                    error: error,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
+                    warning: warning,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
+                    confirmacion: confirmacion,
+                    sintomas: sintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
+                sintomas: sintomas[1],
+                enfermero: req.session.usuarioLogueado,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaSintomas", "1221", error as string);
+            res.redirect(`/enfermeria/view/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaCrearSintoma = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const nombreSintomas = await NombreSintomaService.getAllNombreSintomas();
+            console.log(nombreSintomas[1]);
+            
+            if(nombreSintomas[0] && nombreSintomas[1] == undefined){
+                res.redirect("/enfermeria/view/paciente?error=" + encodeURIComponent(nombreSintomas[0]));
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaCrearSintoma.pug", {
+                    error: error,
+                    nombreSintomas: nombreSintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaCrearSintoma.pug", {
+                    warning: warning,
+                    nombreSintomas: nombreSintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaCrearSintoma.pug", {
+                    confirmacion: confirmacion,
+                    nombreSintomas: nombreSintomas[1],
+                    enfermero: req.session.usuarioLogueado,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/Sintomas/VistaCrearSintoma.pug", {
+                nombreSintomas: nombreSintomas[1],
+                enfermero: req.session.usuarioLogueado,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaSintomas", "1221", error as string);
+            res.redirect(`/enfermeria/view/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
@@ -1834,6 +2026,31 @@ export class EnfermerosController{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarEvaluacionFisica", "1751", error as string);       
             res.redirect(`/enfermeria/view/evaluaciones/fisicas?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public crearSintoma = async(req:Request, res:Response) => {//
+        try {
+            const id_Nombre_Sintoma = (req.body.id_Nombre_Sintoma) ? Number(req.body.id_Nombre_Sintoma) : undefined;
+            if(!id_Nombre_Sintoma){
+                res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent("No se ha proporcionado un id de nombre de sintoma")}`);
+                return;
+            }
+            const [errorDto, dtoReady] = await CreateSintomaDto.create(req.session.admision.id_Admision, id_Nombre_Sintoma)
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const [error, sintomaCreado] = await SintomasServices.createSintoma(dtoReady);
+            if(error && !sintomaCreado){
+                res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/crear/sintoma?confirmacion=${encodeURIComponent("Sintoma creado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearSintoma", "1751", error as string);       
+            res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent(error as string)}`);
             return;     
         }
     }

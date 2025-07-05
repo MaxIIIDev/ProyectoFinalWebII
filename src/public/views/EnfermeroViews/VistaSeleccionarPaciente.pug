@@ -129,10 +129,9 @@ html(lang="es")
                                 tr
                                     th Fecha
                                     th Paciente
-                                    th DNI
                                     th Habitacion
-                                    th Cama
-                                    th Ala
+                                    th Motivo de Internacion 
+                                    th Prioridad
                                     th Acciones
                             tbody
                                 
@@ -140,12 +139,13 @@ html(lang="es")
                                     each admision in admisiones
                                         tr
                                             td= admision.Fecha
-                                            td= `${admision.nombre} ${admision.apellido}`
-                                            td= admision.dni
-                                            td= `${admision.habitacion}`
-                                            td= `${admision.cama}`
-                                            td= `${admision.ala}`
-
+                                            if(admision.dni == null)
+                                                td= `${admision.nombre} ${admision.apellido}`
+                                            else
+                                                td= `${admision.nombre} ${admision.apellido} - DNI: ${admision.dni}`
+                                            td= `${admision.ala} - Habitacion: ${admision.habitacion} Cama: ${admision.cama}` 
+                                            td= admision.motivo_de_internacion
+                                            td= admision.prioridad_de_atencion
                                             td
                                                 
                                                 a.btn.btn-action.btn-success.btn-sm(

@@ -115,3 +115,7 @@ mixin cargarNombresCirugias(nombreCirugias, cirugiaActual)
 mixin cargarMedicos(medicos, cirugiaActual)
     for medico of medicos 
         option(value = medico.dataValues.id_Medico selected=((cirugiaActual) && cirugiaActual.dataValues.id_medico == medico.dataValues.id_Medico)) #{medico.dataValues.nombre} #{medico.dataValues.apellido} - Especialidad: #{medico.dataValues.especialidad.dataValues.nombre}
+
+mixin cargarNombresSintomas(nombresSintomas,id_nombre_sintoma_actual)
+    for nombreSintoma of nombresSintomas
+        option(value=nombreSintoma.dataValues.id_Nombre_Sintoma selected=((id_nombre_sintoma_actual) && id_nombre_sintoma_actual == nombreSintoma.dataValues.id_Nombre_Sintoma)) #{nombreSintoma.dataValues.nombre}
