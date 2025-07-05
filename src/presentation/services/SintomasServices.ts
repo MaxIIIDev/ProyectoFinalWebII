@@ -26,7 +26,14 @@ export class SintomasServices {
     }
     public static async getSintomaById(id_Sintoma: number): Promise<[string?, Sintomas?]> {
         try {
-            const sintoma = await Sintomas.findByPk(id_Sintoma);
+            const sintoma = await Sintomas.findByPk(id_Sintoma, {
+                include: [
+                    {
+                        model: Nombre_Sintoma,
+                        as: "nombre_sintoma"
+                    }
+                ]
+            });
             if(!sintoma) return ["No se encontro el sintoma", undefined]
             return [undefined, sintoma]
         } catch (error) {
@@ -92,19 +99,19 @@ export class SintomasServices {
                 const buscarSintoma = await Sintomas.findOne({where: {
                     id_Admision: _updateSintomaDto.id_Admision,
                     id_Nombre_Sintoma: _updateSintomaDto.id_Nombre_Sintoma,
-                    id_Paciente_Diagnosticos: _updateSintomaDto.id_Paciente_Diagnosticos,
+                    
                     id_Sintoma: {[Op.ne]: _updateSintomaDto.id_Sintoma}
                 }});
-                if(buscarSintoma[0]) return ["Ya existe un sintoma con esas caracteristicas", false]
+                if(buscarSintoma) return ["Ya existe un sintoma con esas caracteristicas", false]
                 validado = true;
             }
             if(_createSintomaDto){
                 const buscarSintoma = await Sintomas.findOne({where: {
                     id_Admision: _createSintomaDto.id_Admision,
                     id_Nombre_Sintoma: _createSintomaDto.id_Nombre_Sintoma,
-                    id_Paciente_Diagnosticos: _createSintomaDto.id_Paciente_Diagnosticos,
+                    
                 }});
-                if(buscarSintoma[0]) return ["Ya existe un sintoma con esas caracteristicas", false]
+                if(buscarSintoma) return ["Ya existe un sintoma con esas caracteristicas", false]
                 validado = true;
             }
             return [undefined, validado]
@@ -155,7 +162,7 @@ export class SintomasServices {
     }
     public static async deleteSintoma(id_Sintoma: number): Promise<[string?, boolean?]> {
         try {
-            const sintomaEliminado = await Sintomas.destroy({where: {id_Sintoma}});
+            const sintomaEliminado = await Sintomas.destroy({where: {id_Sintoma:id_Sintoma}});
             if(!sintomaEliminado) return ["No se pudo eliminar el sintoma", false]
             return [undefined, true]
         } catch (error) {

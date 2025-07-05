@@ -230,8 +230,8 @@ html(lang="es")
                         table.table.table-separated
                             thead
                                 tr
-                                    th Nombre del Síntoma
                                     th Fecha de Admisión
+                                    th Nombre del Síntoma
                                     th Enfermero/a
                                   
                                     
@@ -239,8 +239,8 @@ html(lang="es")
                                 if sintomas != undefined
                                     each sintoma in sintomas
                                         tr
-                                            td= sintoma.dataValues.nombre_sintoma.dataValues.nombre
                                             td= new Date(sintoma.dataValues.admision.dataValues.fecha_De_Admision).toLocaleDateString('es-ES')
+                                            td= sintoma.dataValues.nombre_sintoma.dataValues.nombre
                                             td= `${enfermero.nombre} ${enfermero.apellido} (DNI: ${enfermero.dni})`
                                             
                                             

@@ -33,6 +33,7 @@ import { MotivosDeInternacionService } from "../services/MotivosDeInternacionSer
 import { SintomasServices } from "../services/SintomasServices";
 import { NombreSintomaService } from "../services/NombreSintomaService";
 import { CreateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/createSintomaDto";
+import { UpdateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/updateSintomaDto";
 
 
 export class EnfermerosController{
@@ -1243,7 +1244,7 @@ export class EnfermerosController{
             }
             if(confirmacion){
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
-                    confirmacion: confirmacion,
+                    success: confirmacion,
                     sintomas: sintomas[1],
                     enfermero: req.session.usuarioLogueado,
                 })
@@ -1289,7 +1290,7 @@ export class EnfermerosController{
             }
             if(confirmacion){
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
-                    confirmacion: confirmacion,
+                    success: confirmacion,
                     sintomas: sintomas[1],
                     enfermero: req.session.usuarioLogueado,
                 })
@@ -1336,7 +1337,7 @@ export class EnfermerosController{
             }
             if(confirmacion){
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaCrearSintoma.pug", {
-                    confirmacion: confirmacion,
+                    success: confirmacion,
                     nombreSintomas: nombreSintomas[1],
                     enfermero: req.session.usuarioLogueado,
                 })
@@ -1350,6 +1351,64 @@ export class EnfermerosController{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaSintomas", "1221", error as string);
             res.redirect(`/enfermeria/view/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaActualizarSintoma = async (req:Request, res:Response) => {
+        try {
+            const id_Sintoma = (req.query.id_Sintoma)? Number(req.query.id_Sintoma) : undefined;
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            if(!id_Sintoma || id_Sintoma == undefined || id_Sintoma < 0){
+                res.redirect("/enfermeria/view/sintomas/paciente?error=" + encodeURIComponent("El id del sintoma es invalido"));
+                return;
+            }
+            const sintomaActual = await SintomasServices.getSintomaById(id_Sintoma);
+            if(sintomaActual[0] && sintomaActual[1] == undefined){
+                res.redirect("/enfermeria/view/sintomas/paciente?error=" + encodeURIComponent(sintomaActual[0]));
+                return;
+            }
+            const nombresSintomas = await NombreSintomaService.getAllNombreSintomas();
+            if(nombresSintomas[0] && nombresSintomas[1] == undefined){
+                res.redirect("/enfermeria/view/sintomas/paciente?error=" + encodeURIComponent(nombresSintomas[0]));
+                return;
+            }
+            console.log(sintomaActual[1]);
+            
+            if(error){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaActualizarSintoma.pug", {
+                    error: error,
+                    sintomaActual: sintomaActual[1],
+                    nombresSintomas: nombresSintomas[1],
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaActualizarSintoma.pug", {
+                    warning: warning,
+                    sintomaActual: sintomaActual[1],
+                    nombresSintomas: nombresSintomas[1],
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/Sintomas/VistaActualizarSintoma.pug", {
+                    success: confirmacion,
+                    sintomaActual: sintomaActual[1],
+                    nombresSintomas: nombresSintomas[1],
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/Sintomas/VistaActualizarSintoma.pug", {
+                sintomaActual: sintomaActual[1],
+                nombresSintomas: nombresSintomas[1],
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaActualizarSintoma", "1360", error as string);
+            res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }
@@ -2046,11 +2105,56 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent(error)}`);
                 return;
             }
-            res.redirect(`/enfermeria/view/crear/sintoma?confirmacion=${encodeURIComponent("Sintoma creado correctamente")}`);
+            res.redirect(`/enfermeria/view/sintomas/paciente?confirmacion=${encodeURIComponent("Sintoma creado correctamente")}`);
             return;     
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearSintoma", "1751", error as string);       
             res.redirect(`/enfermeria/view/crear/sintoma?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public actualizarSintoma = async(req:Request, res:Response) => {
+        try {
+            
+            const [errorDto, updateSintomaDtoReady] = UpdateSintomaDto.create(
+                Number(req.body.id_Sintoma),
+                req.session.admision.id_Admision,
+                Number(req.body.id_Nombre_Sintoma)
+            )
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/sintoma?error=${encodeURIComponent(errorDto)}&id_Sintoma=${encodeURIComponent(updateSintomaDtoReady.id_Sintoma)}`);
+                return;
+            }
+            const [error, sintomaActualizado] = await SintomasServices.updateSintoma(updateSintomaDtoReady)
+            if(error && !sintomaActualizado){
+                res.redirect(`/enfermeria/view/actualizar/sintoma?error=${encodeURIComponent(error)}&id_Sintoma=${encodeURIComponent(updateSintomaDtoReady.id_Sintoma)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/sintomas/paciente?confirmacion=${encodeURIComponent("Sintoma actualizado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarSintoma", "1751", error as string);       
+            res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error as string)}`);
+            return;     
+        }
+    }
+    public eliminarSintoma = async(req:Request, res:Response) => {
+        try {
+            const id_Sintoma = (req.query.id_Sintoma)? Number(req.query.id_Sintoma) : undefined;
+            if(!id_Sintoma){
+                res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent("No se ha proporcionado un id de sintoma")}`);
+                return;
+            }
+            const [error, sintomaEliminado] = await SintomasServices.deleteSintoma(id_Sintoma);
+            if(error && !sintomaEliminado){
+                res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/sintomas/paciente?confirmacion=${encodeURIComponent("Sintoma eliminado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarSintoma", "1751", error as string);       
+            res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error as string)}`);
             return;     
         }
     }
