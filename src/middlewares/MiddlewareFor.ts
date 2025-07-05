@@ -3,12 +3,16 @@ import { HelperForCreateErrors } from "../Helpers/HelperForCreateErrors"
 
 export class MiddlewareFor {
 
-    static AuthSession = () => {
+    static AuthSession = (rol:string) => {
         return (req:Request,res:Response,next:NextFunction) => {
 
             try {
                 if(!req.session.usuarioLogueado){
                     res.redirect(`/auth/login?warning=${encodeURIComponent("Se cerró la sesion")}`)
+                    return
+                }
+                if(req.session.usuarioLogueado.nombre_Rol !== rol){
+                    res.redirect(`/auth/login?warning=${encodeURIComponent("No tienes permiso para acceder a esta ruta")}`)
                     return
                 }
                 next();

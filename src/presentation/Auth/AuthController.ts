@@ -80,19 +80,7 @@ export class AuthController{
                 id_Especialidad: number
             }
             const rol = (usuarioAutenticado.dataValues.rol.dataValues.nombre == "Admision") ? "personal_de_admision" : usuarioAutenticado.dataValues.rol.dataValues.nombre
-            console.log(usuarioAutenticado.dataValues.id_Usuario);
-            console.log(usuarioAutenticado.dataValues[rol.toLowerCase()].dataValues[`id_${rol}`]);
-            console.log(usuarioAutenticado.dataValues.email);
-            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.nombre);
-            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.apellido);
-            console.log(usuarioAutenticado.dataValues[(rol).toLowerCase()].dataValues.dni);
-            console.log(usuarioAutenticado.dataValues.rol.dataValues.id_Rol);
-            console.log(usuarioAutenticado.dataValues.rol.dataValues.nombre);
             console.log(rol);
-            
-            
-            console.log((usuarioAutenticado.dataValues.medico) ? usuarioAutenticado.dataValues.medico.dataValues.id_Especialidad :null);
-            
             
             const objSession: sesionLogueo = {
                 id_Cuenta: usuarioAutenticado.dataValues.id_Usuario,
@@ -106,6 +94,8 @@ export class AuthController{
                 nombre_Rol: usuarioAutenticado.dataValues.rol.dataValues.nombre,
                 id_Especialidad: (usuarioAutenticado.dataValues.medico) ? usuarioAutenticado.dataValues.medico.dataValues.id_Especialidad :null
             }
+            console.log(objSession.nombre_Rol);
+            
             req.session.usuarioLogueado = objSession; //todo: Ver si funciona
 
             res.redirect(`/${encodeURIComponent(usuarioAutenticado.dataValues.rol.dataValues.nombre)}`)
