@@ -14,6 +14,18 @@ import { CamaService } from "./Hospital/CamaService";
 
 
 export class AdmisionService {
+    public static async actualizarPrioridadDeAtencion(id_Prioridad_de_atencion: number, id_Admision: number): Promise<[string?, boolean?]> {
+        try {
+            const [error, admision] = await this.buscarAdmisionPorId(id_Admision);
+            if (error) return [error, false];
+            admision.id_prioridad_de_atencion = id_Prioridad_de_atencion;
+            await admision.save();
+            return [undefined, true];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPrioridadDeAtencion", "AdmisionService", "17", error as string);
+            return [error as string, false];
+        }
+    }
     public static async buscarAdmisionPorId(id_Admision:number):Promise<[string?, Admision?]> {//todo: testear
         try {
             if(!id_Admision || id_Admision < 0) return ["El id_Admision es nulo o menor a 0"]

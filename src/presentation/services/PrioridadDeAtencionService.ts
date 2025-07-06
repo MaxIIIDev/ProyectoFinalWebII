@@ -9,7 +9,7 @@ export class PrioridadDeAtencionService{
 
         try {
             const prioridadesDeAtencion: Prioridad_De_Atencion[] = await Prioridad_De_Atencion.findAll();
-            if(!prioridadesDeAtencion) return ["No se encontraron las prioridades de atencion"]
+            if(!prioridadesDeAtencion) return ["No se encontraron las prioridades de atencion", undefined]
             return [undefined, prioridadesDeAtencion]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarLasPrioridadesDeAtencionEnDB","PrioridadDeAtencionService","15",error as string)

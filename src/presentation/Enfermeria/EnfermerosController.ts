@@ -34,6 +34,7 @@ import { SintomasServices } from "../services/SintomasServices";
 import { NombreSintomaService } from "../services/NombreSintomaService";
 import { CreateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/createSintomaDto";
 import { UpdateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/updateSintomaDto";
+import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
 
 
 export class EnfermerosController{
@@ -1412,6 +1413,44 @@ export class EnfermerosController{
             return;
         }
     }
+    public vistaEstablecerPrioridadDeAtencion = async (req:Request, res:Response) => {
+        try {
+            
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+
+            const prioridadesDeAtencion = await PrioridadDeAtencionService.buscarLasPrioridadesDeAtencionEnDB();
+            if(prioridadesDeAtencion[0] && prioridadesDeAtencion[1] == undefined){
+                res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(prioridadesDeAtencion[0])}`);
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/Internacion/VistaEstablecerPrioridad.pug", {
+                    error: error,
+                    prioridadesDeAtencion: prioridadesDeAtencion[1],
+                    admision: req.session.admision,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/Internacion/VistaEstablecerPrioridad.pug", {
+                    success: confirmacion,
+                    prioridadesDeAtencion: prioridadesDeAtencion[1],
+                    admision: req.session.admision,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/Internacion/VistaEstablecerPrioridad.pug", {
+                prioridadesDeAtencion: prioridadesDeAtencion[1],
+                admision: req.session.admision,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaEstablecerPrioridadDeAtencion", "1419", error as string);
+            res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
@@ -1622,14 +1661,14 @@ export class EnfermerosController{
             }
             const alergiaActualizada = await AlergiaService.actualizarAlergia(updateAlergiaDtoReady);
             if(alergiaActualizada[0]){
-                res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(alergiaActualizada[0])}`);
+                res.redirect(`/enfermeria/view/alergias/paciente?error=${encodeURIComponent(alergiaActualizada[0])}`);
                 return;
             }
-            res.redirect(`/enfermeria/view/crear/tratamiento/alergia?confirmacion=${encodeURIComponent("Tratamiento creado con éxito")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?confirmacion=${encodeURIComponent("Tratamiento creado con éxito")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearTratamientoAlergia", "95", error as string);
-            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }
@@ -1679,12 +1718,12 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/actualizar/tratamiento/alergia?error=${encodeURIComponent(tratamientoActualizado[0])}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
                 return;
             }
-            res.redirect(`/enfermeria/view/actualizar/tratamiento/alergia?confirmacion=${encodeURIComponent("Tratamiento actualizado correctamente")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?confirmacion=${encodeURIComponent("Tratamiento actualizado correctamente")}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
             return; 
             
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarTratamientoAlergia", "", error as string);
-            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?error=${encodeURIComponent(error as string)}`);
             return; 
         }
     }
@@ -1873,19 +1912,19 @@ export class EnfermerosController{
                 id_Paciente: req.session.paciente.id_Paciente
             })
             if(errorDto){
-                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(errorDto)}`);
+                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(errorDto)}&id_Antecedente_Familiar=${encodeURIComponent(id_Antecedente_Familiar)}`);
                 return;
             }
             const antecedentesFamiliaresActualizados = await AntecedentesFamiliaresService.updateAntecedenteFamiliar(updateAntecedentesFamiliaresDtoReady)
             if(antecedentesFamiliaresActualizados[0] && antecedentesFamiliaresActualizados[1]== undefined){
-                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(antecedentesFamiliaresActualizados[0])}`);
+                res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(antecedentesFamiliaresActualizados[0])}&id_Antecedente_Familiar=${encodeURIComponent(id_Antecedente_Familiar)}`);
                 return;
             }
             res.redirect(`/enfermeria/view/antecedentes/familiares?confirmacion=${encodeURIComponent("Antecedentes familiares actualizados correctamente")}`);
             return;     
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarAntecedentesFamiliares", "", error as string);
-            res.redirect(`/enfermeria/view/actualizar/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
+            res.redirect(`/enfermeria/view/antecedentes/familiares?error=${encodeURIComponent(error as string)}`);
             return;     
         }
     }
@@ -2156,6 +2195,27 @@ export class EnfermerosController{
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarSintoma", "1751", error as string);       
             res.redirect(`/enfermeria/view/sintomas/paciente?error=${encodeURIComponent(error as string)}`);
             return;     
+        }
+    }
+    public EstablecerPrioridad = async(req:Request, res:Response) => {
+        try {
+            const id_Prioridad_de_atencion = (req.body.id_prioridad_de_atencion)? Number(req.body.id_prioridad_de_atencion) : undefined;
+            if(!id_Prioridad_de_atencion){
+                res.redirect(`/enfermeria/view/internacion?error=${encodeURIComponent("No se ha proporcionado un id de prioridad de atencion")}`);
+                return;
+            }
+            const [error, prioridadDeAtencionEstablecida] = await AdmisionService.actualizarPrioridadDeAtencion(id_Prioridad_de_atencion, req.session.admision.id_Admision)
+            if(error && !prioridadDeAtencionEstablecida){
+                res.redirect(`/enfermeria/view/establecer/prioridad?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            req.session.admision.id_prioridad_de_atencion = id_Prioridad_de_atencion;
+            res.redirect(`/enfermeria/view/establecer/prioridad?confirmacion=${encodeURIComponent("Prioridad de atencion establecida correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "EstablecerPrioridad", "2204", error as string);
+            res.redirect(`/enfermeria/view/establecer/prioridad?error=${encodeURIComponent(error as string)}`);
+            return;
         }
     }
 }

@@ -3,7 +3,7 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Actualizar Evaluacion Fisica
+        title Establecer Prioridad de Atencion
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
         include ../../mixin/mixins
@@ -112,46 +112,28 @@ html(lang="es")
     body
         include ../../layout/alerts.pug    
         .main-container
-            a.home-btn(href="/enfermeria/view/evaluaciones/fisicas") 
+            a.home-btn(href="/enfermeria/view/internacion") 
                 i.bi.bi-house-door-fill
             
             .card
                 .card-header
                     h1.card-title 
                         i.bi.bi-calendar2-plus.me-2
-                        | Actualizar Evaluacion Fisica
+                        | Establecer Prioridad de Atencion
                 
                 .card-body
-                    form.form-container.needs-validation(action="/enfermeria/actualizar/evaluacion/fisica" method="POST" novalidate)
-                        input(type="hidden" name="id_Evaluacion_fisica" value=evaluacionActual.dataValues.id_Evaluacion_fisica)
+                    form.form-container.needs-validation(action="/enfermeria/establecer/prioridad" method="POST" novalidate)
                         
                         .mb-3
-                            label.form-label(for="color_de_piel") Color de piel
-                            input#color_de_piel.form-control(type="text" name="color_de_piel" placeholder="Por favor ingrese el color de piel" min="5" required value=evaluacionActual.dataValues.color_de_piel)
-                            .invalid-feedback Por favor ingrese el color de piel
-                        
-                        .mb-3
-                            label.form-label(for="frecuencia_cardiaca") Frecuencia cardiaca
-                            input#frecuencia_cardiaca.form-control(type="number" name="frecuencia_cardiaca" placeholder="Por favor ingrese la frecuencia cardiaca" min="0" max="400" required value=evaluacionActual.dataValues.frecuencia_cardiaca)
-                            .invalid-feedback Por favor ingrese la frecuencia cardiaca
-                        
-                        .mb-3
-                            label.form-label(for="presion_arterial") Presion arterial Sistolica 
-                            input#presion_arterial.form-control(type="number" name="presion_arterial_sistolica" placeholder="Por favor ingrese la presion arterial sistolica" min="0" max="300" required value=evaluacionActual.dataValues.presion_arterial_sistolica)
-                            .invalid-feedback Por favor ingrese la presion arterial sistolica
-                        .mb-3
-                            label.form-label(for="presion_arterial") Presion arterial Diastolica
-                            input#presion_arterial.form-control(type="number" name="presion_arterial_diastolica" placeholder="Por favor ingrese la presion arterial diastolica" min="0" max="200" required value=evaluacionActual.dataValues.presion_arterial_diastolica)
-                            .invalid-feedback Por favor ingrese la presion arterial diastolica
-                        
-                        .mb-3
-                            label.form-label(for="respuesta_a_estimulos") Respuestas a estimulos
-                            input#respuesta_a_estimulos.form-control(type="text" name="respuesta_a_estimulos" placeholder="Por favor ingrese las respuestas a estimulos" min="5" required value=evaluacionActual.dataValues.respuesta_a_estimulos)
-                            .invalid-feedback Por favor ingrese las respuestas a estimulos
+                            label.form-label(for="id_prioridad_de_atencion") Prioridad de Atencion
+                            select.form-select( name="id_prioridad_de_atencion" placeholder="Por favor seleccione la prioridad de atencion" required)
+                                option(value="" disabled selected) Seleccione la prioridad de atencion
+                                +cargarPrioridadDeAtencionActualizarAdmision(prioridadesDeAtencion,admision)
+                            .invalid-feedback Por favor seleccione la prioridad de atencion
                         
                         button.btn.btn-submit(type="submit") 
                             i.bi.bi-save.me-2
-                            | Guardar Evaluacion Fisica
+                            | Establecer Prioridad
 
         script.
             // Validación del formulario

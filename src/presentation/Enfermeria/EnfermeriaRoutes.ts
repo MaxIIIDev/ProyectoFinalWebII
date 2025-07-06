@@ -56,6 +56,8 @@ export class EnfermeriaRoutes{
         router.get("/view/crear/sintoma", ...middlewareEnfermero, controller.vistaCrearSintoma)
         router.get("/view/actualizar/sintoma", ...middlewareEnfermero, controller.vistaActualizarSintoma)
         router.get("/eliminar/sintoma", ...middlewareEnfermero, controller.eliminarSintoma)
+        router.get("/view/establecer/prioridad", ...middlewareEnfermero, controller.vistaEstablecerPrioridadDeAtencion)
+
 
         router.post("/actualizar/paciente",...middlewareEnfermero,controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", ...middlewareEnfermero,controller.crearAlergia)
@@ -75,6 +77,7 @@ export class EnfermeriaRoutes{
         router.post("/actualizar/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2],controller.actualizarEvaluacionFisica)
         router.post("/crear/sintoma", ...middlewareEnfermero,controller.crearSintoma)
         router.post("/actualizar/sintoma", ...middlewareEnfermero,controller.actualizarSintoma)
+        router.post("/establecer/prioridad", ...middlewareEnfermero,controller.EstablecerPrioridad)
         return router
     }
 
