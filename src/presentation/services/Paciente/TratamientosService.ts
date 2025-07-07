@@ -2,6 +2,8 @@ import { Admision } from "../../../data/models/Admision";
 import { Enfermero } from "../../../data/models/Enfermero";
 import { Medicamentos } from "../../../data/models/Medicamentos";
 import { Medicos } from "../../../data/models/Medicos";
+import { Paciente_Alergias } from "../../../data/models/Paciente_Alergias";
+import { Paciente_Diagnosticos } from "../../../data/models/Paciente_Diagnosticos";
 import { paciente_tratamientos } from "../../../data/models/paciente_tratamientos";
 import { Pacientes } from "../../../data/models/Pacientes";
 import { Tipo_De_tratamiento } from "../../../data/models/Tipo_De_tratamiento";
@@ -16,7 +18,32 @@ import { TipoDeTratamientoService } from "../TipoDeTratamientoService";
 
 export class TratamientosService {
 
-
+    public static async validarTratamientoNoAsignado(id_tratamiento:number):Promise<[string?,boolean?]>{
+        try {
+            if(!id_tratamiento || id_tratamiento < 0) return ["El id del tratamiento es inválido", false];
+            const tratamiento = await paciente_tratamientos.findOne({
+                where: {
+                    id_tratamiento: id_tratamiento
+                },
+                include: [
+                    {
+                        model: Paciente_Alergias,
+                        as: "alergias"
+                    },
+                    {
+                        model: Paciente_Diagnosticos,
+                        as: "diagnostico"
+                    }
+                ]
+            })
+            if(tratamiento.dataValues.alergias.length > 0) return ["El tratamiento esta asignado a una alergia, debe eliminarlo desde el panel de Alergias", false]
+            if(tratamiento.dataValues.diagnostico != null) return ["El tratamiento esta asignado a un diagnostico, debe eliminarlo desde el panel de Diagnostico (Solo Medicos)", false]
+            return [undefined, true];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TratamientosService", "validarTratamientoNoAsignado", "25", error);
+            return [error as string, undefined];
+        }
+    }
     public static async getTratamientosByIdPaciente(id_paciente: number): Promise<[string?,paciente_tratamientos[]?]> {
         try {
             if(!id_paciente || id_paciente < 0) return ["El id del paciente es inválido", undefined];
@@ -153,6 +180,8 @@ export class TratamientosService {
     }
     public static async eliminarTratamiento(id_tratamiento: number): Promise<[string?, boolean?]> {
         try {
+            const [error, tratamiento] = await this.validarTratamientoNoAsignado(id_tratamiento);
+            if(error && !tratamiento) return [error, false];
             if(!id_tratamiento || id_tratamiento < 0) return ["El id_tratamiento es inválido", false];
             if(!await this.getTratamientoById(id_tratamiento).then(res => res[1])) return ["El tratamiento no existe", false];
             const tratamientoEliminado = await paciente_tratamientos.destroy({

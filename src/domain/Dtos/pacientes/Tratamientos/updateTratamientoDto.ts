@@ -56,7 +56,6 @@ export class updateTratamientoDto {
             if( fecha_de_finParseada && /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(fecha_de_finParseada) === false) return ["Fecha invalida, debe ser en formato año-mes-dia"]
 
             if(!object.id_paciente || object.id_paciente < 0) return ["Se requiere id_paciente"];
-            if(!object.id_medicamento || object.id_medicamento < 0) return ["Se requiere id_medicamento"];
             if(object.id_enfermero && (isNaN(object.id_enfermero) || object.id_enfermero < 0)) return ["id_enfermero debe ser un número positivo"];
             if(object.id_medico && (isNaN(object.id_medico) || object.id_medico < 0)) return ["id_medico debe ser un número positivo"];
             if(!object.id_enfermero && !object.id_medico) return ["Se requiere al menos un id_enfermero o id_medico"];

@@ -2505,12 +2505,12 @@ export class EnfermerosController{
                 id_admision: req.session.admision.id_Admision,
             })
             if(errorDto){
-                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(errorDto)}`);
+                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(errorDto)}&id_tratamiento=${encodeURIComponent(id_tratamiento)}`);
                 return;
             }
             const [error, tratamientoActualizado] = await TratamientosService.actualizarTratamiento(dtoReady);
             if(error && !tratamientoActualizado){
-                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(error)}`);
+                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(error)}&id_tratamiento=${encodeURIComponent(id_tratamiento)}`);
                 return;
             }
             res.redirect(`/enfermeria/view/tratamientos/prescritos?confirmacion=${encodeURIComponent("Tratamiento actualizado correctamente")}`);

@@ -267,8 +267,14 @@ html(lang="es")
                                             td= "Admision Actual"
                                             td= tratamiento.dataValues.tipo_de_tratamiento.dataValues.nombre
                                             td= tratamiento.dataValues.detalle
-                                            td= tratamiento.dataValues.cantidad_suministrada + " mg"
-                                            td= tratamiento.dataValues.medicamento.dataValues.nombre
+                                            if(tratamiento.dataValues.cantidad_suministrada)
+                                                td= tratamiento.dataValues.cantidad_suministrada + " mg"
+                                            else
+                                                td= '-'
+                                            if(tratamiento.dataValues.medicamento)
+                                                td= tratamiento.dataValues.medicamento.dataValues.nombre
+                                            else
+                                                td= '-'
                                             if(tratamiento.dataValues.enfermero)
                                                 td= `${tratamiento.dataValues.enfermero.dataValues.nombre} ${tratamiento.dataValues.enfermero.dataValues.apellido} (DNI: ${tratamiento.dataValues.enfermero.dataValues.dni})`
                                             else
