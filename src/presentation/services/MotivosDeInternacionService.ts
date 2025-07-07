@@ -7,10 +7,10 @@ export class MotivosDeInternacionService {
     static async buscarMotivoDeInternacionPorId(id: number): Promise<[string?, motivo_De_Internacion?]> {
         try {
             const motivo = await motivo_De_Internacion.findByPk(id);
-            if(!motivo) return ["No se encontro el motivo de internacion"];
+            if(!motivo) return ["No se encontro el motivo de internacion",undefined];
             return [undefined, motivo];
         } catch (error) {
-            return [error as string];
+            return [error as string, undefined];
         }
     }
     static async buscarMotivosDeInternacion(): Promise<[string?, motivo_De_Internacion[]?]> {

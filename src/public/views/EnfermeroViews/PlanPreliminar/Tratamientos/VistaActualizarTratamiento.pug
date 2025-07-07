@@ -3,10 +3,10 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Crear tratamiento de alergia
+        title Actualizar Tratamiento
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
-        include ../../mixin/mixins
+        include ../../../mixin/mixins
         style.
             body {
                 background: linear-gradient(135deg, rgba(57, 33, 105, 0.77) 0%, rgb(1, 41, 105) 100%);
@@ -110,26 +110,26 @@ html(lang="es")
             }
 
     body
-        include ../../layout/alerts.pug    
+        include ../../../layout/alerts.pug    
         .main-container
-            a.home-btn(href="/enfermeria/view/alergias/paciente") 
+            a.home-btn(href="/enfermeria/view/tratamientos/prescritos") 
                 i.bi.bi-house-door-fill
             
             .card
                 .card-header
                     h1.card-title 
                         i.bi.bi-calendar2-plus.me-2
-                        | Crear Nuevo Tratamiento
+                        | Actualizar Tratamiento
                 
                 .card-body
-                    form.form-container.needs-validation(action="/enfermeria/crear/Tratamiento/Para/Alergia" method="POST" novalidate)
+                    form.form-container.needs-validation(action="/enfermeria/actualizar/tratamiento/prescritos" method="POST" novalidate)
                         
-                        input(type="hidden" name="id_Alergia" value=id_Alergia)
+                        input(type="hidden" name="id_tratamiento" value=tratamientoActual.dataValues.id_tratamiento)
                         .mb-3
                             label.form-label(for="id_tipo_de_tratamiento") Tipo de tratamiento
                             select#id_medico.form-select(name="id_tipo_de_tratamiento" required)
                                 option(value="" disabled selected) Seleccione el tipo de tratamiento
-                                +cargarTiposDeTratamiento(tiposDeTratamiento)
+                                +cargarTiposDeTratamiento(tiposDeTratamiento,tratamientoActual)
                             .invalid-feedback Por favor seleccione el tipo de tratamiento
                         
                         .mb-3
@@ -140,57 +140,58 @@ html(lang="es")
                                 required 
                                 minlength="20"
                                 placeholder="Describa el detalle del tratamiento  (mínimo 20 caracteres)"
-                            )
+                            )=  tratamientoActual.dataValues.detalle
                             .invalid-feedback El detalle debe tener al menos 20 caracteres
                         .mb-3 
                             label.form-label(for="cantidad_suministrada") Cantidad Suministrada/mg
                             select.form-select(name="cantidad_suministrada", required)
                                 option(value="" disabled selected) Seleccione la cantidad a suministrar 
-                                option(value="0.1") 0.1 mg
-                                option(value="0.5") 0.5 mg
-                                option(value="1") 1 mg
-                                option(value="2") 2 mg
-                                option(value="2.5") 2.5 mg
-                                option(value="5") 5 mg
-                                option(value="7.5") 7.5 mg
-                                option(value="10") 10 mg
-                                option(value="12.5") 12.5 mg
-                                option(value="15") 15 mg
-                                option(value="20") 20 mg
-                                option(value="25") 25 mg
-                                option(value="30") 30 mg
-                                option(value="40") 40 mg
-                                option(value="50") 50 mg
-                                option(value="60") 60 mg
-                                option(value="75") 75 mg
-                                option(value="80") 80 mg
-                                option(value="100") 100 mg
-                                option(value="125") 125 mg
-                                option(value="150") 150 mg
-                                option(value="200") 200 mg
-                                option(value="250") 250 mg
-                                option(value="300") 300 mg
-                                option(value="400") 400 mg
-                                option(value="500") 500 mg
-                                option(value="600") 600 mg
-                                option(value="750") 750 mg
-                                option(value="800") 800 mg
-                                option(value="1000") 1000 mg
-                                option(value="1500") 1.5 g
-                                option(value="2000") 2 g
-                                option(value="2500") 2.5 g
-                                option(value="5000") 5 g
+                                option(value="0.1" selected=(tratamientoActual.dataValues.cantidad_suministrada == "0.1")) 0.1 mg
+                                option(value="0.5" selected=(tratamientoActual.dataValues.cantidad_suministrada == "0.5")) 0.5 mg
+                                option(value="1" selected=(tratamientoActual.dataValues.cantidad_suministrada == "1")) 1 mg
+                                option(value="2" selected=(tratamientoActual.dataValues.cantidad_suministrada == "2")) 2 mg
+                                option(value="2.5" selected=(tratamientoActual.dataValues.cantidad_suministrada == "2.5")) 2.5 mg
+                                option(value="5"     selected=(tratamientoActual.dataValues.cantidad_suministrada == "5")) 5 mg
+                                option(value="7.5" selected=(tratamientoActual.dataValues.cantidad_suministrada == "7.5")) 7.5 mg
+                                option(value="10" selected=(tratamientoActual.dataValues.cantidad_suministrada == "10")) 10 mg
+                                option(value="12.5" selected=(tratamientoActual.dataValues.cantidad_suministrada == "12.5")) 12.5 mg
+                                option(value="15" selected=(tratamientoActual.dataValues.cantidad_suministrada == "15")) 15 mg
+                                option(value="20" selected=(tratamientoActual.dataValues.cantidad_suministrada == "20")) 20 mg
+                                option(value="25" selected=(tratamientoActual.dataValues.cantidad_suministrada == "25")) 25 mg
+                                option(value="30" selected=(tratamientoActual.dataValues.cantidad_suministrada == "30")) 30 mg
+                                option(value="40" selected=(tratamientoActual.dataValues.cantidad_suministrada == "40")) 40 mg
+                                option(value="50" selected=(tratamientoActual.dataValues.cantidad_suministrada == "50")) 50 mg
+                                option(value="60" selected=(tratamientoActual.dataValues.cantidad_suministrada == "60")) 60 mg
+                                option(value="75" selected=(tratamientoActual.dataValues.cantidad_suministrada == "75")) 75 mg
+                                option(value="80" selected=(tratamientoActual.dataValues.cantidad_suministrada == "80")) 80 mg
+                                option(value="100" selected=(tratamientoActual.dataValues.cantidad_suministrada == "100")) 100 mg
+                                option(value="125" selected=(tratamientoActual.dataValues.cantidad_suministrada == "125")) 125 mg
+                                option(value="150" selected=(tratamientoActual.dataValues.cantidad_suministrada == "150")) 150 mg
+                                option(value="200" selected=(tratamientoActual.dataValues.cantidad_suministrada == "200")) 200 mg
+                                option(value="250" selected=(tratamientoActual.dataValues.cantidad_suministrada == "250")) 250 mg
+                                option(value="300" selected=(tratamientoActual.dataValues.cantidad_suministrada == "300")) 300 mg
+                                option(value="400" selected=(tratamientoActual.dataValues.cantidad_suministrada == "400")) 400 mg
+                                option(value="500" selected=(tratamientoActual.dataValues.cantidad_suministrada == "500")) 500 mg
+                                option(value="600" selected=(tratamientoActual.dataValues.cantidad_suministrada == "600")) 600 mg
+                                option(value="750" selected=(tratamientoActual.dataValues.cantidad_suministrada == "750")) 750 mg
+                                option(value="800" selected=(tratamientoActual.dataValues.cantidad_suministrada == "800")) 800 mg
+                                option(value="1000" selected=(tratamientoActual.dataValues.cantidad_suministrada == "1000")) 1000 mg
+                                option(value="1500" selected=(tratamientoActual.dataValues.cantidad_suministrada == "1500")) 1.5 g
+                                option(value="2000" selected=(tratamientoActual.dataValues.cantidad_suministrada == "2000")) 2 g
+                                option(value="2500" selected=(tratamientoActual.dataValues.cantidad_suministrada == "2500")) 2.5 g
+                                option(value="5000" selected=(tratamientoActual.dataValues.cantidad_suministrada == "5000")) 5 g
                             .invalid-feedback Por favor seleccione la dosis 
                         .mb-3
                             label.form-label(for="id_medicamento") Medicamento
                             select#id_medico.form-select(name="id_medicamento" required)
                                 option(value="" disabled selected) Seleccione el Medicamento
-                                +cargarMedicamentos(medicamentos)
+                                +cargarMedicamentos(medicamentos, tratamientoActual )
                             .invalid-feedback Por favor seleccione el medicamento
 
                         button.btn.btn-submit(type="submit") 
                             i.bi.bi-save.me-2
                             | Guardar Tratamiento
+                        
 
         script.
             // Validación del formulario

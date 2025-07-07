@@ -1425,7 +1425,7 @@ export class EnfermerosController{
                 return;
             }
             if(error){
-                res.render("EnfermeroViews/Internacion/VistaEstablecerPrioridad.pug", {
+                res.render("EnfermeroViews/PlanPreliminar/VistaEstablecerPrioridad.pug", {
                     error: error,
                     prioridadesDeAtencion: prioridadesDeAtencion[1],
                     admision: req.session.admision,
@@ -1451,6 +1451,249 @@ export class EnfermerosController{
             return;
         }
     }
+    public vistaPlanPreliminar = async(req:Request, res:Response) => {
+        try {
+            
+            const error = req.query.error || undefined;
+            let warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+
+            const motivoDeInternacion = await MotivosDeInternacionService.buscarMotivoDeInternacionPorId(req.session.admision.id_motivo_de_Internacion);
+            if(motivoDeInternacion[0] && motivoDeInternacion[1] == undefined) (!warning) ? warning = motivoDeInternacion[0] : warning;
+            if(error){
+                res.render("EnfermeroViews/PlanPreliminar/VistaPlanPreliminar.pug", {
+                    error: error,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/PlanPreliminar/VistaPlanPreliminar.pug", {
+                    warning: warning,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/PlanPreliminar/VistaPlanPreliminar.pug", {
+                    success: confirmacion,
+                    paciente: req.session.paciente,
+                    motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/PlanPreliminar/VistaPlanPreliminar.pug", {
+                paciente: req.session.paciente,
+                motivoDeInternacion: motivoDeInternacion[1].dataValues.motivo,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaPlanPreliminar", "1461", error as string);
+            res.redirect(`/enfermeria/view/plan/preliminar?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+
+    public vistaListaMedicamentosPrescritos = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaMedicamentosPrescritos", "1503", error as string);
+            res.redirect(`/enfermeria/view/medicamentos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaListaTratamientosPrescritos = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const tratamientos = await TratamientosService.getTratamientosByIdPacienteAndAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
+            if(tratamientos[0] && tratamientos[1] == undefined){
+                res.redirect(`/enfermeria/view/plan/preliminar?error=${encodeURIComponent(tratamientos[0])}`);
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaListaTratamientos.pug", {
+                    error: error,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaListaTratamientos.pug", {
+                    warning: warning,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaListaTratamientos.pug", {
+                    success: confirmacion,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaListaTratamientos.pug", {
+                fechaAdmision: req.session.admision.fecha_De_Admision,
+                paciente: req.session.paciente,
+                tratamientos: tratamientos[1],
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaTratamientosPrescritos", "1515", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaHistorialTratamientosPrescritos = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const tratamientos = await TratamientosService.getTratamientosByIdPaciente(req.session.paciente.id_Paciente)
+            if(tratamientos[0] && tratamientos[1] == undefined){
+                res.redirect(`/enfermeria/view/plan/preliminar?error=${encodeURIComponent(tratamientos[0])}`);
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaHistorialTratamientos.pug", {
+                    error: error,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            if(warning){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaHistorialTratamientos.pug", {
+                    warning: warning,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaHistorialTratamientos.pug", {
+                    success: confirmacion,
+                    paciente: req.session.paciente,
+                    tratamientos: tratamientos[1],
+                    fechaAdmision: req.session.admision.fecha_De_Admision,
+                })
+                return;
+            }
+            res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaHistorialTratamientos.pug", {
+                fechaAdmision: req.session.admision.fecha_De_Admision,
+                paciente: req.session.paciente,
+                tratamientos: tratamientos[1],
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaListaTratamientosPrescritos", "1515", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaCrearTratamientoPrescrito = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const [errorServicio, tiposDeTratamientos] = await TipoDeTratamientoService.getAllTiposDeTratamiento();
+            if(errorServicio){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(errorServicio)}`);
+                return;
+            }
+            const [errorServicioMedicamentos, medicamentos] = await MedicamentosServices.getTodosLosMedicamentos();
+            if(errorServicioMedicamentos){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(errorServicioMedicamentos)}`);
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaCrearTratamiento.pug", {
+                    error: error,
+                    tiposDeTratamiento: tiposDeTratamientos,
+                    medicamentos: medicamentos,
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaCrearTratamiento.pug", {
+                tiposDeTratamiento: tiposDeTratamientos,
+                medicamentos: medicamentos,
+            })
+            return;            
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaCrearTratamientoPrescrito", "1615", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaActualizarTratamientoPrescrito = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const id_tratamiento =  (req.query.id_tratamiento)? Number(req.query.id_tratamiento) : undefined
+
+            if(!id_tratamiento){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent("No se proporciono el id_tratamiento")}`)
+                return
+            }
+            const [errorServicioTratamientos,tratamientoActual] = await TratamientosService.getTratamientoById(id_tratamiento);
+            
+            if(errorServicioTratamientos){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(errorServicioTratamientos)}`)
+                return
+            }
+
+            const [errorServicio, tiposDeTratamientos] = await TipoDeTratamientoService.getAllTiposDeTratamiento();
+            if(errorServicio){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(errorServicio)}`);
+                return;
+            }
+            const [errorServicioMedicamentos, medicamentos] = await MedicamentosServices.getTodosLosMedicamentos();
+            if(errorServicioMedicamentos){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(errorServicioMedicamentos)}`);
+                return;
+            }
+            if(error){
+                res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaActualizarTratamiento.pug", {
+                    error: error,
+                    tiposDeTratamiento: tiposDeTratamientos,
+                    medicamentos: medicamentos,
+                    tratamientoActual: tratamientoActual,
+                })
+                return;
+            }
+            
+            res.render("EnfermeroViews/PlanPreliminar/Tratamientos/VistaActualizarTratamiento.pug", {
+                tiposDeTratamiento: tiposDeTratamientos,
+                medicamentos: medicamentos,
+                tratamientoActual: tratamientoActual,
+            })
+            return;            
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaActualizarTratamiento", "1649", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    
+
+    
     //////////////////////////////////////////////////Todo
     //////////////////todo FUNCIONALIDADES ///////////
     //////////////////////////////////////////////////Todo
@@ -2215,6 +2458,86 @@ export class EnfermerosController{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "EstablecerPrioridad", "2204", error as string);
             res.redirect(`/enfermeria/view/establecer/prioridad?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public crearTratamientoPrescrito = async(req:Request, res:Response) => {
+        try {
+            const {id_tipo_de_tratamiento, detalle, cantidad_suministrada, id_medicamento} = req.body 
+            const [errorDto, dtoReady] = createTratamientoDto.create({
+                id_tipo_de_tratamiento: id_tipo_de_tratamiento,
+                detalle: detalle,
+                cantidad_suministrada: cantidad_suministrada,
+                id_medicamento: id_medicamento,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_enfermero: req.session.usuarioLogueado.id_Personal,
+                id_admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/crear/tratamiento/prescrito?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const [error, tratamientoCreado] = await TratamientosService.registrarTratamiento(dtoReady);
+            if(error && !tratamientoCreado){
+                res.redirect(`/enfermeria/view/crear/tratamiento/prescrito?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?confirmacion=${encodeURIComponent("Tratamiento creado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearTratamientoPrescrito", "2465", error as string);
+            res.redirect(`/enfermeria/view/crear/tratamiento/prescrito?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public actualizarTratamientoPrescrito = async(req:Request, res:Response) => {
+        try {
+            
+            const {id_tratamiento,id_tipo_de_tratamiento, detalle, cantidad_suministrada, id_medicamento} = req.body 
+            const [errorDto, dtoReady] = updateTratamientoDto.create({
+                id_tratamiento: id_tratamiento,
+                id_tipo_de_tratamiento: id_tipo_de_tratamiento,
+                detalle: detalle,
+                cantidad_suministrada: cantidad_suministrada,
+                id_medicamento: id_medicamento,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_enfermero: req.session.usuarioLogueado.id_Personal,
+                id_admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const [error, tratamientoActualizado] = await TratamientosService.actualizarTratamiento(dtoReady);
+            if(error && !tratamientoActualizado){
+                res.redirect(`/enfermeria/view/actualizar/tratamiento/prescrito?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?confirmacion=${encodeURIComponent("Tratamiento actualizado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "actualizarTratamientoPrescrito", "2505", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public eliminarTratamientoPrescito = async(req:Request, res:Response) => {
+        try {
+            const id_tratamiento = (req.query.id_tratamiento)? Number(req.query.id_tratamiento) : undefined;
+            if(!id_tratamiento){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent("No se ha proporcionado un id de tratamiento")}`);
+                return;
+            }
+            const [error, tratamientoEliminado] = await TratamientosService.eliminarTratamiento(id_tratamiento)
+            if(error && !tratamientoEliminado){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?confirmacion=${encodeURIComponent("Tratamiento eliminado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarTratamiento", "2225", error as string);
+            res.redirect(`/enfermeria/view/tratamientos/prescritos?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }

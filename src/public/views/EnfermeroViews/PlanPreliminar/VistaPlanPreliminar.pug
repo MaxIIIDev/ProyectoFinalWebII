@@ -1,0 +1,236 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Gestión de Plan Preliminar
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css", rel="stylesheet")
+    style.
+      :root {
+        --primary: #3a86ff;
+        --secondary: #8338ec;
+        --accent: #06d6a0;
+        --warning: #ffbe0b;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+        --card-bg: rgba(255, 255, 255, 0.08);
+        --transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+        min-height: 100vh;
+        color: var(--light);
+        line-height: 1.6;
+      }
+      
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+      
+      .header-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 1.25rem;
+        padding: 2.5rem;
+        margin-bottom: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 800px;
+        width: 100%;
+        transition: var(--transition);
+      }
+      
+      .header-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+      }
+      
+      .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        line-height: 1.2;
+      }
+      
+      .page-subtitle {
+        font-size: 1.25rem;
+        font-weight: 400;
+        opacity: 0.85;
+        margin-bottom: 0;
+      }
+      
+      .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 1200px;
+      }
+      
+      .action-card {
+        font-size: 1.15rem;
+        padding: 2rem 1.5rem;
+        border-radius: 1rem;
+        transition: var(--transition);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        border: none;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      
+      .action-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+        z-index: 1;
+        transition: var(--transition);
+      }
+      
+      .action-card:hover::after {
+        background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+      }
+      
+      .action-card i {
+        font-size: 2.5rem;
+        margin-bottom: 1.25rem;
+        position: relative;
+        z-index: 2;
+        transition: var(--transition);
+      }
+      
+      .action-card span {
+        position: relative;
+        z-index: 2;
+      }
+      
+      .action-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .action-card:hover i {
+        transform: scale(1.1);
+      }
+      
+      .medication-card {
+        background: linear-gradient(135deg, var(--primary) 0%, #4361ee 100%);
+      }
+      
+      .treatment-card {
+        background: linear-gradient(135deg, var(--accent) 0%, #06d6a0 100%);
+      }
+      
+      .nav-home {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        background-color: var(--light);
+        color: var(--primary);
+        border: none;
+        border-radius: 50%;
+        width: 3.5rem;
+        height: 3.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: var(--transition);
+        z-index: 100;
+      }
+      
+      .nav-home:hover {
+        transform: translateY(-3px) rotate(5deg);
+        background-color: var(--light);
+        color: var(--secondary);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+      
+      @media (max-width: 768px) {
+        .main-container {
+          padding: 1.5rem;
+        }
+        
+        .header-card {
+          padding: 1.75rem;
+          margin-bottom: 2rem;
+        }
+        
+        .page-title {
+          font-size: 2rem;
+        }
+        
+        .page-subtitle {
+          font-size: 1.1rem;
+        }
+        
+        .actions-grid {
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+        
+        .action-card {
+          padding: 1.75rem 1.25rem;
+          font-size: 1.1rem;
+        }
+        
+        .action-card i {
+          font-size: 2.25rem;
+        }
+        
+        .nav-home {
+          width: 3rem;
+          height: 3rem;
+          font-size: 1.25rem;
+          top: 1.5rem;
+          left: 1.5rem;
+        }
+      }
+
+  body
+    .main-container
+      a.nav-home(href="/enfermeria/view/paciente") 
+        i.bi.bi-house-door-fill
+      
+      .header-card
+        h1.page-title Gestión de Plan Preliminar
+        p.page-subtitle Seleccione el área que desea administrar
+        
+      .actions-grid
+        a.action-card.medication-card(href=`/enfermeria/view/medicamentos/prescritos` role="button")
+          i.bi.bi-capsule
+          span Administrar Medicamentos
+        
+        a.action-card.treatment-card(href="/enfermeria/view/tratamientos/prescritos" role="button")
+          i.bi.bi-heart-pulse
+          span Gestionar Tratamientos
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

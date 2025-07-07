@@ -50,14 +50,19 @@ export class EnfermeriaRoutes{
         router.get("/view/crear/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaCrearEvaluacionFisica)
         router.get("/view/actualizar/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaActualizarEvaluacionFisica)
         router.get("/eliminar/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2], controller.eliminarEvaluacionFisica)
-        router.get("/view/internacion", ...middlewareEnfermero, controller.vistaInternacion)
-        router.get("/view/sintomas/paciente", ...middlewareEnfermero, controller.vistaListaSintomas)
+        router.get("/view/internacion", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaInternacion)
+        router.get("/view/sintomas/paciente", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaListaSintomas)
         router.get("/view/historial/sintomas/paciente", ...middlewareEnfermero, controller.vistaAllSintomas)
-        router.get("/view/crear/sintoma", ...middlewareEnfermero, controller.vistaCrearSintoma)
-        router.get("/view/actualizar/sintoma", ...middlewareEnfermero, controller.vistaActualizarSintoma)
-        router.get("/eliminar/sintoma", ...middlewareEnfermero, controller.eliminarSintoma)
-        router.get("/view/establecer/prioridad", ...middlewareEnfermero, controller.vistaEstablecerPrioridadDeAtencion)
-
+        router.get("/view/crear/sintoma", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaCrearSintoma)
+        router.get("/view/actualizar/sintoma", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaActualizarSintoma)
+        router.get("/eliminar/sintoma", middlewareEnfermero[0],middlewareEnfermero[2], controller.eliminarSintoma)
+        router.get("/view/establecer/prioridad", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaEstablecerPrioridadDeAtencion)
+        router.get("/view/plan/preliminar", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaPlanPreliminar)
+        router.get("/view/tratamientos/prescritos", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaListaTratamientosPrescritos)
+        router.get("/view/tratamientos/prescritos/historial", ...middlewareEnfermero, controller.vistaHistorialTratamientosPrescritos)
+        router.get("/view/crear/tratamiento/prescrito", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaCrearTratamientoPrescrito)
+        router.get("/view/actualizar/tratamiento/prescrito", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaActualizarTratamientoPrescrito)
+        router.get("/eliminar/tratamiento/prescrito",middlewareEnfermero[0],middlewareEnfermero[2], controller.eliminarTratamientoPrescito)
 
         router.post("/actualizar/paciente",...middlewareEnfermero,controller.actualizarInformacionPaciente)
         router.post("/crearAlergia", ...middlewareEnfermero,controller.crearAlergia)
@@ -75,9 +80,13 @@ export class EnfermeriaRoutes{
         router.post("/actualizar/cirugia", ...middlewareEnfermero,controller.actualizarCirugia)
         router.post("/crear/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2],controller.crearEvaluacionFisica)
         router.post("/actualizar/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2],controller.actualizarEvaluacionFisica)
-        router.post("/crear/sintoma", ...middlewareEnfermero,controller.crearSintoma)
-        router.post("/actualizar/sintoma", ...middlewareEnfermero,controller.actualizarSintoma)
-        router.post("/establecer/prioridad", ...middlewareEnfermero,controller.EstablecerPrioridad)
+        router.post("/crear/sintoma", middlewareEnfermero[0],middlewareEnfermero[2],controller.crearSintoma)
+        router.post("/actualizar/sintoma", middlewareEnfermero[0],middlewareEnfermero[2],controller.actualizarSintoma)
+        router.post("/establecer/prioridad", middlewareEnfermero[0],middlewareEnfermero[2],controller.EstablecerPrioridad)
+        router.post("/crear/tratamiento/prescritos", middlewareEnfermero[0],middlewareEnfermero[2],controller.crearTratamientoPrescrito)
+        router.post("/actualizar/tratamiento/prescritos", middlewareEnfermero[0],middlewareEnfermero[2],controller.actualizarTratamientoPrescrito)
+        
+        
         return router
     }
 

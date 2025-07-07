@@ -1,4 +1,10 @@
+import { Admision } from "../../../data/models/Admision";
+import { Enfermero } from "../../../data/models/Enfermero";
+import { Medicamentos } from "../../../data/models/Medicamentos";
+import { Medicos } from "../../../data/models/Medicos";
 import { paciente_tratamientos } from "../../../data/models/paciente_tratamientos";
+import { Pacientes } from "../../../data/models/Pacientes";
+import { Tipo_De_tratamiento } from "../../../data/models/Tipo_De_tratamiento";
 import { createTratamientoDto } from "../../../domain/Dtos/pacientes/Tratamientos/createTratamientoDto";
 import { updateTratamientoDto } from "../../../domain/Dtos/pacientes/Tratamientos/updateTratamientoDto";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
@@ -18,9 +24,73 @@ export class TratamientosService {
             const tratamientosDelPaciente = await paciente_tratamientos.findAll({
                 where: {
                     id_paciente: id_paciente
-                }
+                },
+                include: [
+                    {
+                        model: Tipo_De_tratamiento,
+                        as: "tipo_de_tratamiento"
+                    },
+                    {
+                        model: Medicos,
+                        as: "medico"
+                    },
+                    {
+                        model: Enfermero,
+                        as: "enfermero"
+                    },
+                    {
+                        model: Medicamentos,
+                        as: "medicamento"
+                    }
+                ]
             })
-            if(!tratamientosDelPaciente || tratamientosDelPaciente.length === 0) return ["El paciente no tiene tratamientos", undefined];
+           
+            return [undefined, tratamientosDelPaciente];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TratamientosService", "getTratamientosByIdPaciente", "10", error);
+            return [error as string, undefined];
+        }
+    }
+    public static async getTratamientosByIdPacienteAndAdmision(id_paciente: number, id_admision: number): Promise<[string?,paciente_tratamientos[]?]> {
+        try {
+            if(!id_paciente || id_paciente < 0) return ["El id del paciente es inválido", undefined];
+            if(!id_admision || id_admision < 0) return ["El id de la admision es inválido", undefined];
+            if(! await PacienteServices.getPacienteById(id_paciente).then(res=> res[1])) return ["El paciente no existe", undefined];
+            const tratamientosDelPaciente = await paciente_tratamientos.findAll({
+                where:{
+                    id_paciente: id_paciente
+                },
+                include: [
+                    {
+                        model: Pacientes,
+                        as: "paciente",
+                        include: [
+                            {
+                                model: Admision,
+                                where: {
+                                    id_Admision: id_admision,
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        model: Tipo_De_tratamiento,
+                        as: "tipo_de_tratamiento"
+                    },
+                    {
+                        model: Medicos,
+                        as: "medico"
+                    },
+                    {
+                        model: Enfermero,
+                        as: "enfermero"
+                    },
+                    {
+                        model: Medicamentos,
+                        as: "medicamento"
+                    }
+                ]
+            })
            
             return [undefined, tratamientosDelPaciente];
         } catch (error) {

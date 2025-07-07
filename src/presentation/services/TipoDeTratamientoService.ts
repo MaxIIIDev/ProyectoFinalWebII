@@ -12,7 +12,7 @@ export class TipoDeTratamientoService {
                     id_tipo_de_tratamiento: id_tipo_de_tratamiento
                 }
             });
-            if(!tipoDeTratamiento) return ["El tipo de tratamiento no existe", undefined];
+            
             return [undefined, tipoDeTratamiento];
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TipoDeTratamientoService", "buscarTipoDeTratamientoPorId", "10", error);
