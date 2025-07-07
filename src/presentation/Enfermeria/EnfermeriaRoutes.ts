@@ -12,19 +12,21 @@ export class EnfermeriaRoutes{
 
         const router = Router();
         const controller = new EnfermerosController();
-        router.use(MiddlewareFor.InicializarSessionEnfermero)
+        //router.use(MiddlewareFor.InicializarSessionEnfermero)
+        router.use(MiddlewareFor.AuthSession("Enfermero"))
 
         const middlewareEnfermero = [
-            MiddlewareFor.verificarSessionPaciente("/enfermeria/","warning","Se ha cerrado la sesion del paciente"),
+            MiddlewareFor.verificarSessionPaciente("/enfermeria/view/lista/admisiones","warning","Se ha cerrado la sesion del paciente"),
             MiddlewareFor.verificarPacienteNoDesconocido("/enfermeria/view/paciente","warning","No se puede actualizar la informacion de un paciente desconocido"),
-            MiddlewareFor.verificarSessionAdmision("/enfermeria/","warning","Debe Seleccionar una admision"),
+            MiddlewareFor.verificarSessionAdmision("/enfermeria/view/lista/admisiones","warning","Debe Seleccionar una admision"),
         ]
 
 
 
         router.get("/test", controller.test)
-
-        router.get("/", controller.vistaPrincipal);
+        router.get("/", controller.vistaPrincipalEnfermero)
+        router.get("/logout", controller.Logout)
+        router.get("/view/lista/admisiones", controller.vistaPrincipal);
         router.get("/view/paciente",controller.vistaPacienteSeleccionado);
         router.get("/view/actualizar/paciente",...middlewareEnfermero, controller.vistaActualizarInformacionPaciente);
         router.get("/view/historial/paciente", ...middlewareEnfermero,controller.vistaHistorialMedico);

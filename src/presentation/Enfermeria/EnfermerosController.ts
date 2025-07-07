@@ -35,6 +35,7 @@ import { NombreSintomaService } from "../services/NombreSintomaService";
 import { CreateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/createSintomaDto";
 import { UpdateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/updateSintomaDto";
 import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
+import { AuthServices } from "../services/auth/AuthServices";
 
 
 export class EnfermerosController{
@@ -49,17 +50,55 @@ export class EnfermerosController{
 
     public test = async(req:Request,res:Response)=>{
         try {
-            const [error, sd] = await AlergiaService.buscarAlergiaPorPaciente(3,2);
+            const [error, ,contraseña] = await AuthServices.crearContraseña("Enfermero1@")
             if(error){
                 res.json({error:error})
                 return 
             } 
-            res.json({log:sd})
+            res.json({log:contraseña})
             return
 
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("test","EnfermeroController","",error as string)
             res.status(500).json({messageError: error})
+            return
+        }
+    }
+    public Logout = (req:Request, res:Response)=> {
+        try {
+            req.session.destroy((err)=> {
+                console.log("sesion eliminada");
+                console.log(req.session);
+                res.redirect("/auth/login?warning=Se%20cerro%20la%20sesion")
+                if(err){
+                    res.redirect(`/enfermeria/?error=${encodeURIComponent(err)}`)
+                    return
+                }
+                return
+            });
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("Logout","AdmisionController","49", error as string)
+            return
+        }
+    }
+    public vistaPrincipalEnfermero = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined
+            const warning = req.query.warning || undefined
+            
+            if(error){
+                res.render("EnfermeroViews/VistaPrincipalEnfermero.pug", {error: error, enfermero: req.session.usuarioLogueado})
+                return
+            }
+            if(warning){
+                res.render("EnfermeroViews/VistaPrincipalEnfermero.pug", {warning: warning, enfermero: req.session.usuarioLogueado})
+                return
+            }
+            res.render("EnfermeroViews/VistaPrincipalEnfermero.pug", {enfermero: req.session.usuarioLogueado})
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaPrincipalEnfermero","EnfermerosController","",error as string)
+            res.redirect(`/enfermeria/?error=${encodeURIComponent(error as string)}`);
             return
         }
     }

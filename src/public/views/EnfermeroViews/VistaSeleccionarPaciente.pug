@@ -114,7 +114,8 @@ html(lang="es")
             }
     body    
         include ../layout/alerts.pug   
-        
+        a.home-btn(href="/enfermeria/") 
+            i.bi.bi-house-door-fill
         .main-container
             .card
                 .card-header
@@ -127,7 +128,7 @@ html(lang="es")
                         table.table.table-separated
                             thead
                                 tr
-                                    th Fecha
+                                    th Fecha 
                                     th Paciente
                                     th Habitacion
                                     th Motivo de Internacion 
