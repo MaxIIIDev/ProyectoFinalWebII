@@ -90,6 +90,22 @@ html(lang="es")
                 width: 100%;
                 margin-top: 1rem;
             }
+            .btn-reset {
+                background: #f8f9fa;
+                color: #495057;
+                border: 1px solid #dee2e6;
+                padding: 0.75rem 2rem;
+                border-radius: 8px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            .btn-reset:hover {
+                background: #e9ecef;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
             .btn-submit:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -107,6 +123,11 @@ html(lang="es")
             .was-validated .form-control:invalid,
             .was-validated .form-select:invalid {
                 border-color: #dc3545;
+            }
+            .button-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
     body
@@ -143,7 +164,7 @@ html(lang="es")
                             .invalid-feedback El detalle debe tener al menos 20 caracteres
                         .mb-3 
                             label.form-label(for="cantidad_suministrada") Cantidad Suministrada/mg
-                            select.form-select(name="cantidad_suministrada", required)
+                            select.form-select(name="cantidad_suministrada")
                                 option(value="" disabled selected) Seleccione la cantidad a suministrar 
                                 option(value="0.1") 0.1 mg
                                 option(value="0.5") 0.5 mg
@@ -182,14 +203,19 @@ html(lang="es")
                             .invalid-feedback Por favor seleccione la dosis 
                         .mb-3
                             label.form-label(for="id_medicamento") Medicamento
-                            select#id_medico.form-select(name="id_medicamento" required)
+                            select#id_medico.form-select(name="id_medicamento")
                                 option(value="" disabled selected) Seleccione el Medicamento
                                 +cargarMedicamentos(medicamentos)
                             .invalid-feedback Por favor seleccione el medicamento
 
-                        button.btn.btn-submit(type="submit") 
-                            i.bi.bi-save.me-2
-                            | Guardar Tratamiento
+                        .button-group
+                            button.btn.btn-submit(type="submit") 
+                                i.bi.bi-save.me-2
+                                | Guardar Tratamiento
+                            
+                            button.btn.btn-reset(type="button" id="resetBtn") 
+                                i.bi.bi-arrow-counterclockwise.me-2
+                                | Limpiar Selecciones
 
         script.
             // Validación del formulario
@@ -199,7 +225,24 @@ html(lang="es")
                 // Obtener todos los formularios que necesitan validación
                 const forms = document.querySelectorAll('.needs-validation')
                 
-                
+                document.getElementById('resetBtn').addEventListener('click', function() {
+                    const form = document.querySelector('form.needs-validation')
+                    
+                    // Resetear selects
+                    const selects = form.querySelectorAll('select')
+                    selects.forEach(select => {
+                        select.selectedIndex = 0
+                    })
+                    
+                    // Resetear textarea
+                    const textareas = form.querySelectorAll('textarea')
+                    textareas.forEach(textarea => {
+                        textarea.value = ''
+                    })
+                    
+                    // Remover validaciones visuales
+                    form.classList.remove('was-validated')
+                })
                 
                 // Validar antes de enviar
                 Array.from(forms).forEach(form => {

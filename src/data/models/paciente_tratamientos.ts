@@ -28,8 +28,7 @@ export class paciente_tratamientos extends Model{
     @Column(DataType.STRING)
     declare detalle: string;
 
-    @AllowNull(false)
-    @NotNull
+    @AllowNull(true)
     @Column(DataType.DOUBLE)
     declare cantidad_suministrada: number;
 
@@ -46,9 +45,7 @@ export class paciente_tratamientos extends Model{
     @HasOne(()=> Paciente_Diagnosticos)
     declare diagnostico: Paciente_Diagnosticos
 
-    // @HasOne(()=> paciente_tratamientos)
-    // declare tratamiento: paciente_tratamientos
-
+  
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
     declare id_paciente: number;

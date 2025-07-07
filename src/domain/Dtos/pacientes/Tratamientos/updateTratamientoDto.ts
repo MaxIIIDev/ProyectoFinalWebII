@@ -9,11 +9,11 @@ export class updateTratamientoDto {
         public id_tratamiento:number,
         public id_tipo_de_tratamiento: number,
         public detalle: string,
-        public cantidad_suministrada: number,
+        public cantidad_suministrada: number | null,
         public fecha_de_inicio: string | null,
         public fecha_de_fin: string | null,
         public id_paciente: number,
-        public id_medicamento: number,
+        public id_medicamento: number | null,
         public id_enfermero: number | null,
         public id_medico: number | null
     ){}
@@ -41,7 +41,12 @@ export class updateTratamientoDto {
 
             if(!object.id_tipo_de_tratamiento || object.id_tipo_de_tratamiento < 0) return ["Se requiere id_tipo_de_tratamiento"];
             if(!object.detalle || object.detalle.trim() === "") return ["Se requiere detalle"];
-            if(!object.cantidad_suministrada || isNaN(object.cantidad_suministrada) || object.cantidad_suministrada <= 0) return ["Se requiere cantidad_suministrada"];
+            
+            if((object.cantidad_suministrada && !object.id_medicamento) || (!object.cantidad_suministrada && object.id_medicamento)) return ["Se requiere cantidad_suministrada y id_medicamento"];
+            if(object.cantidad_suministrada && Number(object.cantidad_suministrada) < 0) return ["cantidad_suministrada debe ser un número positivo"];
+            if(object.id_medicamento && Number(object.id_medicamento) < 0) return ["id_medicamento debe ser un número positivo"];
+            
+            if(object.cantidad_suministrada && (isNaN(object.cantidad_suministrada) || object.cantidad_suministrada <= 0)) return ["Se requiere cantidad_suministrada"];
            
             
             const fechaParseada = object.fecha_de_inicio ? new Date(object.fecha_de_inicio).toISOString().split('T')[0] : null; // Formato YYYY-MM-DD
@@ -60,11 +65,11 @@ export class updateTratamientoDto {
                 Number(object.id_tratamiento),
                 Number(object.id_tipo_de_tratamiento),
                 object.detalle,
-                parseFloat(object.cantidad_suministrada),
+                object.cantidad_suministrada ? Number(object.cantidad_suministrada) : null,
                 fechaParseada,
                 fecha_de_finParseada,
                 Number(object.id_paciente),
-                Number(object.id_medicamento),
+                object.id_medicamento ? Number(object.id_medicamento) : null,
                 object.id_enfermero ? Number(object.id_enfermero) : null,
                 object.id_medico ? Number(object.id_medico) : null
             )];
