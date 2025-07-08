@@ -133,7 +133,7 @@ export class AuthController{
 
     public test = async(req:Request, res:Response) => {
         try {
-            const[ errorCuenta, cuenta, contraseña ] = await AuthServices.crearContraseña("Admision1@");
+            const[ errorCuenta, cuenta, contraseña ] = await AuthServices.crearContraseña("Enfermeros1@");
             if(errorCuenta) {
                 res.json({errorCuenta: errorCuenta})
                 return

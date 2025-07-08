@@ -1303,6 +1303,10 @@ export class EnfermerosController{
     }
     public vistaAllSintomas = async (req:Request, res:Response) => {
         try {
+            if(req.session.paciente.dni == undefined){
+                res.redirect(`/enfermeria/view/sintomas/paciente?warning=${encodeURIComponent("No se puede mostrar el historial de sintomas de un paciente desconocido")}`)
+                return;
+            }
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const confirmacion = req.query.confirmacion || undefined;
@@ -1599,6 +1603,12 @@ export class EnfermerosController{
     }
     public vistaHistorialTratamientosPrescritos = async (req:Request, res:Response) => {
         try {
+
+            if(req.session.paciente.dni == undefined){
+                res.redirect(`/enfermeria/view/tratamientos/prescritos?warning=${encodeURIComponent("No se puede mostrar el historial de tratamientos de un paciente desconocido")}`)
+                return;
+            }
+
             const error = req.query.error || undefined;
             const warning = req.query.warning || undefined;
             const confirmacion = req.query.confirmacion || undefined;
