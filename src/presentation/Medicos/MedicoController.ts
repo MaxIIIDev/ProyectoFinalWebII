@@ -9,6 +9,7 @@ import { MedicamentosServices } from "../services/MedicamentosServices";
 import { MedicacionActualService } from "../services/Paciente/MedicacionActualService";
 import { AntecedentesFamiliaresService } from "../services/Paciente/AntecedentesFamiliaresService";
 import { CirugiasService } from "../services/Paciente/CirugiasService";
+import { EvaluacionFisicaService } from "../services/Paciente/EvaluacionFisicaService";
 
 
 export class MedicoController {
@@ -349,6 +350,58 @@ export class MedicoController {
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaHistorialDeCirugias","MedicoController","221",error as string)
+            res.redirect(`/medicos/view/historial?error=${error}`)       
+            return  
+        }
+    }
+    public VistaEvaluacionesFisicasActual = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            const evaluaciones = await EvaluacionFisicaService.buscarEvaluacionesFisicasPorAdmisionDelPaciente(req.session.admision.id_Admision, req.session.paciente.id_Paciente)
+            if(evaluaciones[0]){
+                res.redirect(`/medicos/view/historial?error=${evaluaciones[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/EvaluacionesFisicas/VistaListaEvaluacionFisica.pug", {
+                    error: error,
+                    evaluaciones: evaluaciones[1]
+                })
+                return
+            }
+            res.render("MedicoViews/EvaluacionesFisicas/VistaListaEvaluacionFisica.pug", {
+                evaluaciones: evaluaciones[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaHistorialDeEvaluacionesFisicas","MedicoController","221",error as string)
+            res.redirect(`/medicos/view/historial?error=${error}`)       
+            return  
+        }
+    }
+    public VistaHistorialDeEvaluacionesFisicas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            const evaluaciones = await EvaluacionFisicaService.buscarTodasLasEvaluacionesFisicasPorPaciente(req.session.paciente.id_Paciente)
+            if(evaluaciones[0]){
+                res.redirect(`/medicos/view/historial?error=${evaluaciones[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/EvaluacionesFisicas/VistaHistorialEvaluacionFisica.pug", {
+                    error: error,
+                    evaluaciones: evaluaciones[1]
+                })
+                return
+            }
+            res.render("MedicoViews/EvaluacionesFisicas/VistaHistorialEvaluacionFisica.pug", {
+                evaluaciones: evaluaciones[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaHistorialDeEvaluacionesFisicasAnterior","MedicoController","221",error as string)
             res.redirect(`/medicos/view/historial?error=${error}`)       
             return  
         }

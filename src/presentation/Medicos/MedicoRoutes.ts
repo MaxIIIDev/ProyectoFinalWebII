@@ -23,6 +23,9 @@ export class MedicoRoutes{
         router.get("/view/historial/medicamentos/actuales", ...middlewares,controller.VistaHistorialDeMedicamentosActuales)
         router.get("/view/historial/antecedentes/familiares", ...middlewares,controller.VistaHistorialDeAntecedentesFamiliares)
         router.get("/view/historial/cirugias", ...middlewares,controller.VistaHistorialDeCirugias)
+        router.get("/view/evaluacion/fisica", ...middlewares,controller.VistaEvaluacionesFisicasActual)
+        router.get("/view/historial/evaluacion/fisica", ...middlewares,controller.VistaHistorialDeEvaluacionesFisicas)
+        
         return router;
     }
 }
