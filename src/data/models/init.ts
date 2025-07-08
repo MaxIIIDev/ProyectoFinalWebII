@@ -40,6 +40,7 @@ import { Turnos } from "./Turnos";
 import { Usuarios } from "./Usuarios";
 import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 import { Nombre_Sintoma } from "./nombre_sintoma";
+import { RecetasMedicamentos } from "./RecetaMedicamentos";
 
 export const importaciones = [
     Horarios_Turnos,
@@ -62,6 +63,7 @@ export const importaciones = [
     Hospital_habitaciones,
     Medicamentos,
     Nombre_Sintoma,
+    RecetasMedicamentos,
     Medicos,
     Paciente_Alergias,
     Paciente_antecedentes_familiares,

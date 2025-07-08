@@ -1,8 +1,9 @@
-import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, BelongsToMany, Column, CreatedAt, DataType, ForeignKey, HasMany, HasOne, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Pacientes } from "./Pacientes";
 import { Medicos } from "./Medicos";
 import { Medicamentos } from "./Medicamentos";
 import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
+import { RecetasMedicamentos } from "./RecetaMedicamentos";
 
 
 @Table({
@@ -19,8 +20,6 @@ export class Paciente_recetas extends Model{
     @Column(DataType.DATE)
     declare fecha: Date;
 
-    @Column(DataType.STRING)
-    declare indicacion : string
     
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
@@ -40,8 +39,8 @@ export class Paciente_recetas extends Model{
     @Column(DataType.INTEGER)
     declare id_medicamento: number
 
-    @BelongsTo(()=> Medicamentos)
-    declare medicamento: Medicamentos
+    @BelongsToMany(()=> Medicamentos, () => RecetasMedicamentos)
+    declare medicamento: Medicamentos[]
 
     
 
