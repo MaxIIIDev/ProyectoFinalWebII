@@ -59,7 +59,6 @@ export class AlergiaService {
                     }
                 ]
             })
-            if(!alergiasEncontradas || alergiasEncontradas.length <= 0) return ["No se encontraron alergias para dicho paciente", undefined]
             return [undefined, alergiasEncontradas]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodasLasAlergiasPorPaciente","AlergiaService","23",error as string)

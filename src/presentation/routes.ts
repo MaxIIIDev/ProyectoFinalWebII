@@ -3,6 +3,7 @@ import { AdmisionRoutes } from "./admision/AdmisionRoutes";
 import { EnfermeriaRoutes } from "./Enfermeria/EnfermeriaRoutes";
 import { Conexion } from "../data/conexion";
 import { AuthRoutes } from "./Auth/AuthRoutes";
+import { MedicoRoutes } from "./Medicos/MedicoRoutes";
 
 
 //Todo: ESTAS SON LAS RUTAS DE TODA LA APLICACION
@@ -18,7 +19,7 @@ export class AppRoutes{
         })
         router.use("/admision", AdmisionRoutes.admisionRoutes(conexionBd))
         router.use("/enfermeria", EnfermeriaRoutes.enfermeriaRoutes(conexionBd))
-        // router.use("/medicos",MedicoRoutes.medicoRoutes(conexionBd));
+        router.use("/medicos",MedicoRoutes.routes());
         router.use("/auth", AuthRoutes.authRoutes());
         
         return router

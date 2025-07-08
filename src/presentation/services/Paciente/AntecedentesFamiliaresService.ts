@@ -44,7 +44,6 @@ export class AntecedentesFamiliaresService{
                     }
                 ]
             })
-            if(!antecedentesFamiliaresDelPaciente) return ["No se encontraron antecedentes familiares registrados para el paciente", undefined]
             return [ undefined, antecedentesFamiliaresDelPaciente]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarAntecedentesFamiliaresPorPaciente","AntecedentesFamiliaresService","24",error as string);

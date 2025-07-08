@@ -30,7 +30,8 @@ export class Paciente_Diagnosticos extends Model{
     @HasMany(()=> Sintomas)
     declare sintomas: Sintomas[]
 
-
+    @HasMany(()=> paciente_tratamientos)
+    declare tratamientos: paciente_tratamientos[]
 
     @AllowNull(false)
     @NotNull
@@ -52,12 +53,7 @@ export class Paciente_Diagnosticos extends Model{
     @BelongsTo(()=> Pacientes)
     declare paciente: Pacientes
 
-    @ForeignKey(()=> paciente_tratamientos)
-    @Column(DataType.INTEGER)
-    declare id_tratamiento: number
-
-    @BelongsTo(()=> paciente_tratamientos)
-    declare tratamiento: paciente_tratamientos
+    
 
     @HasMany(()=> Paciente_pruebas_diagnosticas)
     declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas[]

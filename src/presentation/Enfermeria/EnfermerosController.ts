@@ -25,7 +25,7 @@ import { MedicoService } from "../services/MedicoService";
 import { createCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/createCirugiaDto";
 import { updateCirugiaDto } from "../../domain/Dtos/pacientes/Cirugias/updateCirugiaDto";
 import { Paciente_Diagnosticos } from "../../data/models/Paciente_Diagnosticos";
-import { DiagnosticoService } from "../services/Medico/DiagnosticosService";
+
 import { EvaluacionFisicaService } from "../services/Paciente/EvaluacionFisicaService";
 import { CreateEvaluacionFisicaDto } from "../../domain/Dtos/pacientes/EvaluacionFisica/createEvaluacionFisicaDto";
 import { updateEvaluacionFisicaDto } from "../../domain/Dtos/pacientes/EvaluacionFisica/updateEvaluacionFisicaDto";
@@ -36,8 +36,20 @@ import { CreateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/createSin
 import { UpdateSintomaDto } from "../../domain/Dtos/pacientes/Sintomas/updateSintomaDto";
 import { PrioridadDeAtencionService } from "../services/PrioridadDeAtencionService";
 import { AuthServices } from "../services/auth/AuthServices";
+import { DiagnosticosServices } from "../services/Paciente/DiagnosticosServices";
 
-
+export type admisionesType = {
+    id_Admision: number;
+    Fecha: string;
+    nombre: string;
+    apellido: string;   
+    dni: number;
+    habitacion: number;
+    ala: string;
+    cama: number;
+    motivo_de_internacion: string;
+    prioridad_de_atencion: string;
+}
 export class EnfermerosController{
 
     
@@ -113,18 +125,7 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/VistaSeleccionarPaciente.pug", {error: admisiones[0]});
                 return;
             }
-            type admisionesType = {
-                id_Admision: number;
-                Fecha: string;
-                nombre: string;
-                apellido: string;   
-                dni: number;
-                habitacion: number;
-                ala: string;
-                cama: number;
-                motivo_de_internacion: string;
-                prioridad_de_atencion: string;
-            }
+            
             const admisionesFormateadas = []
             
             
@@ -180,18 +181,18 @@ export class EnfermerosController{
             if(id_Admision) id_AdmisionValida = Number(id_Admision);
             if(!id_Admision && req.session.admision) id_AdmisionValida = req.session.admision.id_Admision;
             if(!id_AdmisionValida){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent("No se ha seleccionado una admisión"));
+                res.redirect("/enfermeria/view/lista/admisiones?error=" + encodeURIComponent("No se ha seleccionado una admisión"));
                 return;
             }
             const admision = await AdmisionService.buscarAdmisionPorId(Number(id_AdmisionValida));
             if(admision[0]){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent(admision[0]));
+                res.redirect("/enfermeria/view/lista/admisiones?error=" + encodeURIComponent(admision[0]));
                 return;
             }
             const id_Paciente = admision[1].dataValues.id_Paciente
             const paciente = await PacienteServices.getPacienteById(id_Paciente);
             if(paciente[0]){
-                res.redirect("/enfermeria/?error=" + encodeURIComponent(paciente[0]));
+                res.redirect("/enfermeria/view/lista/admisiones?error=" + encodeURIComponent(paciente[0]));
                 return;
             }
             req.session.paciente = {
@@ -248,7 +249,7 @@ export class EnfermerosController{
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaPacienteSeleccionado", "40", error as string);
-            res.redirect(`/enfermeria/?error=${encodeURIComponent(error as string)}`);
+            res.redirect(`/enfermeria/view/lista/admisiones?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }
@@ -1027,7 +1028,7 @@ export class EnfermerosController{
     public vistaDiagnosticos = async (req:Request, res:Response) => {
         try {
             const warning = req.query.warning || undefined;
-            const [error, diagnosticos] = await DiagnosticoService.buscarDiagnosticosPorPaciente(req.session.paciente.id_Paciente)
+            const [error, diagnosticos] = await DiagnosticosServices.buscarDiagnosticosPorPaciente(req.session.paciente.id_Paciente)
             if(error && diagnosticos == undefined){
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error)}`);
                 return;

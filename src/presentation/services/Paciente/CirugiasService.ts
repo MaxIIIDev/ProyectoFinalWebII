@@ -94,7 +94,6 @@ export class CirugiasService {
                     }
                 ]
             })
-            if(!cirugiaEncontrada) return ["El paciente no tiene cirugias asociadas", undefined]
             return [undefined, cirugiaEncontrada];
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarCirugiasPorPaciente","CirugiaService","6",error as string)

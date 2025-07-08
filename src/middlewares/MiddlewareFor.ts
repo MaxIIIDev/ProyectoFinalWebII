@@ -24,6 +24,27 @@ export class MiddlewareFor {
             }
         }
     }
+    static InicializarSessionMedico = (req:Request,res:Response,next:NextFunction) => {
+        try {
+            req.session.usuarioLogueado= {
+                id_Cuenta: 2,
+                id_Personal: 1,
+                email: "medico1@gmail.com",
+                nombre: "Juan",
+                apellido: "Perez",
+                dni: 30123456,
+                logged: true,
+                id_Rol: 2,
+                nombre_Rol: "Medico",
+                id_Especialidad: 1
+            }
+            next();
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("InicializarSessionMedico","MiddlewareFor","27",error as string)
+            return 
+        }
+    }
     static InicializarSessionEnfermero = (req:Request,res:Response,next:NextFunction) => {
         try {
             req.session.usuarioLogueado= {

@@ -42,10 +42,14 @@ export class paciente_tratamientos extends Model{
     @HasMany(()=> Paciente_Alergias)
     declare alergias: Paciente_Alergias[]
 
-    @HasOne(()=> Paciente_Diagnosticos)
+    @ForeignKey(()=> Paciente_Diagnosticos)
+    @Column(DataType.INTEGER)
+    declare id_Paciente_Diagnosticos: number
+    
+    @BelongsTo(()=> Paciente_Diagnosticos)
     declare diagnostico: Paciente_Diagnosticos
 
-  
+
     @ForeignKey(()=> Pacientes)
     @Column(DataType.INTEGER)
     declare id_paciente: number;
