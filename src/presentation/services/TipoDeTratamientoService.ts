@@ -23,7 +23,6 @@ export class TipoDeTratamientoService {
     public static async getAllTiposDeTratamiento(): Promise<[string?, Tipo_De_tratamiento[]?]> {
         try {
             const tiposDeTratamiento = await Tipo_De_tratamiento.findAll();
-            if(!tiposDeTratamiento || tiposDeTratamiento.length === 0) return ["No hay tipos de tratamiento registrados", undefined];
             return [undefined, tiposDeTratamiento];
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TipoDeTratamientoService", "getAllTiposDeTratamiento", "20", error);

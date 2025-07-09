@@ -17,7 +17,7 @@ export class Paciente_Diagnosticos extends Model{
     declare id_Paciente_Diagnosticos: number;
 
     @CreatedAt
-    @Column(DataType.DATE)
+    @Column(DataType.DATEONLY)
     declare fecha: Date;
 
     @ForeignKey(()=> Tipo_De_Diagnostico)

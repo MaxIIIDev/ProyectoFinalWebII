@@ -25,7 +25,14 @@ export class MedicoRoutes{
         router.get("/view/historial/cirugias", ...middlewares,controller.VistaHistorialDeCirugias)
         router.get("/view/evaluacion/fisica", ...middlewares,controller.VistaEvaluacionesFisicasActual)
         router.get("/view/historial/evaluacion/fisica", ...middlewares,controller.VistaHistorialDeEvaluacionesFisicas)
-        
+        router.get("/view/tratamientos", ...middlewares,controller.VistaTratamientosPrescritos)
+        router.get("/view/tratamientos/prescritos/historial", ...middlewares,controller.VistaHistorialDeTratamientosPrescritos)
+        router.get("/view/crear/tratamiento/prescrito", ...middlewares,controller.VistaCrearTratamientoPrescrito)
+        router.get("/view/actualizar/tratamiento/prescrito", ...middlewares,controller.VistaActualizarTratamientoPrescrito)
+        router.get("/eliminar/tratamiento/prescrito", ...middlewares,controller.eliminarTratamientoPrescrito)
+
+        router.post("/crear/tratamiento/prescrito", ...middlewares,controller.crearTratamientoPrescrito)
+        router.post("/actualizar/tratamiento/prescrito", ...middlewares,controller.actualizarTratamientoPrescrito)
         return router;
     }
 }
