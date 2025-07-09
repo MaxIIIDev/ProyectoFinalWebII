@@ -14,6 +14,7 @@ import { TratamientosService } from "../services/Paciente/TratamientosService";
 import { createTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/createTratamientoDto";
 import { updateTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/updateTratamientoDto";
 import { TipoDeTratamientoService } from "../services/TipoDeTratamientoService";
+import { SintomasServices } from "../services/SintomasServices";
 
 
 export class MedicoController {
@@ -458,7 +459,7 @@ export class MedicoController {
     public VistaHistorialDeTratamientosPrescritos = async (req:Request, res:Response) => {
         try {
             
-            const tratamientos = await TratamientosService.getTratamientosByIdPacienteAndAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
+            const tratamientos = await TratamientosService.getTratamientosByIdPaciente(req.session.paciente.id_Paciente)
             if(tratamientos[0]){
                 res.redirect(`/medicos/view/paciente/seleccionado?error=${tratamientos[0]}`)
                 return
@@ -543,6 +544,58 @@ export class MedicoController {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaActualizarTratamientoPrescrito","MedicoController","501",error as string)
             res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaSintomas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            const sintomas = await SintomasServices.getAllSintomasByPacienteAndAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
+            if(sintomas[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${sintomas[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Sintomas/VistaListaSintomas.pug", {
+                    error: error,
+                    sintomas: sintomas[1]
+                })
+                return
+            }
+            res.render("MedicoViews/Sintomas/VistaListaSintomas.pug", {
+                sintomas: sintomas[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaSintomas","MedicoController","549",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaHistorialSintomas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            const sintomas = await SintomasServices.getAllSintomasByPaciente(req.session.paciente.id_Paciente)
+            if(sintomas[0]){
+                res.redirect(`/medicos/view/historial/sintomas?error=${sintomas[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Sintomas/VistaAllSintomas.pug", {
+                    error: error,
+                    sintomas: sintomas[1]
+                })
+                return
+            }
+            res.render("MedicoViews/Sintomas/VistaAllSintomas.pug", {
+                sintomas: sintomas[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaAllSintomas","MedicoController","574",error as string)
+            res.redirect(`/medicos/view/historial/sintomas?error=${error}`)       
             return  
         }
     }

@@ -1271,7 +1271,6 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
                     error: error,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
@@ -1279,7 +1278,6 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
                     warning: warning,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
@@ -1287,13 +1285,11 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
                     success: confirmacion,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
             res.render("EnfermeroViews/Internacion/Sintomas/VistaListaSintomas.pug", {
                 sintomas: sintomas[1],
-                enfermero: req.session.usuarioLogueado,
             })
             return;     
         } catch (error) {
@@ -1321,7 +1317,6 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
                     error: error,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
@@ -1329,7 +1324,6 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
                     warning: warning,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
@@ -1337,13 +1331,11 @@ export class EnfermerosController{
                 res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
                     success: confirmacion,
                     sintomas: sintomas[1],
-                    enfermero: req.session.usuarioLogueado,
                 })
                 return;
             }
             res.render("EnfermeroViews/Internacion/Sintomas/VistaAllSintomas.pug", {
                 sintomas: sintomas[1],
-                enfermero: req.session.usuarioLogueado,
             })
             return;     
         } catch (error) {
@@ -1927,7 +1919,8 @@ export class EnfermerosController{
                     id_paciente: req.session.paciente.id_Paciente,
                     id_medicamento: req.body.id_medicamento,
                     id_enfermero: req.session.usuarioLogueado.id_Personal,
-                    id_medico: null
+                    id_medico: null,
+                    id_admision: req.session.admision.id_Admision
             })
             if(errorDto){
                 res.redirect(`/enfermeria/view/crear/tratamiento/alergia?error=${encodeURIComponent(errorDto)}&id_Alergia=${encodeURIComponent(id_Alergia)}`);
@@ -2000,7 +1993,8 @@ export class EnfermerosController{
                 id_paciente: req.session.paciente.id_Paciente,
                 id_medicamento: req.body.id_medicamento,
                 id_enfermero: req.session.usuarioLogueado.id_Personal,
-                id_medico: null
+                id_medico: null,
+                
             })
             if(errorDto){
                 res.redirect(`/enfermeria/view/actualizar/tratamiento/alergia?error=${encodeURIComponent(errorDto)}&id_Alergia=${encodeURIComponent(id_Alergia)}`);

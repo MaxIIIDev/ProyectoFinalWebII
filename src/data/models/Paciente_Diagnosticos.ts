@@ -27,8 +27,6 @@ export class Paciente_Diagnosticos extends Model{
     @BelongsTo(()=> Tipo_De_Diagnostico)
     declare tipo_de_diagnostico: Tipo_De_Diagnostico
 
-    @HasMany(()=> Sintomas)
-    declare sintomas: Sintomas[]
 
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]

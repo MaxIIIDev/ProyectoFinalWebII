@@ -83,23 +83,15 @@ export class TratamientosService {
             if(!id_paciente || id_paciente < 0) return ["El id del paciente es inválido", undefined];
             if(!id_admision || id_admision < 0) return ["El id de la admision es inválido", undefined];
             if(! await PacienteServices.getPacienteById(id_paciente).then(res=> res[1])) return ["El paciente no existe", undefined];
+            console.log(id_paciente);
+            console.log(id_admision);
             const tratamientosDelPaciente = await paciente_tratamientos.findAll({
-                where:{
-                    id_paciente: id_paciente
+                where: {
+                    id_paciente: id_paciente,
+                    id_admision: id_admision
                 },
                 include: [
-                    {
-                        model: Pacientes,
-                        as: "paciente",
-                        include: [
-                            {
-                                model: Admision,
-                                where: {
-                                    id_Admision: id_admision,
-                                }
-                            }
-                        ]
-                    },
+                    
                     {
                         model: Tipo_De_tratamiento,
                         as: "tipo_de_tratamiento"

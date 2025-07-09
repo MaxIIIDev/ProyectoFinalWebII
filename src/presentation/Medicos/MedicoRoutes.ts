@@ -30,6 +30,8 @@ export class MedicoRoutes{
         router.get("/view/crear/tratamiento/prescrito", ...middlewares,controller.VistaCrearTratamientoPrescrito)
         router.get("/view/actualizar/tratamiento/prescrito", ...middlewares,controller.VistaActualizarTratamientoPrescrito)
         router.get("/eliminar/tratamiento/prescrito", ...middlewares,controller.eliminarTratamientoPrescrito)
+        router.get("/view/sintomas", ...middlewares,controller.VistaSintomas)
+        router.get("/view/historial/sintomas", ...middlewares,controller.VistaHistorialSintomas)
 
         router.post("/crear/tratamiento/prescrito", ...middlewares,controller.crearTratamientoPrescrito)
         router.post("/actualizar/tratamiento/prescrito", ...middlewares,controller.actualizarTratamientoPrescrito)

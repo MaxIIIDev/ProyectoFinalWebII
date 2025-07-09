@@ -5,6 +5,7 @@ import { createAlergiaDto } from "../../../domain/Dtos/pacientes/Alergias/create
 import { updateAlergiaDto } from "../../../domain/Dtos/pacientes/Alergias/updateAlergiaDto";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
 import { PacienteServices } from "../PacientesService";
+import { TratamientosService } from "./TratamientosService";
 
 export class AlergiaService {
     public static async buscarTodosLosNombresDeAlergia():Promise<[string?, nombre_Alergia[]?]> {//todo: Falta testear
@@ -128,6 +129,13 @@ export class AlergiaService {
             if(!(await this.buscarAlergiaPorPaciente(_id_paciente,_id_nombre_alergia).then(res=> res[1]))){
                 return ["No se encuentra dicha alergia registrada al paciente ", false]
             }
+            const alergia = await this.buscarAlergiaPorPaciente(_id_paciente,_id_nombre_alergia)
+            if(alergia[1].id_tratamiento){
+                const confirmacion = await this.eliminarTratamientoDeAlergia(alergia[1].id_Alergia)
+                if(confirmacion[0]) return [confirmacion[0], false]
+                const confirmacion2 = await TratamientosService.eliminarTratamiento(alergia[1].id_tratamiento)
+                if(confirmacion2[0]) return [confirmacion2[0], false]
+            }
             const confirmacion = await Paciente_Alergias.destroy({
                 where: {
                     id_paciente: _id_paciente,
@@ -152,6 +160,7 @@ export class AlergiaService {
                     id_Alergia: _id_Alergia
                 }
             })
+            
             if(!confirmacion || confirmacion[0] == 0) return ["No se elimino la alergia", false]
             return [undefined, true]
         } catch (error) {

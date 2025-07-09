@@ -3,7 +3,7 @@ html(lang="es")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Gestión de Síntomas del Paciente
+        title Historial de Síntomas del Paciente
         link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
         link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
         style.
@@ -214,8 +214,8 @@ html(lang="es")
             }
 
     body    
-        include ../../../layout/alerts.pug   
-        a.home-btn(href="/enfermeria/view/internacion") 
+        include ../../layout/alerts.pug   
+        a.home-btn(href="/medicos/view/sintomas") 
             i.bi.bi-house-door-fill
         
         .main-container
@@ -226,21 +226,12 @@ html(lang="es")
                         | Síntomas del paciente
                 
                 .card-body
-                    .action-buttons
-                        a.btn.btn-success(href=`/enfermeria/view/crear/sintoma` title="Registrar Sintoma")
-                            i.bi.bi-plus-circle
-                            | Registrar Síntoma
-                        a.btn.btn-primary(href=`/enfermeria/view/historial/sintomas/paciente` title="Ver todas las Sintomas")
-                            i.bi.bi-clock-history
-                            | Ver Historial Completo
-                    
                     .table-responsive
                         table.table.table-separated
                             thead
                                 tr
                                     th Fecha de Admisión
                                     th Nombre del Síntoma
-                                    th Acciones
                                     
                             tbody
                                 if sintomas != undefined
@@ -248,19 +239,4 @@ html(lang="es")
                                         tr
                                             td= new Date(sintoma.dataValues.admision.dataValues.fecha_De_Admision).toLocaleDateString('es-ES')
                                             td= sintoma.dataValues.nombre_sintoma.dataValues.nombre
-                                            
-                                            td
-                                                a.btn.btn-primary.btn-action(
-                                                    href=`/enfermeria/view/actualizar/sintoma?id_Sintoma=${sintoma.dataValues.id_Sintoma}`
-                                                    title="Editar"
-                                                )
-                                                    i.bi.bi-pencil
-                                                    | Editar
-                                                a.btn.btn-danger.btn-action(
-                                                    href=`/enfermeria/eliminar/sintoma?id_Sintoma=${sintoma.dataValues.id_Sintoma}`
-                                                    title="Eliminar"
-                                                )
-                                                    i.bi.bi-trash
-                                                    | Eliminar
-
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

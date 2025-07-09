@@ -27,11 +27,6 @@ export class Sintomas extends Model{
     @BelongsTo(()=> Admision)
     declare admision: Admision
 
-    @ForeignKey(()=> Paciente_Diagnosticos)
-    @Column(DataType.INTEGER)
-    declare id_Paciente_Diagnosticos:number
-
-    @BelongsTo(()=> Paciente_Diagnosticos)
-    declare Paciente_Diagnosticos: Paciente_Diagnosticos
+    
 
 }

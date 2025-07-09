@@ -6,6 +6,7 @@ import { Medicamentos } from "./Medicamentos";
 import { Enfermero } from "./Enfermero";
 import { Tipo_De_tratamiento } from "./Tipo_De_tratamiento";
 import { Medicos } from "./Medicos";
+import { Admision } from "./Admision";
 
 @Table({ tableName: "paciente_tratamientos" })
 export class paciente_tratamientos extends Model{
@@ -77,4 +78,11 @@ export class paciente_tratamientos extends Model{
 
     @BelongsTo(()=> Medicos)
     declare medico: Medicos
+
+    @ForeignKey(()=> Admision)
+    @Column(DataType.INTEGER)
+    declare id_admision: number
+
+    @BelongsTo(()=> Admision)
+    declare admision: Admision
 }

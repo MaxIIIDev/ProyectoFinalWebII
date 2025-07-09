@@ -9,6 +9,8 @@ import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 import { Paciente_Evaluacion_Fisica } from "./Paciente_Evaluacion_Fisica";
 import { Paciente_Diagnosticos } from "./Paciente_Diagnosticos";
 import { Paciente_Cirugias } from "./Paciente_Cirugias";
+import { paciente_tratamientos } from "./paciente_tratamientos";
+import { Paciente_recetas } from "./Paciente_recetas";
  
 
 
@@ -89,5 +91,11 @@ export class Admision extends Model{
 
     @HasMany(()=> Paciente_Cirugias)
     declare paciente_cirugias: Paciente_Cirugias[]
+
+    @HasMany(()=> paciente_tratamientos)
+    declare paciente_tratamientos: paciente_tratamientos[]
+
+    @HasMany(()=> Paciente_recetas)
+    declare paciente_recetas: Paciente_recetas[]
 }
 

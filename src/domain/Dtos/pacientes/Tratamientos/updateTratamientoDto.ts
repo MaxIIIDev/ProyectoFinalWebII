@@ -15,7 +15,8 @@ export class updateTratamientoDto {
         public id_paciente: number,
         public id_medicamento: number | null,
         public id_enfermero: number | null,
-        public id_medico: number | null
+        public id_medico: number | null,
+        
     ){}
 
 
@@ -31,7 +32,8 @@ export class updateTratamientoDto {
             id_paciente: object.id_paciente,
             id_medicamento: object.id_medicamento,
             id_enfermero: object.id_enfermero,
-            id_medico: object.id_medico
+            id_medico: object.id_medico,
+           
         }
  
     }
@@ -59,7 +61,6 @@ export class updateTratamientoDto {
             if(object.id_enfermero && (isNaN(object.id_enfermero) || object.id_enfermero < 0)) return ["id_enfermero debe ser un número positivo"];
             if(object.id_medico && (isNaN(object.id_medico) || object.id_medico < 0)) return ["id_medico debe ser un número positivo"];
             if(!object.id_enfermero && !object.id_medico) return ["Se requiere al menos un id_enfermero o id_medico"];
-            
             return [undefined, new updateTratamientoDto(
                 Number(object.id_tratamiento),
                 Number(object.id_tipo_de_tratamiento),
@@ -70,7 +71,7 @@ export class updateTratamientoDto {
                 Number(object.id_paciente),
                 object.id_medicamento ? Number(object.id_medicamento) : null,
                 object.id_enfermero ? Number(object.id_enfermero) : null,
-                object.id_medico ? Number(object.id_medico) : null
+                object.id_medico ? Number(object.id_medico) : null,
             )];
 
         } catch (error) {

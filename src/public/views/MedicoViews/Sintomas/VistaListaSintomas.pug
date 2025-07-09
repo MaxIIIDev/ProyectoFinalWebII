@@ -214,8 +214,8 @@ html(lang="es")
             }
 
     body    
-        include ../../../layout/alerts.pug   
-        a.home-btn(href="/enfermeria/view/internacion") 
+        include ../../layout/alerts.pug   
+        a.home-btn(href="/medicos/view/paciente/seleccionado") 
             i.bi.bi-house-door-fill
         
         .main-container
@@ -227,10 +227,8 @@ html(lang="es")
                 
                 .card-body
                     .action-buttons
-                        a.btn.btn-success(href=`/enfermeria/view/crear/sintoma` title="Registrar Sintoma")
-                            i.bi.bi-plus-circle
-                            | Registrar Síntoma
-                        a.btn.btn-primary(href=`/enfermeria/view/historial/sintomas/paciente` title="Ver todas las Sintomas")
+                       
+                        a.btn.btn-primary(href=`/medicos/view/historial/sintomas` title="Ver todas las Sintomas")
                             i.bi.bi-clock-history
                             | Ver Historial Completo
                     
@@ -240,7 +238,6 @@ html(lang="es")
                                 tr
                                     th Fecha de Admisión
                                     th Nombre del Síntoma
-                                    th Acciones
                                     
                             tbody
                                 if sintomas != undefined
@@ -248,19 +245,5 @@ html(lang="es")
                                         tr
                                             td= new Date(sintoma.dataValues.admision.dataValues.fecha_De_Admision).toLocaleDateString('es-ES')
                                             td= sintoma.dataValues.nombre_sintoma.dataValues.nombre
-                                            
-                                            td
-                                                a.btn.btn-primary.btn-action(
-                                                    href=`/enfermeria/view/actualizar/sintoma?id_Sintoma=${sintoma.dataValues.id_Sintoma}`
-                                                    title="Editar"
-                                                )
-                                                    i.bi.bi-pencil
-                                                    | Editar
-                                                a.btn.btn-danger.btn-action(
-                                                    href=`/enfermeria/eliminar/sintoma?id_Sintoma=${sintoma.dataValues.id_Sintoma}`
-                                                    title="Eliminar"
-                                                )
-                                                    i.bi.bi-trash
-                                                    | Eliminar
 
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

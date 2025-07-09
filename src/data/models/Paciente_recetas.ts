@@ -4,6 +4,7 @@ import { Medicos } from "./Medicos";
 import { Medicamentos } from "./Medicamentos";
 import { Paciente_Medicacion_Actual } from "./Paciente_Medicacion_Actual";
 import { RecetasMedicamentos } from "./RecetaMedicamentos";
+import { Admision } from "./Admision";
 
 
 @Table({
@@ -42,6 +43,11 @@ export class Paciente_recetas extends Model{
     @BelongsToMany(()=> Medicamentos, () => RecetasMedicamentos)
     declare medicamento: Medicamentos[]
 
-    
+    @ForeignKey(()=> Admision)
+    @Column(DataType.INTEGER)
+    declare id_admision: number
+
+    @BelongsTo(()=> Admision)
+    declare admision: Admision
 
 }

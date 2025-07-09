@@ -59,7 +59,6 @@ export class SintomasServices {
                 ],
                 
             });
-            if(!sintomas) return ["No se encontraron sintomas", undefined]
             return [undefined, sintomas]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllSintomasByPaciente","SintomasServices","8",error as string)
@@ -69,13 +68,15 @@ export class SintomasServices {
     public static async getAllSintomasByPacienteAndAdmision(id_Paciente: number,id_Admision: number): Promise<[string?, Sintomas[]?]> {
         try {
             const sintomas = await Sintomas.findAll({
+                where: {
+                    id_Admision: id_Admision,
+                },
                 include: [
                     {
                         model: Admision,
                         as: "admision",
                         where: {
                             id_Paciente: id_Paciente,
-                            id_Admision: id_Admision
                         }
                     },
                     {
@@ -85,7 +86,7 @@ export class SintomasServices {
                 ],
                 
             });
-            if(!sintomas) return ["No se encontraron sintomas", undefined]
+            
             return [undefined, sintomas]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getAllSintomasByPaciente","SintomasServices","8",error as string)
@@ -146,10 +147,6 @@ export class SintomasServices {
             if(_updateSintomaDto.id_Nombre_Sintoma){
                 const nombreSintoma = await NombreSintomaService.getNombreSintomaById(_updateSintomaDto.id_Nombre_Sintoma);
                 if(nombreSintoma[0]) return [nombreSintoma[0], false]
-            }
-            if(_updateSintomaDto.id_Paciente_Diagnosticos){
-                const buscarDiagnostico = await DiagnosticosServices.getDiagnosticoById(_updateSintomaDto.id_Paciente_Diagnosticos);
-                if(buscarDiagnostico[0]) return [buscarDiagnostico[0], false]
             }
 
             const sintomaActualizado = await Sintomas.update(UpdateSintomaDto.toObject(_updateSintomaDto), {where: {id_Sintoma: _updateSintomaDto.id_Sintoma}});

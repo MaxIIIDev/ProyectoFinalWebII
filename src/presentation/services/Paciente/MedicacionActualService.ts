@@ -129,6 +129,8 @@ export class MedicacionActualService {
         try {
             if(!id_Paciente_Medicacion_Actual || Number(id_Paciente_Medicacion_Actual) < 0) return ["id_Paciente_Medicacion_Actual es nulo o menor que 0", false]
             if(!this.buscarMedicacionActualPorId(id_Paciente_Medicacion_Actual).then(res=> res[1])) return ["No se encontro la medicacion actual por id registrada", false]
+            const medicacionActual = await this.buscarMedicacionActualPorId(id_Paciente_Medicacion_Actual)
+            
             const confirmacion = await Paciente_Medicacion_Actual.destroy({
                 where: {
                     id_Paciente_Medicacion_Actual: id_Paciente_Medicacion_Actual
