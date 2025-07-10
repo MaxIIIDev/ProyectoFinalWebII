@@ -15,6 +15,8 @@ import { createTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/c
 import { updateTratamientoDto } from "../../domain/Dtos/pacientes/Tratamientos/updateTratamientoDto";
 import { TipoDeTratamientoService } from "../services/TipoDeTratamientoService";
 import { SintomasServices } from "../services/SintomasServices";
+import { TipoDeDiagnosticoService } from "../services/Paciente/TipoDeDiagnosticoService";
+import { CreateDiagnosticoDto } from "../../domain/Dtos/pacientes/Diagnosticos/createDiagnosticoDto";
 
 
 export class MedicoController {
@@ -197,31 +199,81 @@ export class MedicoController {
             if(error){
                 res.render("MedicoViews/Diagnosticos/VistaListaDiagnosticos.pug", {
                     error: error,
-                    diagnosticos: diagnosticos[1]
+                    diagnosticos: diagnosticos[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_medico: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
             if(warning){
                 res.render("MedicoViews/Diagnosticos/VistaListaDiagnosticos.pug", {
                     warning: warning,
-                    diagnosticos: diagnosticos[1]
+                    diagnosticos: diagnosticos[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_medico: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
             if(confirmacion){
                 res.render("MedicoViews/Diagnosticos/VistaListaDiagnosticos.pug", {
                     success: confirmacion,
-                    diagnosticos: diagnosticos[1]
+                    diagnosticos: diagnosticos[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_medico: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
             res.render("MedicoViews/Diagnosticos/VistaListaDiagnosticos.pug", {
-                diagnosticos: diagnosticos[1]
+                diagnosticos: diagnosticos[1],
+                id_Admision: req.session.admision.id_Admision,
+                id_medico: req.session.usuarioLogueado.id_Personal
             })
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaListaDiagnosticos","MedicoController","178",error as string)
             res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaRegistrarDiagnostico = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            
+            const tiposDeDiagnostico = await TipoDeDiagnosticoService.buscarTodosLosTiposDeDiagnostico();
+            if(tiposDeDiagnostico[0]){
+                res.redirect(`/medicos/view/diagnosticos?error=${tiposDeDiagnostico[0]}`)
+                return;
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/VistaRegistrarDiagnostico.pug", {
+                    error: error,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1]
+                })
+                return;
+            }
+            if(warning){
+                res.render("MedicoViews/Diagnosticos/VistaRegistrarDiagnostico.pug", {
+                    warning: warning,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1],
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("MedicoViews/Diagnosticos/VistaRegistrarDiagnostico.pug", {
+                    success: confirmacion,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1],
+                })
+                return;
+            }
+            res.render("MedicoViews/Diagnosticos/VistaRegistrarDiagnostico.pug", {
+                tiposDeDiagnostico: tiposDeDiagnostico[1]
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaRegistrarDiagnostico","MedicoController","236",error as string)
+            res.redirect(`/medicos/view/diagnosticos?error=${error}`)       
             return  
         }
     }
@@ -679,6 +731,33 @@ export class MedicoController {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "eliminarTratamiento", "2225", error as string);
             res.redirect(`/medicos/view/tratamientos?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public crearDiagnostico = async(req:Request, res:Response) => {
+        try {
+            const {id_tipo_de_diagnostico, detalles} = req.body
+            const [errorDto, dtoReady] = CreateDiagnosticoDto.create({
+                id_tipo_de_diagnostico: id_tipo_de_diagnostico,
+                detalles: detalles,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_medico: req.session.usuarioLogueado.id_Personal,
+                id_Admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/diagnostico/registrar?error=${encodeURIComponent(errorDto)}`);
+                return;
+            }
+            const [error, diagnosticoCreado] = await DiagnosticosServices.createDiagnostico(dtoReady)
+            if(error && !diagnosticoCreado){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/diagnosticos?confirmacion=${encodeURIComponent("Diagnostico creado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaCrearDiagnostico","MedicoController","740",error as string)
+            res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error as string)}`)
             return;
         }
     }

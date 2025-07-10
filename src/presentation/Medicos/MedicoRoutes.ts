@@ -18,6 +18,7 @@ export class MedicoRoutes{
         router.get("/lista/admisiones", controller.VistaListaAdmisiones)
         router.get("/view/paciente/seleccionado", controller.vistaPacienteSeleccionado)
         router.get("/view/diagnosticos", ...middlewares,controller.vistaListaDiagnosticos)
+        router.get("/view/diagnostico/registrar", ...middlewares,controller.VistaRegistrarDiagnostico)
         router.get("/view/historial", ...middlewares,controller.VistaHistorialMedico)
         router.get("/view/historial/alergias", ...middlewares,controller.VistaHistorialDeAlergias)
         router.get("/view/historial/medicamentos/actuales", ...middlewares,controller.VistaHistorialDeMedicamentosActuales)
@@ -35,6 +36,7 @@ export class MedicoRoutes{
 
         router.post("/crear/tratamiento/prescrito", ...middlewares,controller.crearTratamientoPrescrito)
         router.post("/actualizar/tratamiento/prescrito", ...middlewares,controller.actualizarTratamientoPrescrito)
+        router.post("/crear/diagnostico", ...middlewares,controller.crearDiagnostico)
         return router;
     }
 }

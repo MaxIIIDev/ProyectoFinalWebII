@@ -85,27 +85,27 @@ export class DiagnosticosServices {
             return [error as string, undefined]
         }
     }   
-    public static async validarSiNoEstaDuplicadoElDiagnostico(_createDiagnosticoDto: CreateDiagnosticoDto,_updateDiagnosticoDto:UpdateDiagnosticoDto):Promise<[string?,boolean?]>{
+    public static async validarSiNoEstaDuplicadoElDiagnostico(_createDiagnosticoDto?: CreateDiagnosticoDto,_updateDiagnosticoDto?:UpdateDiagnosticoDto):Promise<[string?,boolean?]>{
         try {
             let validado:boolean = true;
             if(_updateDiagnosticoDto){
                 const buscarDiagnostico = await Paciente_Diagnosticos.findOne({where: {
                     
-                    id_Paciente: _updateDiagnosticoDto.id_paciente,
+                    id_paciente: _updateDiagnosticoDto.id_paciente,
                     id_tipo_de_diagnostico: _updateDiagnosticoDto.id_tipo_de_diagnostico,
                     id_Admision: _updateDiagnosticoDto.id_Admision,
                     id_Paciente_Diagnosticos: {[Op.ne]: _updateDiagnosticoDto.id_Paciente_Diagnosticos}
                 }});
-                if(buscarDiagnostico[0]) return ["Ya existe un diagnostico con esas caracteristicas", false]
+                if(buscarDiagnostico) return ["Ya existe un diagnostico con esas caracteristicas", false]
                 validado = true;
             }
             if(_createDiagnosticoDto){
                 const buscarDiagnostico = await Paciente_Diagnosticos.findOne({where: {
-                    id_Paciente: _createDiagnosticoDto.id_paciente,
+                    id_paciente: _createDiagnosticoDto.id_paciente,
                     id_tipo_de_diagnostico: _createDiagnosticoDto.id_tipo_de_diagnostico,
                     id_Admision: _createDiagnosticoDto.id_Admision,
                 }});
-                if(buscarDiagnostico[0]) return ["Ya existe un diagnostico con esas caracteristicas", false]
+                if(buscarDiagnostico) return ["Ya existe un diagnostico con esas caracteristicas", false]
                 validado = true;
             }
             return [undefined, validado]
