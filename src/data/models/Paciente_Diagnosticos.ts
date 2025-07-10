@@ -28,7 +28,10 @@ export class Paciente_Diagnosticos extends Model{
     declare tipo_de_diagnostico: Tipo_De_Diagnostico
 
 
-    @HasMany(()=> paciente_tratamientos)
+    @HasMany(()=> paciente_tratamientos, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
+    })
     declare tratamientos: paciente_tratamientos[]
 
     @AllowNull(false)
@@ -53,7 +56,10 @@ export class Paciente_Diagnosticos extends Model{
 
     
 
-    @HasMany(()=> Paciente_pruebas_diagnosticas)
+    @HasMany(()=> Paciente_pruebas_diagnosticas, {
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE"
+    })
     declare pruebas_diagnosticas: Paciente_pruebas_diagnosticas[]
 
     @ForeignKey(()=> Admision)

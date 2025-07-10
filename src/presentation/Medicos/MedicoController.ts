@@ -17,6 +17,7 @@ import { TipoDeTratamientoService } from "../services/TipoDeTratamientoService";
 import { SintomasServices } from "../services/SintomasServices";
 import { TipoDeDiagnosticoService } from "../services/Paciente/TipoDeDiagnosticoService";
 import { CreateDiagnosticoDto } from "../../domain/Dtos/pacientes/Diagnosticos/createDiagnosticoDto";
+import { UpdateDiagnosticoDto } from "../../domain/Dtos/pacientes/Diagnosticos/updateDiagnosticoDto";
 
 
 export class MedicoController {
@@ -273,6 +274,61 @@ export class MedicoController {
             return;
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaRegistrarDiagnostico","MedicoController","236",error as string)
+            res.redirect(`/medicos/view/diagnosticos?error=${error}`)       
+            return  
+        }
+    }
+    public VistaActualizarDiagnostico = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURI("No se encontro el diagnostico")}`)
+                return;
+            }
+            const diagnostico = await DiagnosticosServices.getDiagnosticoById(id_Paciente_Diagnosticos)
+            if(diagnostico[0]&& diagnostico[1] == undefined){
+                res.redirect(`/medicos/view/diagnosticos?error=${diagnostico[0]}`)
+                return;
+            }
+            const tiposDeDiagnostico = await TipoDeDiagnosticoService.buscarTodosLosTiposDeDiagnostico();
+            if(tiposDeDiagnostico[0]){
+                res.redirect(`/medicos/view/diagnosticos?error=${tiposDeDiagnostico[0]}`)
+                return;
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/VistaActualizarDiagnostico.pug", {
+                    error: error,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1],
+                    diagnosticoActual: diagnostico[1]
+                })
+                return;
+            }
+            if(warning){
+                res.render("MedicoViews/Diagnosticos/VistaActualizarDiagnostico.pug", {
+                    warning: warning,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1],
+                    diagnosticoActual: diagnostico[1]
+                })
+                return;
+            }
+            if(confirmacion){
+                res.render("MedicoViews/Diagnosticos/VistaActualizarDiagnostico.pug", {
+                    success: confirmacion,
+                    tiposDeDiagnostico: tiposDeDiagnostico[1],
+                    diagnosticoActual: diagnostico[1]
+                })
+                return;
+            }
+            res.render("MedicoViews/Diagnosticos/VistaActualizarDiagnostico.pug", {
+                tiposDeDiagnostico: tiposDeDiagnostico[1],
+                diagnosticoActual: diagnostico[1]
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaActualizarDiagnostico","MedicoController","277",error as string)
             res.redirect(`/medicos/view/diagnosticos?error=${error}`)       
             return  
         }
@@ -757,6 +813,54 @@ export class MedicoController {
             return;     
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaCrearDiagnostico","MedicoController","740",error as string)
+            res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error as string)}`)
+            return;
+        }
+    }
+    public actualizarDiagnostico = async(req:Request, res:Response) => {
+        try {
+            const {id_Paciente_Diagnosticos, id_tipo_de_diagnostico, detalles} = req.body
+            const [errorDto, dtoReady] = UpdateDiagnosticoDto.create({
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_tipo_de_diagnostico: id_tipo_de_diagnostico,
+                detalles: detalles,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_medico: req.session.usuarioLogueado.id_Personal,
+                id_Admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/diagnostico/actualizar?error=${encodeURIComponent(errorDto)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}`);
+                return;
+            }
+            const [error, diagnosticoActualizado] = await DiagnosticosServices.updateDiagnostico(dtoReady)
+            if(error && !diagnosticoActualizado){
+                res.redirect(`/medicos/view/diagnostico/actualizar?error=${encodeURIComponent(error)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/diagnosticos?confirmacion=${encodeURIComponent("Diagnostico actualizado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarDiagnostico","MedicoController","823",error as string)
+            res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error as string)}`)
+            return;
+        }
+    }
+    public eliminarDiagnostico = async(req:Request, res:Response) => {
+        try {
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos)? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`);
+                return;
+            }
+            const [error, diagnosticoEliminado] = await DiagnosticosServices.deleteDiagnostico(id_Paciente_Diagnosticos)
+            if(error && !diagnosticoEliminado){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/diagnosticos?confirmacion=${encodeURIComponent("Diagnostico eliminado correctamente")}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarDiagnostico","MedicoController","848",error as string)
             res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error as string)}`)
             return;
         }

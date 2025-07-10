@@ -130,7 +130,7 @@ export class DiagnosticosServices {
         try {
             const validarSiNoEstaDuplicado = await this.validarSiNoEstaDuplicadoElDiagnostico(undefined, _updateDiagnosticoDto)
             if(!validarSiNoEstaDuplicado[1]) return [validarSiNoEstaDuplicado[0], false]
-            if(!await this.getDiagnosticoById(_updateDiagnosticoDto.id_Paciente_Diagnosticos)[1]) return ["No se encontro el diagnostico", false]
+            if(!await this.getDiagnosticoById(_updateDiagnosticoDto.id_Paciente_Diagnosticos).then(res=>res[1])) return ["No se encontro el diagnostico", false]
            
             const diagnosticoActualizado = await Paciente_Diagnosticos.update(UpdateDiagnosticoDto.toObject(_updateDiagnosticoDto), {where: {id_Paciente_Diagnosticos: _updateDiagnosticoDto.id_Paciente_Diagnosticos}});
             if(!diagnosticoActualizado) return ["No se pudo actualizar el diagnostico", false]
@@ -142,7 +142,7 @@ export class DiagnosticosServices {
     }
     public static async deleteDiagnostico(id_Diagnostico: number): Promise<[string?, boolean?]> {
         try {
-            if(! await this.getDiagnosticoById(id_Diagnostico)[1]) return ["No se encontro el diagnostico", false]
+            if(! await this.getDiagnosticoById(id_Diagnostico).then(res=>res[1])) return ["No se encontro el diagnostico", false]
             const diagnosticoEliminado = await Paciente_Diagnosticos.destroy({where: {id_Paciente_Diagnosticos: id_Diagnostico}});
             if(!diagnosticoEliminado) return ["No se pudo eliminar el diagnostico", false]
             return [undefined, true]

@@ -256,10 +256,10 @@ html(lang="es")
                                                         i.bi.bi-prescription2
                                                         | Tratamientos
                                                     if(diagnostico.dataValues.id_Admision == id_Admision && diagnostico.dataValues.id_medico == id_medico)
-                                                        a.btn.btn-action.btn-edit(href=`/medicos/view/diagnosticos/${diagnostico.dataValues.id_Paciente_Diagnosticos}` role="button")
+                                                        a.btn.btn-action.btn-edit(href=`/medicos/view/diagnostico/actualizar?id_Paciente_Diagnosticos=${diagnostico.dataValues.id_Paciente_Diagnosticos}` role="button")
                                                             i.bi.bi-pencil
                                                             | Editar
-                                                        a.btn.btn-action.btn-delete(href=`/medicos/view/diagnosticos/${diagnostico.dataValues.id_Paciente_Diagnosticos}` role="button")
+                                                        a.btn.btn-action.btn-delete(href=`/medicos/eliminar/diagnostico?id_Paciente_Diagnosticos=${diagnostico.dataValues.id_Paciente_Diagnosticos}` role="button")
                                                             i.bi.bi-trash
                                                             | Eliminar
 
