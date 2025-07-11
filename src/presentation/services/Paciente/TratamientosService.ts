@@ -117,6 +117,44 @@ export class TratamientosService {
             return [error as string, undefined];
         }
     }
+    public static async getTratamientosByIdPacienteAndDiagnostico(id_paciente: number, id_diagnostico: number): Promise<[string?,paciente_tratamientos[]?]> {
+        try {
+            if(!id_paciente || id_paciente < 0) return ["El id del paciente es inválido", undefined];
+            if(!id_diagnostico || id_diagnostico < 0) return ["El id del diagnostico es inválido", undefined];
+            if(! await PacienteServices.getPacienteById(id_paciente).then(res=> res[1])) return ["El paciente no existe", undefined];
+            
+            const tratamientosDelPaciente = await paciente_tratamientos.findAll({
+                where: {
+                    id_paciente: id_paciente,
+                    id_Paciente_Diagnosticos: id_diagnostico
+                },
+                include: [
+                    
+                    {
+                        model: Tipo_De_tratamiento,
+                        as: "tipo_de_tratamiento"
+                    },
+                    {
+                        model: Medicos,
+                        as: "medico"
+                    },
+                    {
+                        model: Enfermero,
+                        as: "enfermero"
+                    },
+                    {
+                        model: Medicamentos,
+                        as: "medicamento"
+                    }
+                ]
+            })
+           
+            return [undefined, tratamientosDelPaciente];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("TratamientosService", "getTratamientosByIdPaciente", "10", error);
+            return [error as string, undefined];
+        }
+    }
     public static async getTratamientoById(id_tratamiento: number): Promise<[string?,paciente_tratamientos?]> {
         try {
             if(!id_tratamiento || id_tratamiento < 0) return ["El id del tratamiento es inválido", undefined];

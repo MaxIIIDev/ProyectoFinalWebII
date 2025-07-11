@@ -252,7 +252,7 @@ html(lang="es")
                                                     a.btn.btn-action.btn-view(href=`/medicos/view/pruebas/diagnosticas?id_Paciente_Diagnosticos=${diagnostico.dataValues.id_Paciente_Diagnosticos}&id_medico_diagnostico=${diagnostico.dataValues.id_medico}` role="button")
                                                         i.bi.bi-eye
                                                         | Pruebas
-                                                    a.btn.btn-action.btn-tratamiento(href=`/medicos/view/tratamientos?id_Paciente_Diagnosticos=${diagnostico.dataValues.id_Paciente_Diagnosticos}&id_medico_diagnostico=${diagnostico.dataValues.id_medico}` role="button")
+                                                    a.btn.btn-action.btn-tratamiento(href=`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${diagnostico.dataValues.id_Paciente_Diagnosticos}&id_medico_diagnostico=${diagnostico.dataValues.id_medico}` role="button")
                                                         i.bi.bi-prescription2
                                                         | Tratamientos
                                                     if(diagnostico.dataValues.id_Admision == id_Admision && diagnostico.dataValues.id_medico == id_medico)

@@ -23,6 +23,10 @@ export class MedicoRoutes{
         router.get("/view/pruebas/diagnosticas", ...middlewares,controller.VistaListaPruebasDiagnosticas)
         router.get("/view/pruebas/diagnosticas/registrar", ...middlewares,controller.VistaCrearPruebaDiagnostica)
         router.get("/view/pruebas/diagnosticas/actualizar", ...middlewares,controller.VistaActualizarPruebaDiagnostica)
+        router.get("/view/tratamientos/diagnostico", ...middlewares,controller.VistaTratamientosParaDiagnostico)
+        router.get("/view/tratamientos/diagnostico/registrar", ...middlewares,controller.VistaCrearTratamientoParaDiagnostico)
+        router.get("/view/tratamientos/diagnostico/actualizar", ...middlewares,controller.VistaActualizarTratamientoParaDiagnostico)
+        
         router.get("/view/historial", ...middlewares,controller.VistaHistorialMedico)
         router.get("/view/historial/alergias", ...middlewares,controller.VistaHistorialDeAlergias)
         router.get("/view/historial/medicamentos/actuales", ...middlewares,controller.VistaHistorialDeMedicamentosActuales)
@@ -46,6 +50,9 @@ export class MedicoRoutes{
         router.post("/crear/prueba/diagnostica", ...middlewares,controller.crearPruebaDiagnostica)
         router.post("/actualizar/prueba/diagnostica", ...middlewares,controller.actualizarPruebaDiagnostica)
         router.get("/eliminar/prueba/diagnostica", ...middlewares,controller.eliminarPruebaDiagnostica)
+        router.post("/crear/tratamiento/diagnostico", ...middlewares,controller.CrearTratamientoParaDiagnostico)
+        router.post("/actualizar/tratamiento/diagnostico", ...middlewares,controller.ActualizarTratamientoParaDiagnostico)
+        router.get("/eliminar/tratamiento/diagnostico", ...middlewares,controller.EliminarTratamientoParaDiagnostico)
         return router;
     }
 }

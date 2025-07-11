@@ -846,6 +846,176 @@ export class MedicoController {
             return  
         }
     }
+    public VistaTratamientosParaDiagnostico = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+           
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            
+
+
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del diagnostico es inválido`)
+                return
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del medico es inválido`)
+                return
+            }
+            const tratamientos = await TratamientosService.getTratamientosByIdPacienteAndDiagnostico(req.session.paciente.id_Paciente, id_Paciente_Diagnosticos)
+            if(tratamientos[0]){
+                res.redirect(`/medicos/view/diagnosticos?error=${tratamientos[0]}`)
+                return
+            }
+            const diagnosticoActual = await DiagnosticosServices.getDiagnosticoById(id_Paciente_Diagnosticos)
+            if(diagnosticoActual[0]){
+                res.redirect(`/medicos/view/diagnosticos?error=${diagnosticoActual[0]}`)
+                return
+            }
+            const validacion = (diagnosticoActual[1].dataValues.id_medico == req.session.usuarioLogueado.id_Personal && diagnosticoActual[1].dataValues.id_Admision == req.session.admision.id_Admision)
+            if(error){
+                res.render("MedicoViews/Diagnosticos/Tratamientos/VistaListarTratamiento.pug", {
+                    error: error,
+                    tratamientos: tratamientos[1],
+                    idMedicoActual: req.session.usuarioLogueado.id_Personal,
+                    validacion: validacion,
+                    id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return
+            }
+            
+            if(confirmacion){
+                res.render("MedicoViews/Diagnosticos/Tratamientos/VistaListarTratamiento.pug", {
+                    success: confirmacion,
+                    tratamientos: tratamientos[1],
+                    idMedicoActual: req.session.usuarioLogueado.id_Personal,
+                    validacion: validacion,
+                    id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return
+            }
+            res.render("MedicoViews/Diagnosticos/Tratamientos/VistaListarTratamiento.pug", {
+                tratamientos: tratamientos[1],
+                idMedicoActual: req.session.usuarioLogueado.id_Personal,
+                validacion: validacion,
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_medico_diagnostico: id_medico_diagnostico
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaTratamientosPrescritos","MedicoController","221",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaCrearTratamientoParaDiagnostico = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del diagnostico es inválido`)
+                return
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del medico es inválido`)
+                return
+            }
+            
+            const tiposDeTratamiento = await TipoDeTratamientoService.getAllTiposDeTratamiento()
+            if(tiposDeTratamiento[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${tiposDeTratamiento[0]}`)
+                return
+            }
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos();
+            if(medicamentos[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${medicamentos[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/Tratamientos/VistaCrearTratamiento.pug", {
+                    error: error,
+                    tiposDeTratamiento: tiposDeTratamiento[1],
+                    medicamentos: medicamentos[1],
+                    id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                    id_medico_diagnostico: id_medico_diagnostico,
+                })
+                return
+            }
+            res.render("MedicoViews/Diagnosticos/Tratamientos/VistaCrearTratamiento.pug", {
+                tiposDeTratamiento: tiposDeTratamiento[1],
+                medicamentos: medicamentos[1],
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_medico_diagnostico: id_medico_diagnostico,
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaCrearTratamientoPrescrito","MedicoController","455",error as string)
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.query.id_medico_diagnostico}&error=${error}`)       
+            return  
+        }
+    }
+    public VistaActualizarTratamientoParaDiagnostico = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const id_tratamiento = (req.query.id_tratamiento) ? Number(req.query.id_tratamiento) : undefined;
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del diagnostico es inválido`)
+                return
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=El id del medico es inválido`)
+                return
+            }
+            const tiposDeTratamiento = await TipoDeTratamientoService.getAllTiposDeTratamiento()
+            if(tiposDeTratamiento[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${tiposDeTratamiento[0]}`)
+                return
+            }
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos();
+            if(medicamentos[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${medicamentos[0]}`)
+                return
+            }
+            const tratamientoActual = await TratamientosService.getTratamientoById(id_tratamiento)
+            if(tratamientoActual[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${tratamientoActual[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/Tratamientos/VistaActualizarTratamiento.pug", {
+                    error: error,
+                    tiposDeTratamiento: tiposDeTratamiento[1],
+                    medicamentos: medicamentos[1],
+                    tratamientoActual: tratamientoActual[1],
+                    id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return
+            }
+            res.render("MedicoViews/Diagnosticos/Tratamientos/VistaActualizarTratamiento.pug", {
+                tiposDeTratamiento: tiposDeTratamiento[1],
+                medicamentos: medicamentos[1],
+                tratamientoActual: tratamientoActual[1],
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_medico_diagnostico: id_medico_diagnostico
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaActualizarTratamientoPrescrito","MedicoController","501",error as string)
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.query.id_medico_diagnostico}&error=${error}`)       
+            return  
+        }
+    }
     public VistaSintomas = async (req:Request, res:Response) => {
         try {
             const error = req.query.error || undefined;
@@ -1137,6 +1307,130 @@ export class MedicoController {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarPruebaDiagnostica","MedicoController","1112",error as string)
             res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error as string)}&id_Paciente_Diagnosticos=${encodeURIComponent(req.query.id_Paciente_Diagnosticos as string)}&id_medico_diagnostico=${encodeURIComponent(req.query.id_medico_diagnostico as string)}`)
             return;
+        }
+    }
+    public CrearTratamientoParaDiagnostico = async (req:Request, res:Response) => {
+        try {
+
+            const id_Paciente_Diagnosticos = (req.body.id_Paciente_Diagnosticos)? Number(req.body.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.body.id_medico_diagnostico)? Number(req.body.id_medico_diagnostico) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de medico diagnostico")}`)
+                return;
+            }
+
+            const [errorDto, dtoReady] = createTratamientoDto.create({
+                id_tipo_de_tratamiento: req.body.id_tipo_de_tratamiento,
+                detalle: req.body.detalle,
+                cantidad_suministrada: req.body.cantidad_suministrada,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_medicamento: req.body.id_medicamento,
+                id_medico: req.session.usuarioLogueado.id_Personal,
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent(errorDto)}`)
+                return;
+            }
+            const [error, tratamientoCreado] = await TratamientosService.registrarTratamiento(dtoReady)
+            if(error && !tratamientoCreado){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent(error)}`)
+                return;
+            }
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&confirmacion=${encodeURIComponent("Tratamiento creado correctamente")}`)
+            return;
+
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("CrearTratamientoParaDiagnostico","MedicoController","1316",error as string)
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.body.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.body.id_medico_diagnostico}&error=${encodeURIComponent(error as string)}`)       
+            return  
+        }
+    }
+    public ActualizarTratamientoParaDiagnostico = async (req:Request, res:Response) => {
+        try {
+            const id_Paciente_Diagnosticos = (req.body.id_Paciente_Diagnosticos)? Number(req.body.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.body.id_medico_diagnostico)? Number(req.body.id_medico_diagnostico) : undefined;
+            const id_tratamiento = (req.body.id_tratamiento)? Number(req.body.id_tratamiento) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de medico diagnostico")}`)
+                return;
+            }
+            if(!id_tratamiento){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent("No se ha proporcionado un id de tratamiento")}`)
+                return;
+            }
+            const [errorDto, dtoReady] = updateTratamientoDto.create({
+                id_tratamiento: id_tratamiento,
+                id_tipo_de_tratamiento: req.body.id_tipo_de_tratamiento,
+                detalle: req.body.detalle,
+                cantidad_suministrada: req.body.cantidad_suministrada,
+                id_paciente: req.session.paciente.id_Paciente,
+                id_medicamento: req.body.id_medicamento,
+                id_medico: req.session.usuarioLogueado.id_Personal,
+                id_Paciente_Diagnosticos: id_Paciente_Diagnosticos,
+                id_admision: req.session.admision.id_Admision,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent(errorDto)}`)
+                return;
+            }
+            const [error, tratamientoActualizado] = await TratamientosService.actualizarTratamiento(dtoReady)
+            if(error && !tratamientoActualizado){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent(error)}`)
+                return;
+            }
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&confirmacion=${encodeURIComponent("Tratamiento actualizado correctamente")}`)
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("ActualizarTratamientoParaDiagnostico","MedicoController","1358",error as string)
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.body.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.body.id_medico_diagnostico}&error=${encodeURIComponent(error as string)}`)       
+            return  
+        }
+    }
+    public EliminarTratamientoParaDiagnostico = async (req:Request, res:Response) => {
+        try {
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos)? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico)? Number(req.query.id_medico_diagnostico) : undefined;
+            const id_tratamiento = (req.query.id_tratamiento)? Number(req.query.id_tratamiento) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de medico diagnostico")}`)
+                return;
+            }
+            if(!id_tratamiento){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent("No se ha proporcionado un id de tratamiento")}`)
+                return;
+            }
+            const tratamientoAEliminar = await TratamientosService.getTratamientoById(id_tratamiento);
+            if(tratamientoAEliminar[1] === undefined){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent("El tratamiento no existe")}`)
+                return;
+            }
+            tratamientoAEliminar[1].id_Paciente_Diagnosticos = null;
+            await tratamientoAEliminar[1].save()
+            const [error, tratamientoEliminado] = await TratamientosService.eliminarTratamiento(id_tratamiento)
+            if(error && !tratamientoEliminado){
+                res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&error=${encodeURIComponent(error as string)}`)       
+                return  
+            }
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${id_Paciente_Diagnosticos}&id_medico_diagnostico=${id_medico_diagnostico}&confirmacion=${encodeURIComponent("Tratamiento eliminado correctamente")}`)       
+            return  
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EliminarTratamientoParaDiagnostico","MedicoController","1368",error as string)
+            res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.query.id_medico_diagnostico}&error=${encodeURIComponent(error as string)}`)       
+            return  
         }
     }
 }

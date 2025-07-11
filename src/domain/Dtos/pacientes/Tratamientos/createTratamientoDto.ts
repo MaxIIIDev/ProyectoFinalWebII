@@ -13,7 +13,8 @@ export class createTratamientoDto {
         public id_medicamento: number | null,
         public id_enfermero: number | null,
         public id_medico: number | null,
-        public id_admision: number
+        public id_Paciente_Diagnosticos: number | null,
+        public id_admision: number,
     ){}
 
 
@@ -29,7 +30,8 @@ export class createTratamientoDto {
             id_medicamento: object.id_medicamento,
             id_enfermero: object.id_enfermero,
             id_medico: object.id_medico,
-            id_admision: object.id_admision
+            id_admision: object.id_admision,
+            id_Paciente_Diagnosticos: object.id_Paciente_Diagnosticos
         }
  
     }
@@ -54,6 +56,8 @@ export class createTratamientoDto {
             if(object.id_medico && (isNaN(object.id_medico) || object.id_medico < 0)) return ["id_medico debe ser un número positivo"];
             if(!object.id_enfermero && !object.id_medico) return ["Se requiere al menos un id_enfermero o id_medico"];
             if(!object.id_admision || object.id_admision < 0) return ["Se requiere id_admision"];
+            if(object.id_Paciente_Diagnosticos && (isNaN(object.id_Paciente_Diagnosticos) || object.id_Paciente_Diagnosticos < 0)) return ["id_Paciente_Diagnosticos debe ser un número positivo"];
+            
             return [undefined, new createTratamientoDto(
                 Number(object.id_tipo_de_tratamiento),
                 object.detalle,
@@ -64,7 +68,8 @@ export class createTratamientoDto {
                 object.id_medicamento ? Number(object.id_medicamento) : null,
                 object.id_enfermero ? Number(object.id_enfermero) : null,
                 object.id_medico ? Number(object.id_medico) : null,
-                Number(object.id_admision)
+                object.id_Paciente_Diagnosticos ? Number(object.id_Paciente_Diagnosticos):null,
+                Number(object.id_admision),
             )];
 
         } catch (error) {
