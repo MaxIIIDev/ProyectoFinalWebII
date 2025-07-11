@@ -1033,8 +1033,6 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error)}`);
                 return;
             }
-            
-            
             if(warning){
                 res.render("EnfermeroViews/Diagnosticos/VistaListaDiagnosticos.pug", {
                     warning: warning,
@@ -1049,6 +1047,29 @@ export class EnfermerosController{
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaDiagnosticos", "980", error as string);
             res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            return;
+        }
+    }
+    public vistaTratamientosDeDiagnostico = async (req:Request,res:Response) => {
+       
+        try {
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos)? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/enfermeria/view/diagnosticos?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`);
+                return;
+            }
+            const [errorServicio, tratamientos] = await TratamientosService.getTratamientosByIdPacienteAndDiagnostico(req.session.paciente.id_Paciente, id_Paciente_Diagnosticos);
+            if(errorServicio && tratamientos == undefined){
+                res.redirect(`/enfermeria/view/diagnosticos?error=${encodeURIComponent(errorServicio)}`);
+                return;
+            }
+            res.render("EnfermeroViews/Diagnosticos/VistaListaTratamientos.pug", {
+                tratamientos: tratamientos,
+            })
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "vistaTratamientosDeDiagnostico", "1058", error as string);
+            res.redirect(`/enfermeria/view/diagnosticos?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }
@@ -1994,6 +2015,7 @@ export class EnfermerosController{
                 id_medicamento: req.body.id_medicamento,
                 id_enfermero: req.session.usuarioLogueado.id_Personal,
                 id_medico: null,
+                id_admision:req.session.admision.id_Admision,
                 
             })
             if(errorDto){

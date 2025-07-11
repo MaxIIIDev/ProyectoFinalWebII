@@ -47,6 +47,7 @@ export class EnfermeriaRoutes{
         router.get("/view/actualizar/cirugia", ...middlewareEnfermero, controller.vistaActualizarCirugia)
         router.get("/eliminar/cirugia", ...middlewareEnfermero, controller.eliminarCirugia)
         router.get("/view/diagnosticos", ...middlewareEnfermero, controller.vistaDiagnosticos)
+        router.get("/view/tratamientos/diagnostico", ...middlewareEnfermero, controller.vistaTratamientosDeDiagnostico)
         router.get("/view/evaluaciones/fisicas", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaListaEvaluacionFisica)
         router.get("/view/lista/all/evaluacion/fisica", ...middlewareEnfermero, controller.vistaListaAllEvaluacionFisica)
         router.get("/view/crear/evaluacion/fisica", middlewareEnfermero[0],middlewareEnfermero[2], controller.vistaCrearEvaluacionFisica)
