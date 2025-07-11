@@ -45,6 +45,7 @@ export class MedicoRoutes{
         router.get("/view/lista/recetas/medicas", ...middlewares,controller.VistaListaRecetasMedicas)
         router.get("/view/alta/historial/recetas", ...middlewares,controller.VistaHistorialRecetasMedicas)
         router.get("/view/alta/receta/medicamentos", ...middlewares,controller.VistaListaMedicamentosReceta)
+        router.get("/view/alta/receta/medicamentos/historial", ...middlewares,controller.VistaHistorialMedicamentosReceta)
         router.get("/view/alta/receta/medicamentos/crear", ...middlewares,controller.VistaRegistrarMedicamentoEnReceta)
         router.get("/view/alta/receta/medicamentos/actualizar", ...middlewares,controller.VistaActualizarMedicamentoEnReceta)
 

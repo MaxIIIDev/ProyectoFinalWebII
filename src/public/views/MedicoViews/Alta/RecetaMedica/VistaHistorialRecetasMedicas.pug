@@ -215,12 +215,8 @@ html(lang="es")
 
     body    
         include ../../../layout/alerts.pug  
-        if(validado) 
-            a.home-btn(href="/medicos/view/seccion/alta/paciente") 
-                i.bi.bi-house-door-fill
-        else
-            a.home-btn(href="/medicos/view/lista/recetas/medicas") 
-                i.bi.bi-house-door-fill
+        a.home-btn(href="/medicos/view/lista/recetas/medicas") 
+            i.bi.bi-house-door-fill
         .main-container
             .card
                 .card-header
@@ -229,14 +225,6 @@ html(lang="es")
                         | Recetas del Paciente
                 
                 .card-body
-                    if(validado)
-                        a.btn.btn-add(href="/medicos/crear/receta")
-                            i.bi.bi-plus-lg
-                            | Nueva Receta
-                        a.btn.btn-add.ms-2(href=`/medicos/view/alta/historial/recetas` title="Ver todos las Recetas")
-                            i.bi.bi-clock-history
-                            | Ver Historial Completo
-                    
                     .table-responsive
                         table.table
                             thead
@@ -254,13 +242,8 @@ html(lang="es")
                                             
                                             td
                                                 .d-flex
-                                                    a.btn.btn-action.btn-view(href=`/medicos/view/alta/receta/medicamentos?id_Receta=${receta.dataValues.id_Receta}&visibilidad=${visibilidad}` role="button")
+                                                    a.btn.btn-action.btn-view(href=`/medicos/view/alta/receta/medicamentos/historial?id_Receta=${receta.dataValues.id_Receta}` role="button")
                                                         i.bi.bi-eye
                                                         | Ver Receta
-                                                    if(receta.dataValues.id_medico == medicoActual && validado)
-                                                        a.btn.btn-action.btn-delete(href=`/medicos/eliminar/receta?id_Receta=${receta.dataValues.id_Receta}` role="button")
-                                                            i.bi.bi-trash
-                                                            | Eliminar
-                                            
 
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

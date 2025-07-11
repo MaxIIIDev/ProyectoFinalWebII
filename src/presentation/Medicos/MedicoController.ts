@@ -1141,21 +1141,18 @@ export class MedicoController {
                 res.redirect(`/medicos/view/paciente/seleccionado?error=${recetas[0]}`)
                 return
             }
-            console.log(recetas[1]);
             
             if(error){
-                res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                res.render("MedicoViews/Alta/RecetaMedica/VistaHistorialRecetasMedicas.pug", {
                     error: error,
                     recetas: recetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
-                    validado: false
                 })
                 return
             }
-            res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+            res.render("MedicoViews/Alta/RecetaMedica/VistaHistorialRecetasMedicas.pug", {
                 recetas: recetas[1],
                 medicoActual: req.session.usuarioLogueado.id_Personal,
-                validado: false
             })
             return
         } catch (error) {
@@ -1183,8 +1180,8 @@ export class MedicoController {
                     success: confirmacion,
                     medicamentosRecetas: medicamentosRecetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
-                    validado: false,
-                    id_Receta: id_Receta
+                    id_Receta: id_Receta,
+                    validado: true
                 })
                 return
             }
@@ -1194,22 +1191,52 @@ export class MedicoController {
                     error: error,
                     medicamentosRecetas: medicamentosRecetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
-                    validado: false,
-                    id_Receta: id_Receta
+                    id_Receta: id_Receta,
+                    validado: true
                 })
                 return
             }
             res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaListaMedicamentos.pug", {
                 medicamentosRecetas: medicamentosRecetas[1],
                 medicoActual: req.session.usuarioLogueado.id_Personal,
-                validado: false,
-                id_Receta: id_Receta
+                id_Receta: id_Receta,
+                validado: true
             })
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaListaMedicamentosReceta","MedicoController","1164",error as string)
             res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
             return  
+        }
+    }
+    public VistaHistorialMedicamentosReceta = async (req:Request,res:Response)=> {
+        try {
+            const error = req.query.error || undefined;
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            if(!id_Receta){
+                res.redirect(`/medicos/view/alta/historial/recetas?error=No se envio id_Receta`)
+                return
+            }
+            const medicamentosRecetas = await RecetasService.getMedicamentosDeLaReceta(id_Receta)
+            if(medicamentosRecetas[0]){
+                res.redirect(`/medicos/view/alta/historial/recetas?error=${medicamentosRecetas[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaHistorialMedicamentos.pug", {
+                    error: error,
+                    medicamentosRecetas: medicamentosRecetas[1],
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaHistorialMedicamentos.pug", {
+                medicamentosRecetas: medicamentosRecetas[1],
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaHistorialMedicamentosReceta","MedicoController","1217",error as string)
+            res.redirect(`/medicos/view/alta/historial/recetas?error=${error}`)
+            return
         }
     }
     public VistaRegistrarMedicamentoEnReceta = async(req:Request, res:Response) => {

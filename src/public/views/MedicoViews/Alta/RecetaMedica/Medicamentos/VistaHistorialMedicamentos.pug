@@ -114,7 +114,7 @@ html(lang="es")
             }
     body    
         include ../../../../layout/alerts.pug   
-        a.home-btn(href="/medicos/view/lista/recetas/medicas") 
+        a.home-btn(href="/medicos/view/alta/historial/recetas") 
           i.bi.bi-house-door-fill
         .main-container
             .card
@@ -130,30 +130,13 @@ html(lang="es")
                                 tr
                                     th Medicamento
                                     th Indicacion
-                                    if(validado)
-                                        th Acciones
                                     
                             tbody
-                            
-                                if validado
-                                    a.btn.btn-action.btn-success(href=`/medicos/view/alta/receta/medicamentos/crear?id_Receta=${id_Receta}` title="Registrar Medicacion") Registrar Medicacion
                                 if medicamentosRecetas != undefined
                                     each medicamentoReceta of medicamentosRecetas
                                         tr
                                             td= medicamentoReceta.dataValues.medicamento.dataValues.nombre
                                             td= medicamentoReceta.dataValues.indicacion
-                                            if validado
-                                                td
-                                                    a.btn.btn-action.btn-primary.btn-sm(
-                                                        href=`/medicos/view/alta/receta/medicamentos/actualizar?id_Recetas_Medicamentos=${medicamentoReceta.dataValues.id_Recetas_Medicamentos}&id_Receta=${id_Receta}`
-                                                        title="Editar"
-                                                    )
-                                                        i.bi.bi-pencil
-                                                    a.btn.btn-action.btn-danger.btn-sm(
-                                                        href=`/medicos/eliminar/medicamento/en/receta?id_Recetas_Medicamentos=${medicamentoReceta.dataValues.id_Recetas_Medicamentos}&id_Receta=${id_Receta}`
-                                                        title="Eliminar"
-                                                        
-                                                    )
-                                                        i.bi.bi-trash
+                                            
 
         script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
