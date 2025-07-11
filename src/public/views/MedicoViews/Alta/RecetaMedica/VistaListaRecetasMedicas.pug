@@ -253,6 +253,7 @@ html(lang="es")
                                             td= receta.dataValues.medico.dataValues.nombre + " " + receta.dataValues.medico.dataValues.apellido + " - " + receta.dataValues.medico.dataValues.especialidad.dataValues.nombre
                                             
                                             td
+                                                - let visibilidad = receta.dataValues.id_medico == medicoActual ? true : false
                                                 .d-flex
                                                     a.btn.btn-action.btn-view(href=`/medicos/view/alta/receta/medicamentos?id_Receta=${receta.dataValues.id_Receta}&visibilidad=${visibilidad}` role="button")
                                                         i.bi.bi-eye

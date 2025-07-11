@@ -1166,6 +1166,7 @@ export class MedicoController {
             const error = req.query.error || undefined;
             const confirmacion = req.query.confirmacion || undefined;
             const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            const visibilidad = req.query.visibilidad == "false" ? false : true;
             if(!id_Receta){
                 res.redirect(`/medicos/view/lista/recetas/medicas?error=No se envio id_Receta`)
                 return
@@ -1175,13 +1176,17 @@ export class MedicoController {
                 res.redirect(`/medicos/view/lista/recetas/medicas?error=${medicamentosRecetas[0]}`)
                 return
             }
+            let validado = true;
+            if(!visibilidad){
+                validado = visibilidad;
+            }
             if(confirmacion){
                 res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaListaMedicamentos.pug", {
                     success: confirmacion,
                     medicamentosRecetas: medicamentosRecetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
                     id_Receta: id_Receta,
-                    validado: true
+                    validado: validado
                 })
                 return
             }
@@ -1192,7 +1197,7 @@ export class MedicoController {
                     medicamentosRecetas: medicamentosRecetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
                     id_Receta: id_Receta,
-                    validado: true
+                    validado: validado
                 })
                 return
             }
@@ -1200,7 +1205,7 @@ export class MedicoController {
                 medicamentosRecetas: medicamentosRecetas[1],
                 medicoActual: req.session.usuarioLogueado.id_Personal,
                 id_Receta: id_Receta,
-                validado: true
+                validado: visibilidad
             })
             return
         } catch (error) {
