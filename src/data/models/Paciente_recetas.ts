@@ -18,7 +18,7 @@ export class Paciente_recetas extends Model{
     declare id_Receta: number;
 
     @CreatedAt
-    @Column(DataType.DATE)
+    @Column(DataType.DATEONLY)
     declare fecha: Date;
 
     
@@ -35,10 +35,6 @@ export class Paciente_recetas extends Model{
 
     @BelongsTo(()=> Medicos)
     declare medico: Medicos
-
-    @ForeignKey(()=>Medicamentos)
-    @Column(DataType.INTEGER)
-    declare id_medicamento: number
 
     @BelongsToMany(()=> Medicamentos, () => RecetasMedicamentos)
     declare medicamento: Medicamentos[]

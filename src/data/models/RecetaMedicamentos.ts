@@ -10,21 +10,31 @@ export class RecetasMedicamentos extends Model{
     @AutoIncrement
     @PrimaryKey
     @Column(DataType.INTEGER)
-    id_Recetas_Medicamentos: number;
+    declare id_Recetas_Medicamentos: number;
 
     @ForeignKey(()=> Paciente_recetas)
-    @Column(DataType.INTEGER)
-    id_Receta: number;
+    @Column({
+        type: DataType.INTEGER,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        allowNull: false
+    })
+    declare id_Receta: number;
 
     @BelongsTo(()=> Paciente_recetas)
-    receta: Paciente_recetas
+    declare receta: Paciente_recetas
 
     @ForeignKey(()=> Medicamentos)
-    @Column(DataType.INTEGER)
-    id_Medicamento: number;
+    @Column({
+        type: DataType.INTEGER,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        allowNull: false
+    })
+    declare id_Medicamento: number;
 
     @BelongsTo(()=> Medicamentos)
-    medicamento: Medicamentos
+    declare medicamento: Medicamentos
 
     @Column(DataType.STRING)
     declare indicacion : string

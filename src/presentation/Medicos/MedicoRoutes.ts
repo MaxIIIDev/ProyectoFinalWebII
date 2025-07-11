@@ -41,6 +41,12 @@ export class MedicoRoutes{
         router.get("/eliminar/tratamiento/prescrito", ...middlewares,controller.eliminarTratamientoPrescrito)
         router.get("/view/sintomas", ...middlewares,controller.VistaSintomas)
         router.get("/view/historial/sintomas", ...middlewares,controller.VistaHistorialSintomas)
+        router.get("/view/seccion/alta/paciente", ...middlewares,controller.VistaSeccionAltaPaciente)
+        router.get("/view/lista/recetas/medicas", ...middlewares,controller.VistaListaRecetasMedicas)
+        router.get("/view/alta/historial/recetas", ...middlewares,controller.VistaHistorialRecetasMedicas)
+        router.get("/view/alta/receta/medicamentos", ...middlewares,controller.VistaListaMedicamentosReceta)
+        router.get("/view/alta/receta/medicamentos/crear", ...middlewares,controller.VistaRegistrarMedicamentoEnReceta)
+        router.get("/view/alta/receta/medicamentos/actualizar", ...middlewares,controller.VistaActualizarMedicamentoEnReceta)
 
         router.post("/crear/tratamiento/prescrito", ...middlewares,controller.crearTratamientoPrescrito)
         router.post("/actualizar/tratamiento/prescrito", ...middlewares,controller.actualizarTratamientoPrescrito)
@@ -53,6 +59,11 @@ export class MedicoRoutes{
         router.post("/crear/tratamiento/diagnostico", ...middlewares,controller.CrearTratamientoParaDiagnostico)
         router.post("/actualizar/tratamiento/diagnostico", ...middlewares,controller.ActualizarTratamientoParaDiagnostico)
         router.get("/eliminar/tratamiento/diagnostico", ...middlewares,controller.EliminarTratamientoParaDiagnostico)
+        router.post("/registrar/medicamento/en/receta", ...middlewares,controller.crearMedicamentoDeReceta)
+        router.post("/actualizar/medicamento/en/receta", ...middlewares,controller.actualizarMedicamentoDeReceta)
+        router.get("/eliminar/medicamento/en/receta", ...middlewares,controller.eliminarMedicamentoDeReceta)
+        router.get("/crear/receta", ...middlewares,controller.crearReceta)
+        router.get("/eliminar/receta", ...middlewares,controller.eliminarReceta)
         return router;
     }
 }

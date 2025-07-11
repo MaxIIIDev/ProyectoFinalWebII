@@ -22,6 +22,11 @@ import { PacientePruebasDiagnosticasService } from "../services/Medico/PacienteP
 import { NombrePruebaDiagnosticaService } from "../services/Medico/NombrePruebaDiagnosticaService";
 import { createPruebaDiagnosticaDto } from "../../domain/Dtos/pacientes/Diagnosticos/PruebasDiagnosticas/createPruebaDiagnostica";
 import { updatePruebaDiagnosticaDto } from "../../domain/Dtos/pacientes/Diagnosticos/PruebasDiagnosticas/updatePruebaDiagnostica";
+import { RecetasService } from "../services/Medico/RecetasService";
+import { createRecetaDto } from "../../domain/Dtos/pacientes/Recetas/createRecetaDto";
+import { createRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/RecetaMedicamentos/createRecetaMedicamentoDto";
+import { RecetasMedicamentosService } from "../services/Medico/RecetasMedicamentosService";
+import { updateRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/RecetaMedicamentos/updateRecetaMedicamentoDto";
 
 
 export class MedicoController {
@@ -1068,6 +1073,249 @@ export class MedicoController {
             return  
         }
     }
+    public VistaSeccionAltaPaciente = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            if(error){
+                res.render("MedicoViews/Alta/VistaSeccionAltaPaciente.pug", {
+                    error: error,
+                    paciente: req.session.paciente
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/VistaSeccionAltaPaciente.pug", {
+                paciente: req.session.paciente
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaSeccionAltaPaciente","MedicoController","1075",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaListaRecetasMedicas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const recetas = await RecetasService.buscarTodasLasRecetasPorPacienteYAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
+            if(recetas[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${recetas[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                    error: error,
+                    recetas: recetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: true
+                })
+                return
+            }
+            if(confirmacion){
+                res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                    success: confirmacion,
+                    recetas: recetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: true
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                recetas: recetas[1],
+                medicoActual: req.session.usuarioLogueado.id_Personal,
+                validado: true
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaListaRecetasMedicas","MedicoController","1100",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaHistorialRecetasMedicas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            const recetas = await RecetasService.buscarTodaslasRecetasDelPaciente(req.session.paciente.id_Paciente)
+            if(recetas[0]){
+                res.redirect(`/medicos/view/paciente/seleccionado?error=${recetas[0]}`)
+                return
+            }
+            console.log(recetas[1]);
+            
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                    error: error,
+                    recetas: recetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: false
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                recetas: recetas[1],
+                medicoActual: req.session.usuarioLogueado.id_Personal,
+                validado: false
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaListaRecetasMedicas","MedicoController","1100",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaListaMedicamentosReceta = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            if(!id_Receta){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=No se envio id_Receta`)
+                return
+            }
+            const medicamentosRecetas = await RecetasService.getMedicamentosDeLaReceta(id_Receta)
+            if(medicamentosRecetas[0]){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${medicamentosRecetas[0]}`)
+                return
+            }
+            if(confirmacion){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaListaMedicamentos.pug", {
+                    success: confirmacion,
+                    medicamentosRecetas: medicamentosRecetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: false,
+                    id_Receta: id_Receta
+                })
+                return
+            }
+                
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaListaMedicamentos.pug", {
+                    error: error,
+                    medicamentosRecetas: medicamentosRecetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: false,
+                    id_Receta: id_Receta
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaListaMedicamentos.pug", {
+                medicamentosRecetas: medicamentosRecetas[1],
+                medicoActual: req.session.usuarioLogueado.id_Personal,
+                validado: false,
+                id_Receta: id_Receta
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaListaMedicamentosReceta","MedicoController","1164",error as string)
+            res.redirect(`/medicos/view/paciente/seleccionado?error=${error}`)       
+            return  
+        }
+    }
+    public VistaRegistrarMedicamentoEnReceta = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            if(!id_Receta){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=No se envio id_Receta`)
+                return
+            }
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos()
+            if(medicamentos[0]){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${medicamentos[0]}`)
+                return
+            }
+            
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaCrearMedicamento.pug", {
+                    error: error,
+                    medicamentos: medicamentos[1],
+                    id_Receta: id_Receta
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaCrearMedicamento.pug", {
+                medicamentos: medicamentos[1],
+                id_Receta: id_Receta
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaRegistrarMedicamentoEnReceta","MedicoController","1202",error as string)
+            res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${error}`)       
+            return  
+        }
+    }
+    public VistaActualizarMedicamentoEnReceta = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            const id_Recetas_Medicamentos = req.query.id_Recetas_Medicamentos ? Number(req.query.id_Recetas_Medicamentos) : undefined;
+            if(!id_Receta){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=No se envio id_Receta`)
+                return
+            }
+            if(!id_Recetas_Medicamentos){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=No se envio id_Receta_Medicamento`)
+                return
+            }
+            const medicamentos = await MedicamentosServices.getTodosLosMedicamentos()
+            if(medicamentos[0]){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${medicamentos[0]}`)
+                return
+            }
+            const recetaMedicamentosActual = await RecetasMedicamentosService.buscarRecetaMedicamentoPorId(id_Recetas_Medicamentos)
+            if(recetaMedicamentosActual[0]){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${recetaMedicamentosActual[0]}`)
+                return
+            }
+            const medicamentoActual = await MedicamentosServices.buscarMedicamentoPorId(recetaMedicamentosActual[1].dataValues.id_Medicamento)
+            if(medicamentoActual[0]){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${medicamentoActual[0]}`)
+                return
+            }
+            const indicacion = await RecetasMedicamentosService.buscarRecetaMedicamentoPorId(id_Recetas_Medicamentos)
+            if(indicacion[0]){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${indicacion[0]}`)
+                return
+            }
+            if(confirmacion){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaActualizarMedicamento.pug", {
+                    success: confirmacion,
+                    medicamentos: medicamentos[1],
+                    medicamentoActual: medicamentoActual[1],
+                    indicacion: indicacion[1].dataValues.indicacion,
+                    id_Receta: id_Receta,
+                    id_Recetas_Medicamentos: id_Recetas_Medicamentos
+                })
+                return
+            }
+            
+            if(error){
+                res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaActualizarMedicamento.pug", {
+                    error: error,
+                    medicamentos: medicamentos[1],
+                    medicamentoActual: medicamentoActual[1],
+                    indicacion: indicacion[1].dataValues.indicacion,
+                    id_Receta: id_Receta,
+                    id_Recetas_Medicamentos: id_Recetas_Medicamentos
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/RecetaMedica/Medicamentos/VistaActualizarMedicamento.pug", {
+                medicamentos: medicamentos[1],
+                medicamentoActual: medicamentoActual[1],
+                indicacion: indicacion[1].dataValues.indicacion,
+                id_Receta: id_Receta,
+                id_Recetas_Medicamentos: id_Recetas_Medicamentos
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaActualizarMedicamentoEnReceta","MedicoController","1239",error as string)
+            res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${error}`)       
+            return  
+        }
+    }
     //////////////////////////todo://////////////
     //////////////////////////todo:Controladores/
     //////////////////////////todo://////////////
@@ -1431,6 +1679,124 @@ export class MedicoController {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EliminarTratamientoParaDiagnostico","MedicoController","1368",error as string)
             res.redirect(`/medicos/view/tratamientos/diagnostico?id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}&id_medico_diagnostico=${req.query.id_medico_diagnostico}&error=${encodeURIComponent(error as string)}`)       
             return  
+        }
+    }
+    public crearMedicamentoDeReceta = async (req:Request, res:Response) => {
+        try {
+            const [errorDto, dtoReady] = createRecetaMedicamentoDto.create({
+                id_Receta: req.body.id_Receta,
+                id_Medicamento: req.body.id_Medicamento,
+                indicacion: req.body.indicacion,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent(errorDto)}&id_Receta=${req.body.id_Receta}`)
+                return
+            }
+            const [error, recetaCreada] = await RecetasMedicamentosService.crearRecetaMedicamento(dtoReady)
+            if(error && !recetaCreada){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent(error as string)}&id_Receta=${req.body.id_Receta}`)
+                return
+            }
+            res.redirect(`/medicos/view/alta/receta/medicamentos?confirmacion=${encodeURIComponent("Receta creada correctamente")}&id_Receta=${req.body.id_Receta}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearReceta","MedicoController","1523",error as string)
+            res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.body.id_Receta}&error=${encodeURIComponent(error as string)}`)
+            return
+        }
+    }
+    public actualizarMedicamentoDeReceta = async (req:Request, res:Response) => {
+        try {
+            const [errorDto, dtoReady] = updateRecetaMedicamentoDto.create({
+                id_Recetas_Medicamentos: req.body.id_Recetas_Medicamentos,
+                id_Receta: req.body.id_Receta,
+                id_Medicamento: req.body.id_Medicamento,
+                indicacion: req.body.indicacion,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent(errorDto)}&id_Receta=${req.body.id_Receta}`)
+                return
+            }
+            const [error, recetaActualizada] = await RecetasMedicamentosService.actualizarRecetaMedicamento(dtoReady)
+            if(error && !recetaActualizada){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent(error as string)}&id_Receta=${req.body.id_Receta}`)
+                return
+            }
+            res.redirect(`/medicos/view/alta/receta/medicamentos?confirmacion=${encodeURIComponent("Receta actualizada correctamente")}&id_Receta=${req.body.id_Receta}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarMedicamentoDeReceta","MedicoController","1681",error as string)
+            res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.body.id_Receta}&error=${encodeURIComponent(error as string)}`)
+            return       
+        }
+    }
+    public eliminarMedicamentoDeReceta = async(req:Request, res:Response) => {
+        try {
+            const id_Recetas_Medicamentos = req.query.id_Recetas_Medicamentos ? Number(req.query.id_Recetas_Medicamentos) : undefined;
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            if(!id_Recetas_Medicamentos){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent("No se envio id_Recetas_Medicamentos")}`)
+                return
+            }
+            if(!id_Receta){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent("No se envio id_Receta")}`)
+                return
+            }
+            const [error, medicamentoEliminado] = await RecetasMedicamentosService.eliminarRecetaMedicamento(id_Recetas_Medicamentos)
+            if(error && !medicamentoEliminado){
+                res.redirect(`/medicos/view/alta/receta/medicamentos?error=${encodeURIComponent(error as string)}&id_Receta=${id_Receta}`)
+                return
+            }
+            res.redirect(`/medicos/view/alta/receta/medicamentos?confirmacion=${encodeURIComponent("Medicamento eliminado correctamente")}&id_Receta=${id_Receta}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarMedicamentoDeReceta","MedicoController","1732",error as string)
+            res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${encodeURIComponent(error as string)}`)
+            return       
+        }
+    }
+    public crearReceta = async (req:Request, res:Response) => {
+        try {
+            const [errorDto, dtoReady] = createRecetaDto.create({
+                id_paciente: req.session.admision.id_Paciente,
+                id_medico: req.session.usuarioLogueado.id_Personal,
+                id_admision: req.session.admision.id_Admision
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(errorDto)}`)
+                return
+            }
+            const [error, recetaCreada] = await RecetasService.crearReceta(dtoReady)
+            if(error && !recetaCreada){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(error as string)}`)
+                return
+            }
+            res.redirect(`/medicos/view/lista/recetas/medicas?confirmacion=${encodeURIComponent("Receta creada correctamente")}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearReceta","MedicoController","1757",error as string)
+            res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(error as string)}`)
+            return       
+        }
+    }
+    public eliminarReceta = async (req:Request, res:Response) => {
+        try {
+            const id_Receta = req.query.id_Receta ? Number(req.query.id_Receta) : undefined;
+            if(!id_Receta){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent("No se envio id_Receta")}`)
+                return
+            }
+            const [error, recetaEliminada] = await RecetasService.eliminarReceta(id_Receta)
+            if(error && !recetaEliminada){
+                res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(error as string)}`)
+                return
+            }
+            res.redirect(`/medicos/view/lista/recetas/medicas?confirmacion=${encodeURIComponent("Receta eliminada correctamente")}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarReceta","MedicoController","1781",error as string)
+            res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(error as string)}`)
+            return       
         }
     }
 }

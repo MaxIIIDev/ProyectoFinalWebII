@@ -40,8 +40,6 @@ export class Medicamentos extends Model{
     @Column(DataType.INTEGER)
     declare codigo:number;
 
-    @HasMany(()=> Paciente_recetas)
-    declare receta: Paciente_recetas[]
 
     @HasMany(()=> paciente_tratamientos)
     declare tratamientos: paciente_tratamientos[]

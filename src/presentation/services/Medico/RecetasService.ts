@@ -1,4 +1,8 @@
+import { Especialidades } from "../../../data/models/Especialidades";
+import { Medicamentos } from "../../../data/models/Medicamentos";
+import { Medicos } from "../../../data/models/Medicos";
 import { Paciente_recetas } from "../../../data/models/Paciente_recetas";
+import { RecetasMedicamentos } from "../../../data/models/RecetaMedicamentos";
 import { createRecetaDto } from "../../../domain/Dtos/pacientes/Recetas/createRecetaDto";
 import { updateRecetaDto } from "../../../domain/Dtos/pacientes/Recetas/updateRecetaDto";
 import { HelperForCreateErrors } from "../../../Helpers/HelperForCreateErrors";
@@ -9,6 +13,32 @@ import { PacienteServices } from "../PacientesService";
 
 
 export class RecetasService {
+
+    public static async getMedicamentosDeLaReceta(id_Receta: number){
+        try {
+            if(!id_Receta || id_Receta < 0) return ["La receta es nula o menor a 0", undefined]
+            const medicamentoDeLaReceta = await RecetasMedicamentos.findAll({
+                where: {
+                    id_Receta: id_Receta
+                },
+                include: [
+                    {
+                        model: Paciente_recetas,
+                        as: "receta"
+                    },
+                    {
+                        model: Medicamentos,
+                        as: "medicamento"
+                    }
+                ]
+            })
+            if(!medicamentoDeLaReceta) return ["No hay medicamentos con ese id"]
+            return [undefined, medicamentoDeLaReceta]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("getMedicamentosDeLaReceta","RecetasService","19",error as string)
+            return [error as string, undefined]
+        }
+    }
 
     public static async buscarRecetaPorId(id_Receta: number):Promise<[string?,Paciente_recetas?]>{//todo:TESTEAR
         try {
@@ -28,26 +58,65 @@ export class RecetasService {
     public static async buscarTodaslasRecetasDelPaciente(id_Paciente: number):Promise<[string?,Paciente_recetas[]?]>{//todo:TESTEAR
         try {
             if(!id_Paciente || id_Paciente < 0) return ["El id_Paciente es nulo o menor que 0"]
-            if(!await PacienteServices.getPacienteById(id_Paciente).then(res => res[0])) return ["No se ha encontrado registrado el paciente"]
+            if(!await PacienteServices.getPacienteById(id_Paciente).then(res => res[1])) return ["No se ha encontrado registrado el paciente"]
             const recetasDelPaciente = await Paciente_recetas.findAll({
                 where: {
-                    id_Paciente: id_Paciente
-                }
+                    id_paciente: id_Paciente
+                },
+                include: [
+                    {
+                        model: Medicos,
+                        as: "medico",
+                        include: [
+                            {
+                                model: Especialidades,
+                                as: "especialidad"
+                            }
+                        ]
+                    }
+                ]
             })
-            if(!recetasDelPaciente) return ["El paciente no tiene recetas medicas registradas"]
             return [undefined, recetasDelPaciente]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodaslasRecetasDelPaciente","RecetasService","50",error as string)
             return [error as string , undefined]
         }
     } 
+    public static async buscarTodasLasRecetasPorPacienteYAdmision(id_Paciente: number, id_Admision: number):Promise<[string?,Paciente_recetas[]?]>{//todo:TESTEAR
+        try {
+            if(!id_Paciente || id_Paciente < 0) return ["El id_Paciente es nulo o menor que 0"]
+            if(!await PacienteServices.getPacienteById(id_Paciente).then(res => res[1])) return ["No se ha encontrado registrado el paciente"]
+            if(!id_Admision || id_Admision < 0) return ["El id_Admision es nulo o menor que 0"]
+            const recetasDelPaciente = await Paciente_recetas.findAll({
+                where: {
+                    id_paciente: id_Paciente,
+                    id_admision: id_Admision
+                },
+                include: [
+                    {
+                        model: Medicos,
+                        as: "medico",
+                        include: [
+                            {
+                                model: Especialidades,
+                                as: "especialidad"
+                            }
+                        ]
+                    }
+                ]
+            })
+            return [undefined, recetasDelPaciente]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodasLasRecetasPorPacienteYAdmision","RecetasService","50",error as string)
+            return [error as string , undefined]
+        }
+    }
+    
     public static async crearReceta(_createRecetaDto:createRecetaDto):Promise<[string?,Paciente_recetas?]>{//todo:TESTEAR
         try {
             
             if(!await PacienteServices.getPacienteById(_createRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente"]
             if(!await MedicoService.getMedicoById(_createRecetaDto.id_medico).then(res => res[1])) return ["No se encontro el medico registrado con dicho Id"]
-            if(!await MedicamentosServices.buscarMedicamentoPorId(_createRecetaDto.id_medicamento).then(res => res[1])) return ["No se encontro un medicamento registrado con dicho Id"]
-
             const recetaCreada = await Paciente_recetas.create(createRecetaDto.toObject(_createRecetaDto))
             if(!recetaCreada) return ["No se creo la receta", undefined]
             return [undefined, recetaCreada]
@@ -63,7 +132,7 @@ export class RecetasService {
             if(!await this.buscarRecetaPorId(_updateRecetaDto.id_Receta).then(res => res[1])) return ["La receta con dicho id no se encontro registrada", false]
             if(!await PacienteServices.getPacienteById(_updateRecetaDto.id_paciente).then(res => res[1])) return ["No se encontro registrado al paciente", false]
             if(!await MedicoService.getMedicoById(_updateRecetaDto.id_medico).then(res => res[1])) return ["No se encontro el medico registrado con dicho Id", false]
-            if(!await MedicamentosServices.buscarMedicamentoPorId(_updateRecetaDto.id_medicamento).then(res => res[1])) return ["No se encontro un medicamento registrado con dicho Id", false]
+            
             const recetaActualizada = await Paciente_recetas.update(updateRecetaDto.toObject(_updateRecetaDto), {
                 where: {
                     id_Receta: _updateRecetaDto.id_Receta
@@ -73,7 +142,7 @@ export class RecetasService {
             return [undefined, true]
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarReceta", "RecetasService", "60", error as string)
-            return [error as string, false]
+            return [error as string, undefined]
         }
     }
     public static async eliminarReceta(id_Receta: number):Promise<[string?,boolean?]>{//todo:TESTEAR
