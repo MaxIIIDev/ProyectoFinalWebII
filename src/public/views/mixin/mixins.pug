@@ -123,4 +123,6 @@ mixin cargarNombresSintomas(nombresSintomas,id_nombre_sintoma_actual)
 mixin cargarTiposDeDiagnostico(tiposDeDiagnostico, tipoDeDiagnosticoActual)
     for tipoDeDiagnostico of tiposDeDiagnostico
         option(value=tipoDeDiagnostico.dataValues.id_tipo_de_diagnostico selected=((tipoDeDiagnosticoActual) && tipoDeDiagnosticoActual == tipoDeDiagnostico.dataValues.id_tipo_de_diagnostico)) #{tipoDeDiagnostico.dataValues.nombre}
-
+mixin cargarNombreDePruebaDiagnostica(nombresDePruebasDiagnosticas, nombreDePruebaDiagnosticaActual)
+    for nombreDePruebaDiagnostica of nombresDePruebasDiagnosticas
+        option(value=nombreDePruebaDiagnostica.dataValues.id_nombre_prueba_diagnostica selected=((nombreDePruebaDiagnosticaActual) && nombreDePruebaDiagnosticaActual == nombreDePruebaDiagnostica.dataValues.id_nombre_prueba_diagnostica)) #{nombreDePruebaDiagnostica.dataValues.nombre}

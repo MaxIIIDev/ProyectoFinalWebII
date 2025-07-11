@@ -18,6 +18,10 @@ import { SintomasServices } from "../services/SintomasServices";
 import { TipoDeDiagnosticoService } from "../services/Paciente/TipoDeDiagnosticoService";
 import { CreateDiagnosticoDto } from "../../domain/Dtos/pacientes/Diagnosticos/createDiagnosticoDto";
 import { UpdateDiagnosticoDto } from "../../domain/Dtos/pacientes/Diagnosticos/updateDiagnosticoDto";
+import { PacientePruebasDiagnosticasService } from "../services/Medico/PacientePruebasDiagnosticasService";
+import { NombrePruebaDiagnosticaService } from "../services/Medico/NombrePruebaDiagnosticaService";
+import { createPruebaDiagnosticaDto } from "../../domain/Dtos/pacientes/Diagnosticos/PruebasDiagnosticas/createPruebaDiagnostica";
+import { updatePruebaDiagnosticaDto } from "../../domain/Dtos/pacientes/Diagnosticos/PruebasDiagnosticas/updatePruebaDiagnostica";
 
 
 export class MedicoController {
@@ -331,6 +335,193 @@ export class MedicoController {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaActualizarDiagnostico","MedicoController","277",error as string)
             res.redirect(`/medicos/view/diagnosticos?error=${error}`)       
             return  
+        }
+    }
+    public VistaListaPruebasDiagnosticas = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const id_diagnostico = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            
+            if(!id_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURI("No se encontro el diagnostico")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/diagnosticos?error=${encodeURI("No se encontro el medico")}`)
+                return;
+            }
+            const PruebasDiagnosticas = await PacientePruebasDiagnosticasService.buscarTodasLasPruebasDiagnosticasDelDiagnostico(id_diagnostico)
+            if(PruebasDiagnosticas[0]){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${PruebasDiagnosticas[0]}`)
+                return;
+            }
+            const diagnostico = await DiagnosticosServices.getDiagnosticoById(id_diagnostico)
+            if(diagnostico[0]&& diagnostico[1] == undefined){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${diagnostico[0]}`)
+                return;
+            }
+            const validacion = (req.session.admision.id_Admision == diagnostico[1].dataValues.id_Admision && req.session.usuarioLogueado.id_Personal == id_medico_diagnostico)
+            if(confirmacion){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaListaPruebasDiagnosticas.pug",{
+                    success: confirmacion,
+                    pruebas_diagnosticas: PruebasDiagnosticas[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_Paciente_Diagnosticos: id_diagnostico,
+                    id_medico_diagnostico: id_medico_diagnostico,
+                    id_medico_actual: req.session.usuarioLogueado.id_Personal,
+                    validacion: validacion
+                })
+                return;
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaListaPruebasDiagnosticas.pug",{
+                    error: error,
+                    pruebas_diagnosticas: PruebasDiagnosticas[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_Paciente_Diagnosticos: id_diagnostico,
+                    id_medico_diagnostico: id_medico_diagnostico,
+                    id_medico_actual: req.session.usuarioLogueado.id_Personal,
+                    validacion: validacion
+                })
+                return;
+            }
+            if(warning){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaListaPruebasDiagnosticas.pug",{
+                    warning: warning,
+                    pruebas_diagnosticas: PruebasDiagnosticas[1],
+                    id_Admision: req.session.admision.id_Admision,
+                    id_Paciente_Diagnosticos: id_diagnostico,
+                    id_medico_diagnostico: id_medico_diagnostico,
+                    id_medico_actual: req.session.usuarioLogueado.id_Personal,
+                    validacion: validacion
+                })
+                return;
+            }
+            res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaListaPruebasDiagnosticas.pug",{
+                pruebas_diagnosticas: PruebasDiagnosticas[1],
+                id_Admision: req.session.admision.id_Admision,
+                id_Paciente_Diagnosticos: id_diagnostico,
+                id_medico_diagnostico: id_medico_diagnostico,
+                id_medico_actual: req.session.usuarioLogueado.id_Personal,
+                validacion: validacion
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaListaPruebasDiagnosticas","MedicoController","336",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${error}&id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}`)       
+            return  
+        }
+    }
+    public VistaCrearPruebaDiagnostica = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const id_diagnostico = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            if(!id_diagnostico){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURI("No se encontro el diagnostico")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURI("No se encontro el medico")}`)
+                return;
+            }
+            const diagnostico = await DiagnosticosServices.getDiagnosticoById(id_diagnostico)
+            if(diagnostico[0]&& diagnostico[1] == undefined){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${diagnostico[0]}`)
+                return;
+            }
+            const nombresDePruebasDiagnosticas = await NombrePruebaDiagnosticaService.buscarTodosLosNombresDePruebasDiagnosticas()
+            if(nombresDePruebasDiagnosticas[0]){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${nombresDePruebasDiagnosticas[0]}&id_Paciente_Diagnosticos=${id_diagnostico}`)
+                return;
+            }
+            if(error){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaRegistrarPruebaDiagnostica.pug", {
+                    error: error,
+                    nombresDePruebasDiagnosticas: nombresDePruebasDiagnosticas[1],
+                    id_Paciente_Diagnosticos: id_diagnostico,
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return;
+            }
+            
+            res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaRegistrarPruebaDiagnostica.pug", {
+                nombresDePruebasDiagnosticas: nombresDePruebasDiagnosticas[1],
+                id_Paciente_Diagnosticos: id_diagnostico,
+                id_medico_diagnostico: id_medico_diagnostico
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaCrearPruebaDiagnostica","MedicoController","389",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${error}&id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}`)
+            return
+        }
+    }
+    public VistaActualizarPruebaDiagnostica = async (req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+            const id_Paciente_diagnosticos = (req.query.id_Paciente_Diagnosticos) ? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_Prueba_diagnostica = (req.query.id_Prueba_Diagnostica) ? Number(req.query.id_Prueba_Diagnostica) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico) ? Number(req.query.id_medico_diagnostico) : undefined;
+            if(!id_Paciente_diagnosticos){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURI("No se encontro el diagnostico")}`)
+                return;
+            }
+            if(!id_Prueba_diagnostica){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURI("No se encontro la prueba diagnostica")}`)
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURI("No se encontro el medico")}`)
+                return;
+            }
+            const pruebaDiagnosticaActual = await PacientePruebasDiagnosticasService.buscarPruebaDiagnosticaPorId(id_Prueba_diagnostica)
+            if(pruebaDiagnosticaActual[0]&& pruebaDiagnosticaActual[1] == undefined){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${pruebaDiagnosticaActual[0]}&id_Paciente_Diagnosticos=${id_Paciente_diagnosticos}&id_Prueba_Diagnostica=${id_Prueba_diagnostica}&id_medico_diagnostico=${id_medico_diagnostico}`)
+                return;
+            }
+            
+            const nombresDePruebasDiagnosticas = await NombrePruebaDiagnosticaService.buscarTodosLosNombresDePruebasDiagnosticas()
+            if(nombresDePruebasDiagnosticas[0]){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${nombresDePruebasDiagnosticas[0]}&id_Paciente_Diagnosticos=${id_Paciente_diagnosticos}&id_Prueba_Diagnostica=${id_Prueba_diagnostica}&id_medico_diagnostico=${id_medico_diagnostico}`)
+                return;
+            }
+
+            if(error){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaActualizarPruebaDiagnostica.pug",{
+                    error: error,
+                    nombresDePruebasDiagnosticas: nombresDePruebasDiagnosticas[1],
+                    id_Paciente_diagnosticos: id_Paciente_diagnosticos,
+                    pruebaDiagnosticaActual: pruebaDiagnosticaActual[1],
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return;
+            }
+            if(warning){
+                res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaActualizarPruebaDiagnostica.pug",{
+                    warning: warning,
+                    nombresDePruebasDiagnosticas: nombresDePruebasDiagnosticas[1],
+                    id_Paciente_diagnosticos: id_Paciente_diagnosticos,
+                    pruebaDiagnosticaActual: pruebaDiagnosticaActual[1],
+                    id_medico_diagnostico: id_medico_diagnostico
+                })
+                return;
+            }
+            res.render("MedicoViews/Diagnosticos/PruebasDiagnosticas/VistaActualizarPruebaDiagnostica.pug",{
+                nombresDePruebasDiagnosticas: nombresDePruebasDiagnosticas[1],
+                id_Paciente_diagnosticos: id_Paciente_diagnosticos,
+                pruebaDiagnosticaActual: pruebaDiagnosticaActual[1],
+                id_medico_diagnostico: id_medico_diagnostico
+            })
+            return;
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("vistaActualizarPruebaDiagnostica","MedicoController","426",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${error}&id_Paciente_Diagnosticos=${req.query.id_Paciente_Diagnosticos}&id_Prueba_Diagnostica=${req.query.id_Prueba_Diagnostica}&id_medico_diagnostico=${req.query.id_medico_diagnostico}`)
+            return
         }
     }
     public VistaHistorialMedico = async (req:Request, res:Response) => {
@@ -862,6 +1053,89 @@ export class MedicoController {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarDiagnostico","MedicoController","848",error as string)
             res.redirect(`/medicos/view/diagnosticos?error=${encodeURIComponent(error as string)}`)
+            return;
+        }
+    }
+    public crearPruebaDiagnostica = async(req:Request, res:Response) => {
+        try {
+            const {id_Paciente_Diagnosticos,id_medico_diagnostico, id_nombre_prueba_diagnostica, resultado} = req.body
+            const [errorDto, dtoReady] = createPruebaDiagnosticaDto.create({
+                id_diagnostico: id_Paciente_Diagnosticos,
+                id_nombre_prueba_diagnostica: id_nombre_prueba_diagnostica,
+                resultado: resultado,
+                id_paciente: req.session.paciente.id_Paciente,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(errorDto)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+                return;
+            }
+            const [error, pruebaDiagnosticaCreada] = await PacientePruebasDiagnosticasService.crearPruebaDiagnostica(dtoReady)
+            if(error && !pruebaDiagnosticaCreada){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/pruebas/diagnosticas?confirmacion=${encodeURIComponent("Prueba diagnostica creada correctamente")}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPruebaDiagnostica","MedicoController","964",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error as string)}&id_Paciente_Diagnosticos=${encodeURIComponent(req.body.id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(req.body.id_medico_diagnostico)}`)
+            return;
+        }
+    }
+    public actualizarPruebaDiagnostica = async(req:Request, res:Response) => {
+        try {
+            const {id_Paciente_Diagnosticos,id_medico_diagnostico,id_Prueba_Diagnostica, id_nombre_prueba_diagnostica, resultado} = req.body
+            const [errorDto, dtoReady] = updatePruebaDiagnosticaDto.create({
+                id_diagnostico: id_Paciente_Diagnosticos,
+                id_Prueba_Diagnostica: id_Prueba_Diagnostica,
+                id_nombre_prueba_diagnostica: id_nombre_prueba_diagnostica,
+                resultado: resultado,
+                id_paciente: req.session.paciente.id_Paciente,
+            })
+            if(errorDto){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(errorDto)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+                return;
+            }
+            const [error, pruebaDiagnosticaActualizada] = await PacientePruebasDiagnosticasService.actualizarPruebaDiagnostica(dtoReady)
+            if(error && !pruebaDiagnosticaActualizada){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/pruebas/diagnosticas?confirmacion=${encodeURIComponent("Prueba diagnostica actualizada correctamente")}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarPruebaDiagnostica","MedicoController","1045",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error as string)}&id_Paciente_Diagnosticos=${encodeURIComponent(req.body.id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(req.body.id_medico_diagnostico)}`)
+            return;
+        }
+    }
+    public eliminarPruebaDiagnostica = async(req:Request, res:Response) => {
+        try {
+            const id_Prueba_Diagnostica = (req.query.id_Prueba_Diagnostica)? Number(req.query.id_Prueba_Diagnostica) : undefined;
+            const id_Paciente_Diagnosticos = (req.query.id_Paciente_Diagnosticos)? Number(req.query.id_Paciente_Diagnosticos) : undefined;
+            const id_medico_diagnostico = (req.query.id_medico_diagnostico)? Number(req.query.id_medico_diagnostico) : undefined;
+            if(!id_Prueba_Diagnostica){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent("No se ha proporcionado un id de prueba diagnostica")}`);
+                return;
+            }
+            if(!id_Paciente_Diagnosticos){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent("No se ha proporcionado un id de diagnostico")}`);
+                return;
+            }
+            if(!id_medico_diagnostico){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent("No se ha proporcionado un id de medico diagnostico")}`);
+                return;
+            }
+            const [error, pruebaDiagnosticaEliminada] = await PacientePruebasDiagnosticasService.eliminarPruebaDiagnostica(id_Prueba_Diagnostica)
+            if(error && !pruebaDiagnosticaEliminada){
+                res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error)}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+                return;
+            }
+            res.redirect(`/medicos/view/pruebas/diagnosticas?confirmacion=${encodeURIComponent("Prueba diagnostica eliminada correctamente")}&id_Paciente_Diagnosticos=${encodeURIComponent(id_Paciente_Diagnosticos)}&id_medico_diagnostico=${encodeURIComponent(id_medico_diagnostico)}`);
+            return;     
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarPruebaDiagnostica","MedicoController","1112",error as string)
+            res.redirect(`/medicos/view/pruebas/diagnosticas?error=${encodeURIComponent(error as string)}&id_Paciente_Diagnosticos=${encodeURIComponent(req.query.id_Paciente_Diagnosticos as string)}&id_medico_diagnostico=${encodeURIComponent(req.query.id_medico_diagnostico as string)}`)
             return;
         }
     }
