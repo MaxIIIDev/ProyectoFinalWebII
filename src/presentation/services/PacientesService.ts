@@ -6,9 +6,35 @@ import { HelperForCreateErrors } from "../../Helpers/HelperForCreateErrors";
 import { SeguroMedicoService } from "./SeguroMedicoService";
 import { GetPacienteDto } from "../../domain/Dtos/pacientes/getPacienteDto";
 import { CreatePacienteNNDto } from "../../domain/Dtos/pacientes/createPacienteNNDto";
+import { Admision } from "../../data/models/Admision";
 
 
 export class PacienteServices{
+    static buscarPacientePorCama = async(id_Cama: number): Promise<[string?, Pacientes?]> => {
+        try {
+            const pacienteEncontrado = await Pacientes.findOne({
+                include: [
+
+                    {
+                        model: Admision,
+                        as: "admisiones",
+                        where: {
+                            id_Cama: id_Cama,
+                            estado: "Activo"
+                        }
+                    }
+                ],
+                attributes: ["nombre","apellido","dni"]
+            });
+            if(!pacienteEncontrado){
+                return ["Paciente no encontrado", undefined];
+            }
+            return [undefined, pacienteEncontrado];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarPacientePorCama","PacienteService", "Line 16", error as string);       
+            return ["Error al buscar el paciente por cama", undefined];
+        }
+    }
     static getPacienteById = async(id_Paciente: number): Promise<[string?, Pacientes?]> =>  { //*TESTEADO, devuelve el paciente por su ID de base de datos
 
         try {

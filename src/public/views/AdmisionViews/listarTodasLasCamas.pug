@@ -136,6 +136,7 @@ html(lang="en")
                         table.table.table-separated
                             thead
                                 tr
+                                    th Paciente
                                     th Nro-Habitacion
                                     th Ala
                                     th Numero Cama
@@ -161,6 +162,7 @@ html(lang="en")
                             for(let resultado of resultadosParseados) {
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
+                                    ${resultado.nombre ? `<td>${resultado.nombre} ${resultado.apellido} - ${resultado.dni}</td>` : `<td>No hay paciente</td>`}
                                     <td>${resultado.nro_Habitacion}</td>
                                     <td>${resultado.nombre_Ala}</td>
                                     <td>${resultado.numero_cama}</td>

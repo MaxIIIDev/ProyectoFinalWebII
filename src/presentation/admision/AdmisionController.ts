@@ -1300,16 +1300,23 @@ export class AdmisionController{
                 return
             }
             type HabitacionResponse = {
+                nombre?: string,
+                apellido?: string,
+                dni?: number,
                 nro_Habitacion: number,
                 nombre_Ala:string,
                 numero_cama: number,
                 disponible: boolean,
             }
-            console.log(habitacionesEncontradas[0].dataValues.camas[0].dataValues);
+         
             
             const habitacionesResponse: HabitacionResponse[] = [];
             for(let habitacion of habitacionesEncontradas){
+                const nombre = await PacienteServices.buscarPacientePorCama(habitacion.dataValues.camas[0].dataValues.id_Cama);
                 const response: HabitacionResponse = {
+                    nombre: nombre[1]?.dataValues.nombre,
+                    apellido: nombre[1]?.dataValues.apellido,
+                    dni: nombre[1]?.dataValues.dni,
                     nro_Habitacion: habitacion.dataValues.nro_Habitacion,
                     nombre_Ala: habitacion.dataValues.ala.dataValues.nombre,
                     numero_cama: habitacion.dataValues.camas[0].dataValues.id_Cama,
@@ -1317,11 +1324,15 @@ export class AdmisionController{
                 }
                 habitacionesResponse.push(response);
                 if(habitacion.dataValues.camas.length == 2){
+                    const nombre2 = await PacienteServices.buscarPacientePorCama(habitacion.dataValues.camas[1].dataValues.id_Cama);
                     const response2: HabitacionResponse = {
                         nro_Habitacion: habitacion.dataValues.nro_Habitacion,
                         nombre_Ala: habitacion.dataValues.ala.dataValues.nombre,
                         numero_cama: habitacion.dataValues.camas[1].dataValues.id_Cama,
-                        disponible: habitacion.dataValues.camas[0].dataValues.disponible
+                        nombre: nombre2[1]?.dataValues.nombre,
+                        apellido: nombre2[1]?.dataValues.apellido,
+                        dni: nombre2[1]?.dataValues.dni,
+                        disponible: habitacion.dataValues.camas[1].dataValues.disponible
                     }
                     habitacionesResponse.push(response2);
                 }

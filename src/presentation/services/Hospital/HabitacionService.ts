@@ -218,7 +218,7 @@ export class HabitacionService {
                     },
                     {
                         model: Hospital_camas,
-                        as: "camas"
+                        as: "camas",
                     }
                 ]
                 });
