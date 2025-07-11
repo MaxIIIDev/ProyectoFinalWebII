@@ -27,6 +27,7 @@ import { createRecetaDto } from "../../domain/Dtos/pacientes/Recetas/createRecet
 import { createRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/RecetaMedicamentos/createRecetaMedicamentoDto";
 import { RecetasMedicamentosService } from "../services/Medico/RecetasMedicamentosService";
 import { updateRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/RecetaMedicamentos/updateRecetaMedicamentoDto";
+import { Admision } from "../../data/models/Admision";
 
 
 export class MedicoController {
@@ -666,6 +667,7 @@ export class MedicoController {
     public VistaEvaluacionesFisicasActual = async (req:Request, res:Response) => {
         try {
             const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
             
             const evaluaciones = await EvaluacionFisicaService.buscarEvaluacionesFisicasPorAdmisionDelPaciente(req.session.admision.id_Admision, req.session.paciente.id_Paciente)
             if(evaluaciones[0]){
@@ -675,6 +677,13 @@ export class MedicoController {
             if(error){
                 res.render("MedicoViews/EvaluacionesFisicas/VistaListaEvaluacionFisica.pug", {
                     error: error,
+                    evaluaciones: evaluaciones[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("MedicoViews/EvaluacionesFisicas/VistaListaEvaluacionFisica.pug", {
+                    warning: warning,
                     evaluaciones: evaluaciones[1]
                 })
                 return
@@ -1024,6 +1033,7 @@ export class MedicoController {
     public VistaSintomas = async (req:Request, res:Response) => {
         try {
             const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
             
             const sintomas = await SintomasServices.getAllSintomasByPacienteAndAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
             if(sintomas[0]){
@@ -1033,6 +1043,13 @@ export class MedicoController {
             if(error){
                 res.render("MedicoViews/Sintomas/VistaListaSintomas.pug", {
                     error: error,
+                    sintomas: sintomas[1]
+                })
+                return
+            }
+            if(warning){
+                res.render("MedicoViews/Sintomas/VistaListaSintomas.pug", {
+                    warning: warning,
                     sintomas: sintomas[1]
                 })
                 return
@@ -1097,6 +1114,7 @@ export class MedicoController {
         try {
             const error = req.query.error || undefined;
             const confirmacion = req.query.confirmacion || undefined;
+            const warning = req.query.warning || undefined;
             const recetas = await RecetasService.buscarTodasLasRecetasPorPacienteYAdmision(req.session.paciente.id_Paciente, req.session.admision.id_Admision)
             if(recetas[0]){
                 res.redirect(`/medicos/view/paciente/seleccionado?error=${recetas[0]}`)
@@ -1114,6 +1132,15 @@ export class MedicoController {
             if(confirmacion){
                 res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
                     success: confirmacion,
+                    recetas: recetas[1],
+                    medicoActual: req.session.usuarioLogueado.id_Personal,
+                    validado: true
+                })
+                return
+            }
+            if(warning){
+                res.render("MedicoViews/Alta/RecetaMedica/VistaListaRecetasMedicas.pug", {
+                    warning: warning,
                     recetas: recetas[1],
                     medicoActual: req.session.usuarioLogueado.id_Personal,
                     validado: true
@@ -1345,6 +1372,114 @@ export class MedicoController {
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaActualizarMedicamentoEnReceta","MedicoController","1239",error as string)
             res.redirect(`/medicos/view/alta/receta/medicamentos?id_Receta=${req.query.id_Receta}&error=${error}`)       
+            return  
+        }
+    }
+    public VistaRecomendacionDeSeguimiento = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+            const buscarRecomendacion = await AdmisionService.buscarAdmisionPorId(req.session.admision.id_Admision)
+            if(buscarRecomendacion[0]){
+                res.redirect(`/medicos/view/seccion/alta/paciente?error=${error}`)
+                return
+            }
+            const recomendacion = buscarRecomendacion[1].dataValues.recomendacion_seguimiento_medico || undefined
+            if(confirmacion){
+                res.render("MedicoViews/Alta/IndicacionMedica/ActualizarRecomendacionDeSeguimiento.pug", {
+                    success: confirmacion,
+                    recomendacion: recomendacion
+                })
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Alta/IndicacionMedica/ActualizarRecomendacionDeSeguimiento.pug", {
+                    error: error,
+                    recomendacion: recomendacion
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/IndicacionMedica/ActualizarRecomendacionDeSeguimiento.pug", {
+                recomendacion: recomendacion
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaRecomendacionDeSeguimiento","MedicoController","1355",error as string)
+            res.redirect(`/medicos/view/seccion/alta/paciente&error=${error}`)       
+            return  
+        }
+    }
+    public VistaSeccionDarAltas = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const warning = req.query.warning || undefined;
+
+            if(error){
+                res.render("MedicoViews/Alta/SeccionAlta/VistaDeAltas.pug", {
+                    error: error,
+                })
+                return
+            }
+            if(warning){
+                res.render("MedicoViews/Alta/SeccionAlta/VistaDeAltas.pug", {
+                    warning: warning,
+                    paciente: req.session.paciente,
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/SeccionAlta/VistaDeAltas.pug", {
+                paciente: req.session.paciente,
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaSeccionDarAltas","MedicoController","1389",error as string)
+            res.redirect(`/medicos/view/seccion/alta/paciente&error=${error}`)       
+            return  
+        }
+    }
+    public VistaHistorialAltas = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            const confirmacion = req.query.confirmacion || undefined;
+
+            const admisionesDadasDeAlta = await AdmisionService.buscarTodasLasAdmisionesDadasDeAlta(req.session.paciente.id_Paciente)
+            if(admisionesDadasDeAlta[0]){
+                res.redirect(`/medicos/view/seccion/alta/paciente?error=${admisionesDadasDeAlta[0]}`)
+                return
+            }
+            if(error){
+                res.render("MedicoViews/Alta/SeccionAlta/ListadoDeAltas.pug", {
+                    error: error,
+                    altas: admisionesDadasDeAlta[1]                })
+                return
+            }
+            res.render("MedicoViews/Alta/SeccionAlta/ListadoDeAltas.pug", {
+                altas: admisionesDadasDeAlta[1],
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaHistorialAltas","MedicoController","1406",error as string)
+            res.redirect(`/medicos/view/seccion/alta/paciente&error=${error}`)       
+            return  
+        }
+    }
+    public VistaDarAlta = async(req:Request, res:Response) => {
+        try {
+            const error = req.query.error || undefined;
+            
+            if(error){
+                res.render("MedicoViews/Alta/SeccionAlta/VistaDarAlta.pug", {
+                    error: error,
+                })
+                return
+            }
+            res.render("MedicoViews/Alta/SeccionAlta/VistaDarAlta.pug", {
+                warning: "Una vez dado de alta, no hay vuelta atras"
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaDarAlta","MedicoController","1432",error as string)
+            res.redirect(`/medicos/view/seccion/alta/paciente&error=${error}`)       
             return  
         }
     }
@@ -1829,6 +1964,52 @@ export class MedicoController {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("eliminarReceta","MedicoController","1781",error as string)
             res.redirect(`/medicos/view/lista/recetas/medicas?error=${encodeURIComponent(error as string)}`)
             return       
+        }
+    }
+    public actualizarRecomendacionDeSeguimiento = async (req:Request, res:Response) => {
+        try {
+            const recomendacion = req.body.recomendacion ? req.body.recomendacion.toString() : undefined
+            if(!recomendacion || recomendacion.trim().length <= 10){
+                res.redirect(`/medicos/view/alta/recomendacion/seguimiento?error=${encodeURIComponent("La recomendacion debe tener al menos 10 caracteres")}`)
+                return
+            }
+            const [error, recomendacionActualizada] = await AdmisionService.actualizarRecomendacionDeSeguimiento(req.session.admision.id_Admision, recomendacion)
+            if(error && !recomendacionActualizada){
+                res.redirect(`/medicos/view/alta/recomendacion/seguimiento?error=${encodeURIComponent(error as string)}`)
+                return
+            }
+            res.redirect(`/medicos/view/alta/recomendacion/seguimiento?confirmacion=${encodeURIComponent("Recomendacion actualizada correctamente")}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarRecomendacionDeSeguimiento","MedicoController","1863",error as string)
+            res.redirect(`/medicos/view/alta/recomendacion/seguimiento?error=${encodeURIComponent(error as string)}`)
+            return       
+        }
+    }
+    public darAlta = async (req:Request, res:Response) => {
+        try {
+            
+            const alta = req.body.alta ? req.body.alta.toString() : undefined
+            const confirmacion = req.body.confirmacion ? req.body.confirmacion.toString() : undefined
+            if(alta && alta != "alta"){
+                res.redirect(`/medicos/view/seccion/final/altas?error=${encodeURIComponent("No se selecciono alta")}`)
+                return
+            }
+            if(confirmacion && confirmacion != "confirmar"){
+                res.redirect(`/medicos/view/seccion/final/altas?error=${encodeURIComponent("No se confirmo la operacion")}`)
+                return
+            }
+            const [errorAlta, altaRealizada] = await AdmisionService.altaLogicaAdmision(req.session.admision.id_Admision)
+            if(errorAlta && !altaRealizada){
+                res.redirect(`/medicos/view/seccion/final/altas?error=${encodeURIComponent(errorAlta as string)}`)
+                return
+            }
+            res.redirect(`/medicos/lista/admisiones?confirmacion=${encodeURIComponent("Paciente dado de alta correctamente")}`)
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("darAlta","MedicoController","1955",error as string)
+            res.redirect(`/medicos/view/seccion/final/altas&error=${error}`)       
+            return  
         }
     }
 }

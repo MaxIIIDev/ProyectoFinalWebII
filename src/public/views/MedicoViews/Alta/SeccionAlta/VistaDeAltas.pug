@@ -161,28 +161,23 @@ html(lang="es")
       }
 
   body
-    include ../../layout/alerts.pug
+    include ../../../layout/alerts.pug
     .panel-container.d-flex.flex-column.justify-content-center.align-items-center
-      a.home-btn(href="/medicos/view/paciente/seleccionado" aria-label="Volver al inicio")
+      a.home-btn(href="/medicos/view/seccion/alta/paciente" aria-label="Volver al inicio")
         i.bi.bi-house-door-fill
       
       .text-center.mb-4
         h1.patient-title 
           | #{paciente.nombre} #{paciente.apellido}
-          small.d-block.mt-2(style="font-size: 1.1rem; font-weight: 400; opacity: 0.9") Panel de Alta Medica
+          small.d-block.mt-2(style="font-size: 1.1rem; font-weight: 400; opacity: 0.9") Panel de Tramite de Alta Medica
       
       .buttons-container
-        a.btn.btn-panel.btn-delete(href=`/medicos/view/lista/recetas/medicas` role="button")
+        a.btn.btn-panel.btn-delete(href=`/medicos/view/historial/altas` role="button")
           i.bi.bi-file-medical
-          | Recetas Médicas
-        
-        a.btn.btn-panel.btn-medical(href=`/medicos/view/alta/recomendacion/seguimiento` role="button")
-          i.bi.bi-heart-pulse
-          | Recomendaciones de Seguimiento
-        
-        a.btn.btn-panel.btn-appointment(href="/medicos/view/seccion/final/altas" role="button")
+          | Historial De altas
+        a.btn.btn-panel.btn-appointment(href="/medicos/view/alta/final" role="button")
           i.bi.bi-hospital
-          | Alta Hospitalaria
+          | Finalizar Alta
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
     script.

@@ -98,7 +98,7 @@ export class AuthController{
             
             req.session.usuarioLogueado = objSession; //todo: Ver si funciona
 
-            res.redirect(`/${encodeURIComponent((usuarioAutenticado.dataValues.rol.dataValues.nombre =="Enfermero") ? "Enfermeria" : usuarioAutenticado.dataValues.rol.dataValues.nombre)}`)
+            res.redirect(`/${encodeURIComponent((usuarioAutenticado.dataValues.rol.dataValues.nombre =="Enfermero") ? "Enfermeria" : (usuarioAutenticado.dataValues.rol.dataValues.nombre == "Medico") ? "Medicos" : usuarioAutenticado.dataValues.rol.dataValues.nombre)}`)
             console.log("Se logueo correctamente");
             
             return

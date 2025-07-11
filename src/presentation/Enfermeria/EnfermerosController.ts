@@ -62,7 +62,7 @@ export class EnfermerosController{
 
     public test = async(req:Request,res:Response)=>{
         try {
-            const [error, ,contraseña] = await AuthServices.crearContraseña("Enfermero1@")
+            const [error, ,contraseña] = await AuthServices.crearContraseña("Medicos1@")
             if(error){
                 res.json({error:error})
                 return 

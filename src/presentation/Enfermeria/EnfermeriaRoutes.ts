@@ -12,7 +12,6 @@ export class EnfermeriaRoutes{
 
         const router = Router();
         const controller = new EnfermerosController();
-        //router.use(MiddlewareFor.InicializarSessionEnfermero)
         router.use(MiddlewareFor.AuthSession("Enfermero"))
 
         const middlewareEnfermero = [

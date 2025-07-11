@@ -14,6 +14,34 @@ import { CamaService } from "./Hospital/CamaService";
 
 
 export class AdmisionService {
+    public static async buscarTodasLasAdmisionesDadasDeAlta(id_Paciente:number):Promise<[string?, Admision[]?]> {
+        try {
+            if(!id_Paciente || id_Paciente < 0) return ["El id_Paciente es nulo o menor a 0", undefined]
+            const admisiones = await Admision.findAll({
+                where: {
+                    id_Paciente: id_Paciente,
+                    estado: "Alta"
+                }
+            })
+            return [undefined, admisiones]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("buscarTodasLasAdmisionesDadasDeAlta","AdmisionService","29",error as string)
+            return [error as string, undefined]
+            
+        }
+    }
+    public static async actualizarRecomendacionDeSeguimiento(id_Admision: number, recomendacion: string): Promise<[string?, boolean?]> {
+        try {
+            const [error, admision] = await this.buscarAdmisionPorId(id_Admision);
+            if (error) return [error, false];
+            admision.recomendacion_seguimiento_medico = recomendacion;
+            await admision.save();
+            return [undefined, true];
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("actualizarRecomendacionDeSeguimiento", "AdmisionService", "18", error as string)
+            return [error as string, false]
+        }
+    }
     public static async actualizarPrioridadDeAtencion(id_Prioridad_de_atencion: number, id_Admision: number): Promise<[string?, boolean?]> {
         try {
             const [error, admision] = await this.buscarAdmisionPorId(id_Admision);
@@ -231,7 +259,7 @@ export class AdmisionService {
                 id_Admision: id_Admision
             }})
             if(!admisionEncontrada) return ["No se encontro la admision"]
-            const admisionBaja = await Admision.update({estado: "Activo"},{where:{id_Admision: id_Admision}})
+            const admisionBaja = await Admision.update({estado: "Alta"},{where:{id_Admision: id_Admision}})
             if(!admisionBaja) return ["No se pudo dar de alta la admision"]
             const seDioBajaLogica = await CamaService.marcarCamaComoOcupada(admisionEncontrada.dataValues.id_Cama)
             if(!seDioBajaLogica[1]) return ["No se pudo marcar ocupada la cama",seDioBajaLogica[1]]
