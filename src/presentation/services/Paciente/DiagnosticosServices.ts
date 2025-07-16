@@ -93,6 +93,7 @@ export class DiagnosticosServices {
                     
                     id_paciente: _updateDiagnosticoDto.id_paciente,
                     id_tipo_de_diagnostico: _updateDiagnosticoDto.id_tipo_de_diagnostico,
+                    detalles: _updateDiagnosticoDto.detalles,
                     id_Admision: _updateDiagnosticoDto.id_Admision,
                     id_Paciente_Diagnosticos: {[Op.ne]: _updateDiagnosticoDto.id_Paciente_Diagnosticos}
                 }});
@@ -103,6 +104,7 @@ export class DiagnosticosServices {
                 const buscarDiagnostico = await Paciente_Diagnosticos.findOne({where: {
                     id_paciente: _createDiagnosticoDto.id_paciente,
                     id_tipo_de_diagnostico: _createDiagnosticoDto.id_tipo_de_diagnostico,
+                    detalles: _createDiagnosticoDto.detalles,
                     id_Admision: _createDiagnosticoDto.id_Admision,
                 }});
                 if(buscarDiagnostico) return ["Ya existe un diagnostico con esas caracteristicas", false]
