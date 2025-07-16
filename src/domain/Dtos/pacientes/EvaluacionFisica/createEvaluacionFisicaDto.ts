@@ -36,7 +36,7 @@ export class CreateEvaluacionFisicaDto {
         if(!object.presion_arterial_diastolica || object.presion_arterial_diastolica < 0    || object.presion_arterial_diastolica > 200) return ["La presion arterial diastolica es requerida y debe ser mayor o igual a 0", undefined];
         if(!object.frecuencia_cardiaca || object.frecuencia_cardiaca < 0 || object.frecuencia_cardiaca > 400) return ["La frecuencia cardiaca es requerida y debe ser mayor o igual a 0", undefined];
         if(!object.color_de_piel || object.color_de_piel.length < 5) return ["El color de la piel es requerido y debe tener al menos 5 caracteres", undefined];
-        if(!object.respuesta_a_estimulos || object.respuesta_a_estimulos.length < 5) return ["La respuesta a estimulos es requerida y debe tener al menos 5 caracteres", undefined];
+        if(!object.respuesta_a_estimulos || object.respuesta_a_estimulos.trim().length < 5) return ["La respuesta a estimulos es requerida y debe tener al menos 5 caracteres", undefined];
         if(!object.id_Paciente || object.id_Paciente < 0) return ["El id del paciente es requerido y debe ser mayor o igual a 0", undefined];
         if(!object.id_Enfermero || object.id_Enfermero < 0) return ["El id del enfermero es requerido y debe ser mayor o igual a 0", undefined];
         if(!object.id_Admision || object.id_Admision < 0) return ["El id de la admision es requerido y debe ser mayor o igual a 0", undefined];

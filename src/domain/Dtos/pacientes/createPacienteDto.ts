@@ -46,8 +46,8 @@ export class CreatePacienteDto{
         
         const { nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo, id_seguro_medico } = object;
 
-        if(!nombre) return ["Se requiere el nombre"]
-        if( !apellido) return ["Se requiere el apellido"]
+        if(!nombre || nombre.trim().length < 2) return ["Se requiere el nombre"]
+        if( !apellido || apellido.trim().length < 2) return ["Se requiere el apellido"]
         if(!dni) return ["Se requiere el dni"]
         if(!fecha_nac) ["Se requiere la fecha de nacimiento"]       
         if(!genero) return ["Se requiere el genero"]

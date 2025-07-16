@@ -44,7 +44,7 @@ export class updateTratamientoDto {
             if(!object.id_tratamiento || isNaN(object.id_tratamiento) || object.id_tratamiento < 0) return ["Se requiere id_tratamiento"];
 
             if(!object.id_tipo_de_tratamiento || object.id_tipo_de_tratamiento < 0) return ["Se requiere id_tipo_de_tratamiento"];
-            if(!object.detalle || object.detalle.trim() === "") return ["Se requiere detalle"];
+            if(!object.detalle || object.detalle.trim() === "" || object.detalle.trim().length < 20) return ["Se requiere detalle"];
             
             if((object.cantidad_suministrada && !object.id_medicamento) || (!object.cantidad_suministrada && object.id_medicamento)) return ["Se requiere cantidad_suministrada y id_medicamento"];
             if(object.cantidad_suministrada && Number(object.cantidad_suministrada) < 0) return ["cantidad_suministrada debe ser un número positivo"];

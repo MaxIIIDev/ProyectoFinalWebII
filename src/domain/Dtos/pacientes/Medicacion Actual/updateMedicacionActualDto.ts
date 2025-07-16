@@ -27,7 +27,7 @@ export class updateMedicacionActualDto{
             if(!object.id_Admision || Number(object.id_Admision) < 0) return ["El id_Admision es nulo o es menor que 0"]
             if(!object.id_Paciente || Number(object.id_Paciente) < 0) return ["El id_Paciente es nulo o es menor que 0"]
             if(!object.id_Medicamento && Number(object.id_Medicamento) < 0) return ["id_Medicamento es menor que 0 o es requerido"]
-            if(!object.motivo || object.motivo.length < 10) return ["El motivo es menor que 10 o es requerido"]
+            if(!object.motivo || object.motivo.trim().length < 10) return ["El motivo es menor que 10 o es requerido"]
             return [undefined, new updateMedicacionActualDto(
                 Number(object.id_Paciente_Medicacion_Actual),
                 Number(object.id_Admision),

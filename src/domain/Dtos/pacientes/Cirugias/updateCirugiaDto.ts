@@ -27,7 +27,7 @@ export class updateCirugiaDto {
         try {
             if(!object.id_cirugia) return ["Se requiere el id_cirugia"]
             if(!object.id_nombre_cirugia)return ["Se requiere id_nombre_cirugia"]
-            if(!object.descripcion) return ["Se requiere la descripcion"]
+            if(!object.descripcion || object.descripcion.trim().length < 10) return ["Se requiere la descripcion"]
             if(!object.id_medico)return ["Se requiere id_medico"]
             if(!object.id_paciente) return ["Se requiere id_paciente"]
             if(!object.id_Admision) return ["Se requiere id_Admision"]

@@ -23,7 +23,7 @@ export class updateAlergiaDto {
         try {
             if(!object.id_Alergia) return ["Se requiere id_Alergia"]
             if(!object.id_nombre_alergia) return ["id_nombre_alergia is missing"]
-            if(!object.descripcion) return ["Se requiere una descripcion"]
+            if(!object.descripcion || object.descripcion.trim().length < 20) return ["Se requiere una descripcion"]
             if(!object.id_paciente) return ["Se requiere el id_paciente"]
             if(object.id_tratamiento && object.id_tratamiento < 0) return ["id_tratamiento no puede ser negativo"]
             return[undefined,new updateAlergiaDto(

@@ -146,7 +146,7 @@ html(lang="es")
                         
                         .mb-3
                             label.form-label(for="respuesta_a_estimulos") Respuestas a estimulos
-                            input#respuesta_a_estimulos.form-control(type="text" name="respuesta_a_estimulos" placeholder="Por favor ingrese las respuestas a estimulos" min="5" required value=evaluacionActual.dataValues.respuesta_a_estimulos)
+                            input#respuesta_a_estimulos.form-control(type="text" name="respuesta_a_estimulos" placeholder="Por favor ingrese las respuestas a estimulos" minlength="5" required value=evaluacionActual.dataValues.respuesta_a_estimulos)
                             .invalid-feedback Por favor ingrese las respuestas a estimulos
                         
                         button.btn.btn-submit(type="submit") 

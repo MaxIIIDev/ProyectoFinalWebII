@@ -21,7 +21,7 @@ export class createAlergiaDto {
 
         try {
             if(!object.id_nombre_alergia) return ["id_nombre_alergia is missing"]
-            if(!object.descripcion) return ["Se requiere una descripcion"]
+            if(!object.descripcion || object.descripcion.trim().length < 20) return ["Se requiere una descripcion"]
             if(!object.id_paciente) return ["Se requiere el id_paciente"]
             
             return[undefined,new createAlergiaDto(
