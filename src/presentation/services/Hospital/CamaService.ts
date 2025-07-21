@@ -26,6 +26,11 @@ export class CamaService{
                                 as: "ala"
                             }
                         ]
+                    },
+                    {
+                        model: Admision,
+                        as: "admision",
+                        attributes: ["id_Admision"]
                     }
                 ],
                 where:{id_Cama: id_Cama}});

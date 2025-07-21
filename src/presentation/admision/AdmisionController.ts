@@ -475,7 +475,23 @@ export class AdmisionController{
     }
     public vistaCamas = async(req:Request, res:Response) => {
         try {
+            const error = req.query.error as string || undefined;
+            const confirmacion = req.query.confirmacion as string || undefined;
             const alas = await AlaService.getAlaFromDb();
+            if(error){
+                res.render("AdmisionViews/listarTodasLasCamas.pug",{
+                    alas: alas,
+                    error: error
+                })
+                return
+            }
+            if(confirmacion){
+                res.render("AdmisionViews/listarTodasLasCamas.pug",{
+                    alas: alas,
+                    success: confirmacion
+                })
+                return
+            }
             res.render("AdmisionViews/listarTodasLasCamas.pug",{
                 alas: alas
             })
@@ -1371,6 +1387,37 @@ export class AdmisionController{
         } catch (error) {
             
             res.status(500).json(error as string);
+        }
+    }
+    public marcarCamaComoDisponible = async(req:Request, res:Response) => {
+        try {
+            const idCama = (req.query.id_Cama)? Number(req.query.id_Cama): undefined;
+            if(!idCama){
+                res.redirect(`/admision/camas?error=${encodeURI("No se proporciono un id de cama")}`)
+                return
+            }
+            const [error, cama] = await CamaService.buscarCama(idCama);
+            if(error){
+                HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoDisponible","AdmisionController","Line 1375",error as string)
+                res.redirect(`/admision/camas?error=${encodeURI(`${error}`)}`)
+                return
+            }
+            if(cama.disponible){
+                res.redirect(`/admision/camas?error=${encodeURI(`Cama: ${cama.dataValues.id_Cama} ya esta disponible`)}`)
+                return
+            }
+            if(cama.admision){
+                res.redirect(`/admision/camas?error=${encodeURI(`Cama: ${cama.dataValues.id_Cama} esta ocupada`)}`)
+                return
+            }
+            cama.disponible = true;
+            await cama.save();
+            res.redirect(`/admision/camas?confirmacion=${encodeURI(`Cama: ${cama.dataValues.id_Cama} marcada como disponible`)}`)
+            return 
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("marcarCamaComoDisponible","AdmisionController","Line 1375",error as string)
+            res.redirect(`/admision/camas?error=${encodeURI(`${error}`)}`)
+            return
         }
     }
     //////////////////////////////!

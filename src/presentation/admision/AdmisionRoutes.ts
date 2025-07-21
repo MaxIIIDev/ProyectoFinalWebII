@@ -85,6 +85,8 @@ export class AdmisionRoutes{
         router.post("/crear/turno", controller.crearTurno)//*TESTEADO
         router.post("/actualizar/turno", controller.actualizarTurno)//*TESTEADO
         router.get("/delete/turno", controller.eliminarTurno)//*TESTEADO
+
+        router.get("/marcar/disponible", controller.marcarCamaComoDisponible)
         return router
     }
 

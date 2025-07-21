@@ -141,6 +141,7 @@ html(lang="en")
                                     th Ala
                                     th Numero Cama
                                     th Disponible
+                                    th Acciones
                             tbody
                                 
 
@@ -150,14 +151,12 @@ html(lang="en")
                 const filtroAla = document.getElementById('filtroAla').value;
                 const filtroDisponible = document.getElementById('filtroDisponible').value;
                 const tbody = document.querySelector('tbody');
-                tbody.innerHTML = ''; // Limpiar el contenido actual de la tabla
+                tbody.innerHTML = ''; 
                 if(filtroAla !== ""){
 
                     const resultados = await fetch(`/admision/get/habitacion/by/ala?ala=${filtroAla}&disponible=${filtroDisponible}`)
                     if(resultados.ok){
                         const resultadosParseados = await resultados.json();
-                        console.log(resultadosParseados);
-
                         if(resultadosParseados.length > 0 ){
                             for(let resultado of resultadosParseados) {
                                 const tr = document.createElement('tr');
@@ -167,14 +166,16 @@ html(lang="en")
                                     <td>${resultado.nombre_Ala}</td>
                                     <td>${resultado.numero_cama}</td>
                                     <td>${resultado.disponible ? 'Sí' : 'No'}</td>
+                                    ${resultado.nombre == undefined && resultado.disponible == false ? `<td>
+                                        <button class="btn btn-primary" onclick="marcarComoDisponible(${resultado.numero_cama})">Marcar como disponible</button>
+                                    </td>` : ""}
                                 `;
                                 tbody.appendChild(tr);
                             }
                         }
                     }
-                    
-                    
                 }
-
-
+            }
+            function marcarComoDisponible(id_Cama){
+                window.location.href = `/admision/marcar/disponible?id_Cama=${id_Cama}`
             }
