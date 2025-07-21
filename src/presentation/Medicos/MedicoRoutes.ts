@@ -53,7 +53,8 @@ export class MedicoRoutes{
         router.get("/view/seccion/final/altas", ...middlewares,controller.VistaSeccionDarAltas)
         router.get("/view/historial/altas", ...middlewares, MiddlewareFor.verificarPacienteNoDesconocido("/medicos/view/seccion/final/altas","warning","Un paciente desconocido no tiene historial"),controller.VistaHistorialAltas)
         router.get("/view/alta/final", ...middlewares,controller.VistaDarAlta)
-        
+        router.get("/view/alta/final/datos", ...middlewares,controller.VistaDarAltaFinal)
+        router.get("/imprimir/alta", ...middlewares,controller.imprimirAlta)
         
         router.post("/crear/tratamiento/prescrito", ...middlewares,controller.crearTratamientoPrescrito)
         router.post("/actualizar/tratamiento/prescrito", ...middlewares,controller.actualizarTratamientoPrescrito)
@@ -73,6 +74,7 @@ export class MedicoRoutes{
         router.get("/eliminar/receta", ...middlewares,controller.eliminarReceta)
         router.post("/actualizar/recomendacion/seguimiento", ...middlewares,controller.actualizarRecomendacionDeSeguimiento)
         router.post("/dar/alta", ...middlewares,controller.darAlta)
+
         return router;
     }
 }

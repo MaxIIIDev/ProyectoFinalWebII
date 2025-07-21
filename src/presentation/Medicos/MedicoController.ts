@@ -28,6 +28,9 @@ import { createRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/
 import { RecetasMedicamentosService } from "../services/Medico/RecetasMedicamentosService";
 import { updateRecetaMedicamentoDto } from "../../domain/Dtos/pacientes/Recetas/RecetaMedicamentos/updateRecetaMedicamentoDto";
 import { Admision } from "../../data/models/Admision";
+import { PDFService } from "../services/PDFService";
+import { MedicoService } from "../services/MedicoService";
+import { Especialidades } from "../../data/models/Especialidades";
 
 
 export class MedicoController {
@@ -1483,6 +1486,28 @@ export class MedicoController {
             return  
         }
     }
+    public VistaDarAltaFinal = async(req:Request, res:Response) => {
+        try {
+            
+            const admision = await AdmisionService.buscarAdmisionPorId(req.session.admision.id_Admision);
+            if(admision[0]){
+                res.redirect(`/medicos/view/seccion/alta/paciente?error=${admision[0]}`)
+                return
+            }
+            const id_Especialidad = await Especialidades.findOne({where: {id_Especialidad: req.session.usuarioLogueado.id_Especialidad}})
+            res.render("MedicoViews/Alta/AltaFinal/AltaFinal.pug", {
+                fecha: new Date().toLocaleDateString(),
+                recomendacion_seguimiento_medico: admision[1].dataValues.recomendacion_seguimiento_medico,
+                Especialidades: id_Especialidad.dataValues.nombre,
+                medico: req.session.usuarioLogueado,
+            })
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("VistaDarAltaFinal","MedicoController","1462",error as string)
+            res.redirect(`/medicos/view/seccion/alta/paciente&error=${error}`)       
+            return  
+        }
+    }
     //////////////////////////todo://////////////
     //////////////////////////todo:Controladores/
     //////////////////////////todo://////////////
@@ -2004,10 +2029,95 @@ export class MedicoController {
                 res.redirect(`/medicos/view/seccion/final/altas?error=${encodeURIComponent(errorAlta as string)}`)
                 return
             }
-            res.redirect(`/medicos/lista/admisiones?confirmacion=${encodeURIComponent("Paciente dado de alta correctamente")}`)
+            res.redirect("/medicos/view/alta/final/datos")
             return
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("darAlta","MedicoController","1955",error as string)
+            res.redirect(`/medicos/view/seccion/final/altas&error=${error}`)       
+            return  
+        }
+    }
+    public imprimirAlta = async (req:Request, res:Response) => {
+        try {
+            const admision = await AdmisionService.buscarAdmisionPorId(req.session.admision.id_Admision);
+            const especiliad = await Especialidades.findOne({where: {id_Especialidad: req.session.usuarioLogueado.id_Especialidad}})
+            PDFService.generarPDF(res, `Alta de paciente: ${req.session.paciente.nombre} ${req.session.paciente.apellido}`, (document) => {
+                // Configuración inicial de estilo
+                document.font('Helvetica');
+                
+                // Encabezado
+                document.fillColor('#2c3e50') // Azul oscuro
+                       .fontSize(20)
+                       .text('DOCUMENTO DE ALTA MÉDICA', { 
+                           align: 'center',
+                           underline: true 
+                       })
+                       .moveDown(1.5);
+            
+                document.strokeColor('#3498db') // Azul
+                       .lineWidth(2)
+                       .moveTo(50, document.y)
+                       .lineTo(550, document.y)
+                       .stroke()
+                       .moveDown(1);
+            
+                // Fecha con estilo mejorado
+                document.fillColor('#2c3e50')
+                       .fontSize(14)
+                       .text('FECHA DE ALTA:', { continued: true })
+                       .fillColor('#7f8c8d') // Gris
+                       .text(` ${new Date().toLocaleDateString()}`);
+                document.moveDown(0.8);
+            
+                // Título principal
+                document.fillColor('#2980b9') // Azul
+                       .fontSize(18)
+                       .text(`ALTA DE PACIENTE: ${req.session.paciente.nombre} ${req.session.paciente.apellido}`, { 
+                           align: 'center',
+                           underline: false 
+                       });
+                document.moveDown(1.5);
+            
+                // Sección de recomendación
+                document.fillColor('#2c3e50')
+                       .fontSize(14)
+                       .text('RECOMENDACIÓN DE SEGUIMIENTO:', { continued: true })
+                       .fillColor('#34495e') // Gris oscuro
+                       .font('Helvetica-Bold')
+                       .text(` ${(admision[1].dataValues.recomendacion_seguimiento_medico != undefined)  ? admision[1].dataValues.recomendacion_seguimiento_medico : "No se proporciono recomendacion de seguimiento medico"}`);
+                document.moveDown(1);
+            
+                // Datos del médico
+                document.fillColor('#2c3e50')
+                       .fontSize(14)
+                       .text('MÉDICO TRATANTE:', { continued: true })
+                       .fillColor('#34495e')
+                       .text(` ${req.session.usuarioLogueado.nombre} ${req.session.usuarioLogueado.apellido}`);
+                
+                document.fillColor('#2c3e50')
+                       .fontSize(14)
+                       .text('ESPECIALIDAD:', { continued: true })
+                       .fillColor('#34495e')
+                       .text(` ${especiliad.dataValues.nombre}`);
+                document.moveDown(1.5);
+            
+                // Mensaje final
+                document.fillColor('#27ae60') // Verde
+                       .fontSize(14)
+                       .font('Helvetica-Bold')
+                       .text('PACIENTE DADO DE ALTA CORRECTAMENTE', { align: 'center' });
+            
+                // Pie de página
+                document.moveDown(3);
+                document.fillColor('#7f8c8d')
+                       .fontSize(10)
+                       .text('Documento generado automáticamente - © Institución Médica', { 
+                           align: 'center'
+                       });
+            });
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("imprimirAlta","MedicoController","2032",error as string)
             res.redirect(`/medicos/view/seccion/final/altas&error=${error}`)       
             return  
         }

@@ -1,0 +1,108 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Informacion de alta
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css", rel="stylesheet")
+    link(href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css", rel="stylesheet")
+    
+    style.
+      .principal-panel {
+        background: linear-gradient(135deg, #05f479 0%, #0837b0 100%);
+        min-height: 100vh;
+      }
+      .habitacion-card {
+        width: 100%;
+        max-width: 450px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .habitacion-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      }
+      .info-box {
+        border: 2px solid rgba(57, 57, 57, 0);
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+      }
+      .home-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: white;
+        color:rgb(2, 0, 0);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+      }
+      .home-btn:hover {
+          transform: scale(1.1);
+          background-color: #f8f9fa;
+      }
+      .btn-print {
+        background-color: #0d6efd;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s;
+      }
+      .btn-print:hover {
+        background-color: #0b5ed7;
+        transform: translateY(-2px);
+      }
+
+  body
+    
+    .principal-panel.d-flex.align-items-center.justify-content-center.p-4
+      a.home-btn(href="/medicos/lista/admisiones") 
+        i.bi.bi-house-door-fill
+      .habitacion-card.bg-white.text-center.p-4
+        h1.text-primary.mb-4
+          i.bi.bi-building.me-2
+          | Información de Alta
+        
+        .d-flex.flex-column.gap-3.mb-4
+          .info-box.p-3
+            h4.text-muted Fecha
+            if(fecha != undefined)
+                h2.fw-bold #{fecha}
+            else 
+                h2.fw-bold 
+          .info-box.p-3
+            h4.text-muted Recomendacion de seguimiento medico
+            if(recomendacion_seguimiento_medico != undefined)
+                h2.fw-bold #{recomendacion_seguimiento_medico}
+            else 
+                h2.fw-bold No se proporciono recomendacion de seguimiento medico
+          .info-box.p-3
+            h4.text-muted Medico
+            h2.fw-bold #{medico.nombre} #{medico.apellido} - Especialidad: #{Especialidades}
+        
+        //- Botón de imprimir
+        button.btn.btn-print.mt-3(onclick="imprimirDocumento()")
+          i.bi.bi-printer-fill.me-2
+          | Imprimir Documento
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+    
+    //- Script para manejar la impresión
+    script.
+      function imprimirDocumento() {
+        // Abre el PDF en una nueva pestaña
+        const pdfUrl = '/medicos/imprimir/alta'; // Reemplaza con la ruta real a tu PDF
+        window.open(pdfUrl, '_blank');
+        
+      }
