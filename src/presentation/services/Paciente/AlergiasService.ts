@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { nombre_Alergia } from "../../../data/models/Nombre_Alergia";
 import { Paciente_Alergias } from "../../../data/models/Paciente_Alergias";
 import { paciente_tratamientos } from "../../../data/models/paciente_tratamientos";
@@ -89,6 +90,37 @@ export class AlergiaService {
             return [error, undefined]
         }
     }
+    public static async validarAlergiaNoAsignada(_createAlergiaDto?:createAlergiaDto, _updateAlergiaDto?:updateAlergiaDto){
+        try {
+            if(_createAlergiaDto){
+                const alergia = await Paciente_Alergias.findOne({
+                    where: {
+                        id_paciente: _createAlergiaDto.id_paciente,
+                        id_nombre_alergia: _createAlergiaDto.id_nombre_alergia,
+                    }
+                })
+                if(alergia){
+                    return ["El paciente ya tiene registrada dicha alergia", false]
+                }
+            }
+            if(_updateAlergiaDto){
+                const alergia = await Paciente_Alergias.findOne({
+                    where: {
+                        id_paciente: _updateAlergiaDto.id_paciente,
+                        id_nombre_alergia: _updateAlergiaDto.id_nombre_alergia,
+                        id_Alergia: {[Op.ne]: _updateAlergiaDto.id_Alergia}
+                    }
+                })
+                if(alergia){
+                    return ["El paciente ya tiene registrada dicha alergia", false]
+                }
+            }
+            return [undefined, true]
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("validarAlergiaNoAsignada","AlergiaService","112",error as string)
+            return [error as string, false]
+        }
+    }
     public static async registrarAlergia(_createAlergiaDto: createAlergiaDto): Promise<[string?,Paciente_Alergias?]> {//todo: Falta testear
         try {
             if((await this.buscarAlergiaPorPaciente(_createAlergiaDto.id_paciente,_createAlergiaDto.id_nombre_alergia).then(res => res[1]))){
@@ -109,6 +141,9 @@ export class AlergiaService {
         try {//todo: Falta testear
             if(!(await this.buscarAlergiaPorId(_updateAlergiaDto.id_Alergia).then(res => res[1]))){
                 return ["No se encontro una alergia registrada para dicho paciente", undefined]
+            }
+            if(!(await this.validarAlergiaNoAsignada(null,_updateAlergiaDto).then(res => res[1]))){
+                return ["El paciente ya tiene registrada dicha alergia",undefined]
             }
             const alergiaActualizada = await Paciente_Alergias.update(updateAlergiaDto.toObject(_updateAlergiaDto), {
                 where: {

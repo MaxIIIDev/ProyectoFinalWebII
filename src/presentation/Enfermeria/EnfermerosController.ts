@@ -1582,6 +1582,7 @@ export class EnfermerosController{
                     paciente: req.session.paciente,
                     tratamientos: tratamientos[1],
                     fechaAdmision: req.session.admision.fecha_De_Admision,
+                    id_enfermero: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
@@ -1591,6 +1592,7 @@ export class EnfermerosController{
                     paciente: req.session.paciente,
                     tratamientos: tratamientos[1],
                     fechaAdmision: req.session.admision.fecha_De_Admision,
+                    id_enfermero: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
@@ -1600,6 +1602,7 @@ export class EnfermerosController{
                     paciente: req.session.paciente,
                     tratamientos: tratamientos[1],
                     fechaAdmision: req.session.admision.fecha_De_Admision,
+                    id_enfermero: req.session.usuarioLogueado.id_Personal
                 })
                 return;
             }
@@ -1607,6 +1610,7 @@ export class EnfermerosController{
                 fechaAdmision: req.session.admision.fecha_De_Admision,
                 paciente: req.session.paciente,
                 tratamientos: tratamientos[1],
+                id_enfermero: req.session.usuarioLogueado.id_Personal
             })
             return;     
         } catch (error) {
@@ -1844,11 +1848,11 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/crear/alergia?error=${encodeURIComponent(alergiaCreada[0])}`);
                 return;
             }
-            res.redirect(`/enfermeria/view/crear/alergia?confirmacion=${encodeURIComponent("Alergia creada correctamente")}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?confirmacion=${encodeURIComponent("Alergia creada correctamente")}`);
             return;
         } catch (error) {
             HelperForCreateErrors.errorInMethodXClassXLineXErrorX("EnfermerosController", "crearAlergia", "80", error as string);
-            res.redirect(`/enfermeria/view/historial/paciente?error=${encodeURIComponent(error as string)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?error=${encodeURIComponent(error as string)}`);
             return;
         }
     }
@@ -1876,7 +1880,7 @@ export class EnfermerosController{
                 res.redirect(`/enfermeria/view/actualizar/alergia?error=${encodeURIComponent(alergiaActualizada[0])}&id_Alergia=${encodeURIComponent(updateAlergiaDtoReady.id_Alergia)}`);
                 return;
             }
-            res.redirect(`/enfermeria/view/actualizar/alergia?confirmacion=${encodeURIComponent("Alergia actualizada correctamente")}&id_Alergia=${encodeURIComponent(updateAlergiaDtoReady.id_Alergia)}`);
+            res.redirect(`/enfermeria/view/alergias/paciente?confirmacion=${encodeURIComponent("Alergia actualizada correctamente")}&id_Alergia=${encodeURIComponent(updateAlergiaDtoReady.id_Alergia)}`);
             return;
 
         } catch (error) {

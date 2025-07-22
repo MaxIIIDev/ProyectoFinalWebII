@@ -244,7 +244,7 @@ export class AdmisionService {
                 id_Admision: id_Admision
             }})
             if(!admisionEncontrada) return ["No se encontro la admision"]
-            const admisionBaja = await Admision.update({estado: "Inactivo"},{where:{id_Admision: id_Admision}})
+            const admisionBaja = await Admision.update({estado: "Baja"},{where:{id_Admision: id_Admision}})
             if(!admisionBaja) return ["No se pudo dar de baja la admision"]
             const seDioBajaLogica = await CamaService.marcarCamaComoLibre(admisionEncontrada.dataValues.id_Cama)
             if(!seDioBajaLogica[1]) return ["No se pudo marcar libre la cama",seDioBajaLogica[1]]

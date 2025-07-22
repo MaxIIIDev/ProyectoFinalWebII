@@ -1406,7 +1406,9 @@ export class AdmisionController{
                 res.redirect(`/admision/camas?error=${encodeURI(`Cama: ${cama.dataValues.id_Cama} ya esta disponible`)}`)
                 return
             }
-            if(cama.admision){
+            console.log(cama.admision);
+            
+            if(cama.admision && (cama.admision.dataValues.estado != "Baja" && cama.admision.dataValues.estado != "Alta")){
                 res.redirect(`/admision/camas?error=${encodeURI(`Cama: ${cama.dataValues.id_Cama} esta ocupada`)}`)
                 return
             }

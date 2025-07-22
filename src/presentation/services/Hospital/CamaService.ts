@@ -30,7 +30,7 @@ export class CamaService{
                     {
                         model: Admision,
                         as: "admision",
-                        attributes: ["id_Admision"]
+                        attributes: ["id_Admision","estado"]
                     }
                 ],
                 where:{id_Cama: id_Cama}});
