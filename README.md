@@ -144,6 +144,8 @@
     ..METHOD: POST
     ...DESCRIPCION: La ruta recibe por body un atributo id_Admision donde el mismo es utilizado para dar de ALTA un registro en la base de datos. Una vez concluido dicho procesos el controlador envia una confirmacion mediante un archivo JSON.
 
+
+
 # Descripcion de dependencias
     .bootstrap: Se utiliza para dar estilos a la pagina web.
     .bootstrap-icons: Es una biblioteca de iconos para bootstrap, se utiliza para colocar iconos en las vistas pug.
