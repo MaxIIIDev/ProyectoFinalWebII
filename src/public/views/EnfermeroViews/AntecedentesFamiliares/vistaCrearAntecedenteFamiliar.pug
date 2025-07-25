@@ -127,7 +127,7 @@ html(lang="es")
                         
                         .mb-3
                             label.form-label(for="nombre_Enfermedad") Nombre de la Enfermedad
-                            input#nombre_Enfermedad.form-control(type="text" minlength="3"  name="nombre_Enfermedad" required)
+                            input#nombre_Enfermedad.form-control(type="text" minlength="3"  name="nombre_Enfermedad" pattern="^\D*$" required)
                             .invalid-feedback Por favor ingrese el nombre de la enfermedad
                         
                         .mb-3

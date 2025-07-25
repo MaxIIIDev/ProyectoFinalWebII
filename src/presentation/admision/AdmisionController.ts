@@ -842,10 +842,27 @@ export class AdmisionController{
                 return
             }
             const id_turno = Number(req.query.id_turno)
-            console.log(id_turno);
             if(!id_turno){
                 res.redirect(`/admision/?error=${encodeURIComponent("No se proporciono el id_turno")}`)
                 return
+            }
+            console.log(id_turno);
+            const turno = await TurnosService.getTurnoById(id_turno)
+            if(!turno || turno[0]){
+                res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent("No se encontro el turno")}`)
+                return
+            }
+            if(turno[1].dataValues.fecha){
+                const turnoFecha = new Date(turno[1].dataValues.fecha).toISOString().split("T")[0]
+                const fechaActual = new Date().toISOString().split("T")[0]
+                if(turnoFecha < fechaActual){
+                    res.redirect(`/admision/get/turnos/paciente?error=${encodeURIComponent("El turno se ha vencido, debe ser eliminado")}`)
+                    return
+                }
+                if(turnoFecha != fechaActual){
+                    res.redirect(`/admision/get/turnos/paciente?warning=${encodeURIComponent("El turno no es del dia de hoy, no puede ser admitido")}`)
+                    return
+                }
             }
             const [ error, habitacionesEncontradas ] = await HabitacionService.getHabitacionesDisponibles(req.session.paciente.genero, "Ala Este")
             if(error){
@@ -886,6 +903,18 @@ export class AdmisionController{
                 id_Paciente: req.session.paciente.id_Paciente,
                 id_Cama: req.body.id_Cama
             });
+            const turnoEncontrado = await TurnosService.getTurnoById(Number(req.body.id_turno))
+            
+            const fechaActual = new Date().toISOString().split("T")[0]
+            const fechaTurno = new Date(turnoEncontrado[1].dataValues.fecha).toISOString().split("T")[0]
+            if(fechaTurno < fechaActual){
+                res.redirect(`/admision/get/turnos/paciente?id_turno=${req.body.id_turno}&warning=${encodeURIComponent("El turno esta vencido, debe eliminarlo")}`)
+                return
+            }
+            if(fechaTurno != fechaActual){
+                res.redirect(`/admision/get/turnos/paciente?id_turno=${req.body.id_turno}&warning=${encodeURIComponent("El turno no es del dia de hoy, no puede ser admitido")}`)
+                return
+            }
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearAdmisionPorTurno","AdmisionController", "Line 790", error);
                 res.redirect(`/admision/crear/admision?error=${encodeURIComponent(error as string)}`)
@@ -1506,7 +1535,7 @@ export class AdmisionController{
         try {
             const errorQuery = req.query.error || undefined;
             const confirmacion = req.query.confirmacion || undefined;
-
+            const warning = req.query.warning || undefined;
             if(!req.session.paciente){
                 res.redirect(`/admision/?error=${encodeURI("Se cerro la sesion del paciente")}`);
                 return
@@ -1571,6 +1600,13 @@ export class AdmisionController{
                 res.render("AdmisionViews/turnos.pug", {
                     turnos: respuestaPorArreglo,
                     error: errorQuery
+                })
+                return
+            }
+            if(warning){
+                res.render("AdmisionViews/turnos.pug", {
+                    turnos: respuestaPorArreglo,
+                    warning: warning
                 })
                 return
             }
