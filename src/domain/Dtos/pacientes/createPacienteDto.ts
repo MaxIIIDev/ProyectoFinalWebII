@@ -47,10 +47,16 @@ export class CreatePacienteDto{
         const { nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo, id_seguro_medico } = object;
 
         if(!nombre || nombre.trim().length < 2) return ["Se requiere el nombre"]
+        if(/\d/.test(nombre)) return ["El nombre no puede contener numeros"]
         if( !apellido || apellido.trim().length < 2) return ["Se requiere el apellido"]
+        if(/\d/.test(apellido)) return ["El apellido no puede contener numeros"]
         if(!dni) return ["Se requiere el dni"]
+        if(/\D/.test(dni)) return ["El dni no puede contener letras"]
         if(!fecha_nac) ["Se requiere la fecha de nacimiento"]       
         if(!genero) return ["Se requiere el genero"]
+        if(/\d/.test(genero)) return ["El genero no puede contener numeros"]
+        if(telefono && /\D/.test(telefono)) return ["El telefono no puede contener letras"]
+        if(telefono_De_Emergencia && /\D/.test(telefono_De_Emergencia)) return ["El telefono de emergencia no puede contener letras"]
         if(!direccion) return ["Se requiere la direccion"]
         let edadCalculada;
         if(new Date(fecha_nac) > new Date()) return ["La fecha de nacimiento no puede ser mayor a la fecha actual"]

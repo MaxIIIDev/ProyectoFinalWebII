@@ -198,7 +198,7 @@ export class TurnosService {
             if(modo == 0 && turnos != null){ //PARA CREAR
                 if(turnos.length != 0){
                     for(let turno of turnos){
-                        if(turno.dataValues.id_Medico == id_medico){
+                        if(turno.dataValues.id_medico == id_medico){
                             validado = false
                         }
                     }

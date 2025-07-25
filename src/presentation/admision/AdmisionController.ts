@@ -509,7 +509,7 @@ export class AdmisionController{
             if(error){
                 HelperForCreateErrors.errorInMethodXClassXLineXErrorX("crearPaciente","AdmisionController" ,"Line 24", error);
                 
-                throw new Error();
+                throw new Error(error);
             }           
 
             const [ errorCrearPaciente, pacienteCreado ] = await PacienteServices.crearPaciente(createPacienteDto!);
@@ -1551,6 +1551,13 @@ export class AdmisionController{
                     turnos: respuestaPorArreglo,
                     warning: `No se encontraron turnos  para el paciente`,
                     success: confirmacion
+                    })
+                    return
+                }
+                if(errorQuery){
+                    res.render("AdmisionViews/turnos.pug", {
+                        turnos: respuestaPorArreglo,
+                        error: errorQuery
                     })
                     return
                 }

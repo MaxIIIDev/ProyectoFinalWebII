@@ -41,6 +41,13 @@ export class UpdatePacienteDto{
             const { id_Paciente, nombre, apellido, dni, fecha_nac, edad , peso , genero, telefono, telefono_De_Emergencia, direccion, id_tipo_sanguineo } = object;
     
             if(!id_Paciente) return ["Se requiere el id del paciente"]
+            if(nombre && /\d/.test(nombre)) return ["El nombre no puede contener numeros"]
+            if(apellido && /\d/.test(apellido)) return ["El apellido no puede contener numeros"]
+            if(genero && /\d/.test(genero)) return ["El genero no puede contener numeros"]
+            if(dni && /\D/.test(dni)) return ["El dni no puede contener letras"]
+            if(peso && /\D/.test(peso)) return ["El peso no puede contener letras"]
+            if(telefono && /\D/.test(telefono)) return ["El telefono no puede contener letras"]
+            if(telefono_De_Emergencia && /\D/.test(telefono_De_Emergencia)) return ["El telefono de emergencia no puede contener letras"]
             const dniParseada = (dni)? parseInt(dni):dni;
             let edadCalculada = edad
             console.log(fecha_nac);

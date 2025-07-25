@@ -72,19 +72,19 @@ export class AdmisionRoutes{
 
         //TURNOS
         //!EN DESARROLLO
-        router.get("/view/admitir/por/turno", controller.admitirPorTurnoView)
-        router.post("/admitir/por/turno", controller.crearAdmisionPorTurno)
+        router.get("/view/admitir/por/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.admitirPorTurnoView)
+        router.post("/admitir/por/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.crearAdmisionPorTurno)
 
         router.get("/get/turnos", controller.getTurnosView)//*TESTEADO ES LA VISTA  
-        router.get("/get/turnos/paciente", controller.vistaPrincipalDeTurnosDelPaciente)//*TESTEADO VISTA TURNOS PACIENTE
-        router.get("/create/turno/paciente", controller.createTurnoView)//*Testeado vista crear turno, falta agregar por api los horarios filtrados
-        router.get("/update/turno/paciente", controller.updateTurnoView)
+        router.get("/get/turnos/paciente", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.vistaPrincipalDeTurnosDelPaciente)//*TESTEADO VISTA TURNOS PACIENTE
+        router.get("/create/turno/paciente", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.createTurnoView)//*Testeado vista crear turno, falta agregar por api los horarios filtrados
+        router.get("/update/turno/paciente", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.updateTurnoView)
         
         router.get("/get/all/turnos/by/date", controller.getAllTurnosInDay) //*TESTEADO, API
         router.get("/get/turno/for/patient", controller.getTurnosByPaciente) //todo:Deberia funcionar, no testeado
-        router.post("/crear/turno", controller.crearTurno)//*TESTEADO
-        router.post("/actualizar/turno", controller.actualizarTurno)//*TESTEADO
-        router.get("/delete/turno", controller.eliminarTurno)//*TESTEADO
+        router.post("/crear/turno",MiddlewareFor.PacientNNDontHaveAccessToTurnos, controller.crearTurno)//*TESTEADO
+        router.post("/actualizar/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.actualizarTurno)//*TESTEADO
+        router.get("/delete/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.eliminarTurno)//*TESTEADO
 
         router.get("/marcar/disponible", controller.marcarCamaComoDisponible)
         return router

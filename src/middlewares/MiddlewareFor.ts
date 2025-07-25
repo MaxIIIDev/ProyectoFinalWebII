@@ -108,4 +108,17 @@ export class MiddlewareFor {
             return
         }
     }
+    static PacientNNDontHaveAccessToTurnos  = (req:Request,res:Response, next:NextFunction) => {
+        try {
+            if(!req.session.paciente.dni || req.session.paciente.dni < 0 || req.session.paciente.dni === undefined || req.session.paciente.dni === null){
+                res.redirect(`/admision/principal/paciente?error=${encodeURIComponent("Un paciente anonimo no puede sacar turnos")}`);
+                return
+            }
+            next();
+            return
+        } catch (error) {
+            HelperForCreateErrors.errorInMethodXClassXLineXErrorX("PacientNNDontHaveAccessToTurnos","MiddlewareFor","115",error as string)
+            res.redirect(`/admision/principal/paciente?error=${encodeURIComponent(error as string)}`);   
+        }
+    }
 }
