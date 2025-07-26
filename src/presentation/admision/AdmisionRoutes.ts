@@ -81,7 +81,7 @@ export class AdmisionRoutes{
         router.get("/update/turno/paciente", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.updateTurnoView)
         
         router.get("/get/all/turnos/by/date", controller.getAllTurnosInDay) //*TESTEADO, API
-        router.get("/get/turno/for/patient", controller.getTurnosByPaciente) //todo:Deberia funcionar, no testeado
+        router.get("/get/turno/for/patient", controller.getTurnosByPaciente) //! NO implementado
         router.post("/crear/turno",MiddlewareFor.PacientNNDontHaveAccessToTurnos, controller.crearTurno)//*TESTEADO
         router.post("/actualizar/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.actualizarTurno)//*TESTEADO
         router.get("/delete/turno", MiddlewareFor.PacientNNDontHaveAccessToTurnos,controller.eliminarTurno)//*TESTEADO

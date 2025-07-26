@@ -1672,7 +1672,7 @@ export class AdmisionController{
         }
     }
 
-    public getTurnosByPaciente = async(req:Request, res:Response) => { //todo: Testear y completar los redireccionamientos y vistas
+    public getTurnosByPaciente = async(req:Request, res:Response) => { //! NO IMPLEMENTADO
         try {
             const estado = req.query.estado ? (req.query.estado === "true" ? true : false) : true; //por defecto trae los turnos activos
             if(!req.session.paciente){

@@ -20,20 +20,31 @@
 
 # FUNCIONALIDADES DE LA APLIACION: 
 # 5- RUTAS QUE PUEDE ACCEDER Y SU FUNCION.
+# 5.1 - RUTAS DE ADMISION
     .RUTA:"/admision/" 
     ..METHOD:GET 
     ...DESCRIPCION -> Dicha ruta renderiza la vista principal de admisiones.
     
+    .RUTA: "/admision/logout" 
+    ..METHOD:GET 
+    ...DESCRIPCION -> Dicha ruta cierra la sesion del usuario y redirecciona a la ruta "/auth/login".
+
     .RUTA: "/admision/emergencia" 
     ..METHOD:GET 
     ...Descripcion: Dicha ruta renderiza la vista de admisiones de emergencia.
+    
     .RUTA : "/admision/emergencia/habitacion 
     ..METHOD: POST 
     ...DESCRIPCION -> Dicha ruta recibe por body el genero,   id_motivo_de_Internacion,id_cama y se encarga crear un paciente "NN", lo registra como paciente en base de datos, y luego genera la admision en    base de datos del mismo y al finalizar renderiza la vista "habitacion. pug" para mostrar los datos del registro.
     
+
     .RUTA: "/admision/principal/paciente"
     ..METHOD: GET
     ...DESCRIPCION: Dicha ruta  se encarga de renderizar la vista principal del panel de pacientes "principal.pug", donde la misma valida que exista un req.session del paciente para el ingreso.
+
+    .RUTA: "/admision/camas"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de camas tanto disponibles como no disponibles filtrando por ala.
 
     .RUTA: "/admision/find"
     ..METHOD: GET,
@@ -144,6 +155,52 @@
     ..METHOD: POST
     ...DESCRIPCION: La ruta recibe por body un atributo id_Admision donde el mismo es utilizado para dar de ALTA un registro en la base de datos. Una vez concluido dicho procesos el controlador envia una confirmacion mediante un archivo JSON.
 
+    .RUTA: "/admision/view/admitir/por/turno
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para admitir un paciente por turno.
+
+    .RUTA: "/admision/admitir/por/turno
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos necesarios para poder realizar el registro de una admision en base de datos. Luego de un proceso de validaciones el controlador realiza el registro en base de datos y una vez finalizado el proceso redirecciona a la ruta "/admision/principal/paciente".
+
+    .RUTA: "/admision/get/turnos
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para listar todos los turnos.
+
+    .RUTA: "/admision/get/turnos/paciente
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para listar todos los turnos del paciente.
+
+    .RUTA: "/admision/create/turno/paciente
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para crear un turno para el paciente.
+
+    .RUTA: "/admision/update/turno/paciente
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para actualizar un turno para el paciente.
+
+    .RUTA: "/admision/get/all/turnos/by/date
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta retorna una lista de turnos filtrados por fecha mediante formato json.
+
+    .RUTA: "/admision/crear/turno
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos necesarios para poder realizar el registro de un turno en base de datos. Luego de un proceso de validaciones el controlador realiza el registro en base de datos y una vez finalizado el proceso redirecciona a la ruta "/admision/get/turnos/paciente".
+    
+    .RUTA: "/admision/actualizar/turno
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos necesarios para poder realizar la actualizacion de un turno en base de datos. Luego de un proceso de validaciones el controlador realiza la actualizacion en base de datos y una vez finalizado el proceso redirecciona a la ruta "/admision/get/turnos/paciente".
+    
+    .RUTA: "/admision/delete/turno
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_turno y lo utiliza para eliminar un turno en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/admision/get/turnos/paciente".
+
+    .RUTA: "/admision/marcar/disponible
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Cama y lo utiliza para marcar una cama como disponible en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/admision/camas" enviando un mensaje de confirmacion.
+
+# 5.2 - RUTAS DE ENFERMERIA
+# 5.3 - RUTAS DE MEDICOS
 
 
 # Descripcion de dependencias
