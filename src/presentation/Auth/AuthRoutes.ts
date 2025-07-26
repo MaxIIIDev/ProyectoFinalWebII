@@ -12,7 +12,7 @@ export class AuthRoutes{
         
         router.get("/login",controller.viewLogin);
         router.post("/login", controller.Login)
-        router.get("/test", controller.test)
+        //router.get("/test", controller.test)
         
 
         return router

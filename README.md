@@ -200,14 +200,509 @@
     ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Cama y lo utiliza para marcar una cama como disponible en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/admision/camas" enviando un mensaje de confirmacion.
 
 # 5.2 - RUTAS DE ENFERMERIA
+    .RUTA: "/enfermeria/"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista principal de enfermeria.
+
+    .RUTA: "/enfermeria/logout"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta cierra la sesion del usuario y redirecciona a la ruta "/auth/login".
+
+    .RUTA: "/enfermeria/view/lista/admisiones"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de lista de admisiones activas.
+
+    .RUTA: "/enfermeria/view/paciente"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/paciente"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/historial/paciente"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial medico del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/alergias/paciente"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de alergias del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/alergia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear alergia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/alergia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar alergia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/tratamiento/alergia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear tratamiento alergia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/tratamiento/alergia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar tratamiento alergia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/medicacion/actual"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de medicacion actual del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/medicacion/actual"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear medicacion actual del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/editar/medicacion/actual"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de editar medicacion actual del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/antecedentes/familiares"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de antecedentes familiares del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/antecedentes/familiares"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear antecedentes familiares del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/antecedentes/familiares"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar antecedentes familiares del paciente seleccionado.
+
+    .RUTA: "/enfermeria/eliminar/antecedentes/familiares"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Antecedente_Familiar y lo utiliza para eliminar un antecedente familiar en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/antecedentes/familiares" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/view/cirugias"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de cirugias del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/cirugia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear cirugia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/cirugia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar cirugia del paciente seleccionado.
+
+    .RUTA: "/enfermeria/eliminar/cirugia"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Cirugia y lo utiliza para eliminar una cirugia en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/cirugias" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/view/diagnosticos"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de diagnosticos del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/tratamientos/diagnostico"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de tratamientos diagnostico del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/evaluaciones/fisicas"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de evaluaciones fisicas del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/lista/all/evaluacion/fisica"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de lista de todas las evaluaciones fisicas del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/evaluacion/fisica"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear evaluacion fisica del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/evaluacion/fisica"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar evaluacion fisica del paciente seleccionado.
+
+    .RUTA: "/enfermeria/eliminar/evaluacion/fisica"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Evaluacion_Fisica y lo utiliza para eliminar una evaluacion fisica en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/evaluaciones/fisicas" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/view/internacion"
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de internacion del paciente seleccionado.
+
+    .RUTA: "/enfermeria/sintomas/paciente
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de sintomas del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/historial/sintomas/paciente
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de sintomas del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/sintoma
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear sintoma del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/sintoma
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar sintoma del paciente seleccionado.
+
+    .RUTA: "/enfermeria/eliminar/sintoma
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Sintoma y lo utiliza para eliminar un sintoma en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/sintomas/paciente" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/view/establecer/prioridad
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para establecer prioridad del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/plan/premilinar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista para establecer plan preliminar del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/tratamientos/prescritos
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de tratamientos prescritos del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/tratamientos/prescritos/historial
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de tratamientos prescritos del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/crear/tratamiento/prescrito
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear tratamiento prescrito del paciente seleccionado.
+
+    .RUTA: "/enfermeria/view/actualizar/tratamiento/prescrito
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar tratamiento prescrito del paciente seleccionado.
+
+    .RUTA: "/enfermeria/eliminar/tratamiento/prescrito
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Tratamiento_Prescrito y lo utiliza para eliminar un tratamiento prescrito en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/tratamientos/prescritos" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/actualizar/paciente
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del paciente solicitado, posteriormente son validados y si no hay errores son actualizados los datos del paciente en la base de datos. Finalizado el proceso el paciente actualizado es guardado en la session.
+
+    .RUTA: "/enfermeria/crearAlergia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del alergia solicitada, posteriormente son validados y si no hay errores son creados los datos del alergia en la base de datos. Finalizado el proceso el alergia creado es guardado en la session.
+
+    .RUTA: "/enfermeria/actualizarAlergia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del alergia solicitada, posteriormente son validados y si no hay errores son actualizados los datos del alergia en la base de datos. Finalizado el proceso el alergia actualizado es guardado en la session.
+
+    .RUTA: "/enfermeria/eliminarAlergia
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Alergia y lo utiliza para eliminar un alergia en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/alergias/paciente" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/crear/Tratamiento/Para/Alergia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del tratamiento para alergia solicitada, posteriormente son validados y si no hay errores son creados los datos del tratamiento para alergia en la base de datos. 
+
+    .RUTA: "/enfermeria/actualizar/Tratamiento/Para/Alergia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del tratamiento para alergia solicitada, posteriormente son validados y si no hay errores son actualizados los datos del tratamiento para alergia en la base de datos. 
+
+    .RUTA: "/enfermeria/eliminar/tratamiento/alergia
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Tratamiento_Para_Alergia y lo utiliza para eliminar un tratamiento para alergia en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/alergias/paciente" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/crear/medicacion/actual
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de la medicacion actual solicitada, posteriormente son validados y si no hay errores son creados los datos de la medicacion actual en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/medicacion/actual
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de la medicacion actual solicitada, posteriormente son validados y si no hay errores son actualizados los datos de la medicacion actual en la base de datos.
+
+    .RUTA: "/enfermeria/eliminar/medicacion/actual
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Medicacion_Actual y lo utiliza para eliminar una medicacion actual en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/enfermeria/view/medicacion/actual" enviando un mensaje de confirmacion.
+
+    .RUTA: "/enfermeria/crear/antecedentes/familiares
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de los antecedentes familiares solicitada, posteriormente son validados y si no hay errores son creados los datos de los antecedentes familiares en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/antecedentes/familiares
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de los antecedentes familiares solicitada, posteriormente son validados y si no hay errores son actualizados los datos de los antecedentes familiares en la base de datos.
+
+    .RUTA: "/enfermeria/crear/cirugia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de la cirugia solicitada, posteriormente son validados y si no hay errores son creados los datos de la cirugia en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/cirugia
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de la cirugia solicitada, posteriormente son validados y si no hay errores son actualizados los datos de la cirugia en la base de datos.
+
+    .RUTA: "/enfermeria/crear/evaluacion/fisica
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de la evaluacion fisica solicitada, posteriormente son validados y si no hay errores son creados los datos de la evaluacion fisica en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/evaluacion/fisica
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de la evaluacion fisica solicitada, posteriormente son validados y si no hay errores son actualizados los datos de la evaluacion fisica en la base de datos.
+
+    .RUTA: "/enfermeria/crear/sintoma
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del sintoma solicitado, posteriormente son validados y si no hay errores son creados los datos del sintoma en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/sintoma
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del sintoma solicitado, posteriormente son validados y si no hay errores son actualizados los datos del sintoma en la base de datos.
+
+   
+    .RUTA: "/enfermeria/establecer/prioridad
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a establecer la prioridad solicitada, posteriormente son validados y si no hay errores se establece la prioridad en la base de datos.
+
+    .RUTA: "/enfermeria/crear/tratamiento/prescritos
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del tratamiento prescrito solicitado, posteriormente son validados y si no hay errores son creados los datos del tratamiento prescrito en la base de datos.
+
+    .RUTA: "/enfermeria/actualizar/tratamiento/prescritos
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del tratamiento prescrito solicitado, posteriormente son validados y si no hay errores son actualizados los datos del tratamiento prescrito en la base de datos.
+
 # 5.3 - RUTAS DE MEDICOS
 
+    .RUTA: "/medicos
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de inicio del medico.
 
-# Descripcion de dependencias
+    .RUTA: "/medicos/lista/admisiones
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de lista de admisiones del medico.
+
+    .RUTA: "/medicos/view/paciente/seleccionado
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de paciente seleccionado.
+
+    .RUTA: "/medicos/view/diagnosticos
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de diagnosticos del medico.
+
+    .RUTA: "/medicos/view/diagnostico/registrar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de registrar diagnostico del medico.
+
+    .RUTA: "/medicos/view/diagnostico/actualizar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar diagnostico del medico.
+
+    .RUTA: "/medicos/view/pruebas/diagnosticas
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de pruebas diagnosticas del medico.
+
+    .RUTA: "/medicos/view/pruebas/diagnosticas/registrar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de registrar pruebas diagnosticas del medico.
+
+    .RUTA: "/medicos/view/pruebas/diagnosticas/actualizar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar pruebas diagnosticas del medico.
+
+    .RUTA: "/medicos/view/tratamientos/diagnostico
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de tratamientos diagnostico del medico.
+
+    .RUTA: "/medicos/view/tratamientos/diagnostico/registrar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de registrar tratamientos diagnostico del medico.
+
+    .RUTA: "/medicos/view/tratamientos/diagnostico/actualizar
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar tratamientos diagnostico del medico.
+
+    .RUTA: "/medicos/view/historial 
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial del medico.
+
+    .RUTA: "/medicos/view/historial/alergias    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de alergias del medico.
+
+    .RUTA: "/medicos/view/historial/medicamentos/actuales    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de medicamentos actuales del medico.
+
+    .RUTA: "/medicos/view/historial/antecedentes/familiares    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de antecedentes familiares del medico.
+
+    .RUTA: "/medicos/view/historial/cirugias    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de cirugias del paciente.
+
+    .RUTA: "/medicos/view/evaluacion/fisica
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de evaluacion fisica del paciente.
+
+    .RUTA: "/medicos/view/historial/evaluacion/fisica    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de evaluacion fisica del paciente.
+
+    .RUTA: "/medicos/view/tratamientos    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de tratamientos del medico.
+    
+    .RUTA: "/medicos/view/tratamientos/prescritos/historial    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de tratamientos prescritos del paciente.
+
+    .RUTA: "/medicos/view/crear/tratamiento/prescrito    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear tratamiento prescrito del medico.    
+
+    .RUTA: "/medicos/view/actualizar/tratamiento/prescrito    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar tratamiento prescrito del medico.    
+
+    .RUTA: "/medicos/view/eliminar/tratamiento/prescrito    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de eliminar tratamiento prescrito del medico.    
+
+    .RUTA: "/medicos/view/sintomas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de sintomas del medico.
+
+    .RUTA: "/medicos/view/historial/sintomas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de sintomas del paciente.
+
+    .RUTA: "/medicos/view/seccion/alta/paciente    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de seccion de alta del paciente.
+
+    .RUTA: "/medicos/view/lista/recetas/medicas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de lista de recetas medicas del medico.
+
+    .RUTA: "/medicos/view/alta/historial/recetas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de recetas medicas del paciente.
+
+    .RUTA: "/medicos/view/alta/receta/medicamentos    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de receta medicamentos del medico.
+
+    .RUTA: "/medicos/view/alta/receta/medicamentos/historial    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de receta medicamentos del paciente.
+
+    .RUTA: "/medicos/view/alta/receta/medicamentos/crear    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de crear receta medicamentos del medico.
+
+    .RUTA: "/medicos/view/alta/receta/medicamentos/actualizar    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de actualizar receta medicamentos del medico.
+
+    .RUTA: "/medicos/view/alta/recomendacion/seguimiento    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de recomendacion de seguimiento del medico.
+
+    .RUTA: "/medicos/view/seccion/final/altas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de seccion final de altas del medico.
+
+    .RUTA: "/medicos/view/historial/altas    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de historial de altas del paciente.
+
+    .RUTA: "/medicos/view/alta/final    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de alta final del medico.
+
+    .RUTA: "/medicos/view/alta/final/datos    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de alta final datos del medico.
+
+    .RUTA: "/medicos/view/imprimir/alta    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de imprimir alta del medico.
+
+
+    .RUTA: "/medicos/crear/tratamiento/prescrito    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del tratamiento prescrito solicitado, posteriormente son validados y si no hay errores son creados los datos del tratamiento prescrito en la base de datos.
+
+    .RUTA: "/medicos/actualizar/tratamiento/prescrito    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del tratamiento prescrito solicitado, posteriormente son validados y si no hay errores son actualizados los datos del tratamiento prescrito en la base de datos.
+
+    .RUTA: "/medicos/crear/diagnostico    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del diagnostico solicitado, posteriormente son validados y si no hay errores son creados los datos del diagnostico en la base de datos.
+
+    .RUTA: "/medicos/actualizar/diagnostico    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del diagnostico solicitado, posteriormente son validados y si no hay errores son actualizados los datos del diagnostico en la base de datos.
+
+    .RUTA: "/medicos/eliminar/diagnostico    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Diagnostico y lo utiliza para eliminar un diagnostico en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/medicos/view/diagnosticos" enviando un mensaje de confirmacion.
+
+    .RUTA: "/medicos/crear/prueba/diagnostica    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de la prueba diagnostica solicitada, posteriormente son validados y si no hay errores son creados los datos de la prueba diagnostica en la base de datos.
+
+    .RUTA: "/medicos/actualizar/prueba/diagnostica    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de la prueba diagnostica solicitada, posteriormente son validados y si no hay errores son actualizados los datos de la prueba diagnostica en la base de datos.
+
+    .RUTA: "/medicos/eliminar/prueba/diagnostica    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Prueba_Diagnostica y lo utiliza para eliminar una prueba diagnostica en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/medicos/view/pruebas/diagnosticas" enviando un mensaje de confirmacion.
+
+    .RUTA: "/medicos/crear/tratamiento/diagnostico    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del tratamiento diagnostico solicitado, posteriormente son validados y si no hay errores son creados los datos del tratamiento diagnostico en la base de datos.
+
+    .RUTA: "/medicos/actualizar/tratamiento/diagnostico    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del tratamiento diagnostico solicitado, posteriormente son validados y si no hay errores son actualizados los datos del tratamiento diagnostico en la base de datos.
+
+    .RUTA: "/medicos/eliminar/tratamiento/diagnostico    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Tratamiento_Diagnostico y lo utiliza para eliminar un tratamiento diagnostico en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/medicos/view/tratamientos/diagnostico" enviando un mensaje de confirmacion.
+
+    .RUTA: "/medicos/registrar/medicamento/en/receta    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear del medicamento en receta solicitado, posteriormente son validados y si no hay errores son creados los datos del medicamento en receta en la base de datos.
+
+    .RUTA: "/medicos/actualizar/medicamento/en/receta    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar del medicamento en receta solicitado, posteriormente son validados y si no hay errores son actualizados los datos del medicamento en receta en la base de datos.
+
+    .RUTA: "/medicos/eliminar/medicamento/en/receta    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Medicamento_En_Receta y lo utiliza para eliminar un medicamento en receta en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/medicos/view/medicamentos/en/receta" enviando un mensaje de confirmacion.
+
+    .RUTA: "/medicos/crear/receta    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a crear de la receta solicitada, posteriormente son validados y si no hay errores son creados los datos de la receta en la base de datos.
+
+    .RUTA: "/medicos/eliminar/receta    
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta recibe por query un atributo id_Receta y lo utiliza para eliminar una receta en base de datos. Una vez finalizado el proceso redirecciona a la ruta "/medicos/view/recetas" enviando un mensaje de confirmacion.
+
+    .RUTA: "/medicos/actualizar/recomendacion/seguimiento    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos a actualizar de la recomendacion de seguimiento solicitada, posteriormente son validados y si no hay errores son actualizados los datos de la recomendacion de seguimiento en la base de datos.
+
+    .RUTA: "/medicos/dar/alta    
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta da de alta a un paciente en base de datos.
+    
+# 5.4 - RUTAS DE AUTH
+
+    .RUTA: "/login" 
+    ..METHOD: GET
+    ...DESCRIPCION: Dicha ruta renderiza la vista de login.
+
+    .RUTA: "/login" 
+    ..METHOD: POST
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos para iniciar sesion.
+
+    
+# 6 - DEPENDENCIAS
     .bootstrap: Se utiliza para dar estilos a la pagina web.
     .bootstrap-icons: Es una biblioteca de iconos para bootstrap, se utiliza para colocar iconos en las vistas pug.
     .Morgan: Es un middleware de registros de solicitudes HTTP para Nodejs, permite mostrar en el log las peticiones entrantes y salientes por metodo, ruta y status.
     .reflect-metadata: Le permite a typescript trabajar con decoradores.
+    .dotenv: Se utiliza para cargar variables de entorno desde un archivo .env.
+    .mysql2: Es una biblioteca de MySQL para Nodejs, se utiliza para conectarse a la base de datos.
+    .pdfkit: Es una biblioteca de PDF para Nodejs, se utiliza para generar PDFs.
     
 
 
