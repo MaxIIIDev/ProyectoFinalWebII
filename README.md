@@ -692,7 +692,7 @@
 
     .RUTA: "/login" 
     ..METHOD: POST
-    ...DESCRIPCION: Dicha ruta recibe por body los atributos para iniciar sesion.
+    ...DESCRIPCION: Dicha ruta recibe por body los atributos para iniciar sesion, posteriormente son validados y si no hay errores se inicia sesion, guardando los datos del usuario en la sesion.
 
     
 # 6 - DEPENDENCIAS
