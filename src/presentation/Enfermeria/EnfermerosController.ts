@@ -1116,6 +1116,10 @@ export class EnfermerosController{
     }
     public vistaListaAllEvaluacionFisica = async (req:Request, res:Response) => {
         try {
+            if(!req.session.paciente.dni){
+                res.redirect(`/enfermeria/view/evaluaciones/fisicas?warning=${encodeURIComponent("Un paciente desconocido no tiene historial")}`);
+                return;
+            }
             const evaluaciones = await EvaluacionFisicaService.buscarTodasLasEvaluacionesFisicasPorPaciente(req.session.paciente.id_Paciente);
             if(evaluaciones[0] && evaluaciones[1] == undefined){
                 res.redirect(`/enfermeria/view/paciente?warning=${encodeURIComponent(evaluaciones[0])}`);
